@@ -73,12 +73,34 @@ namespace backend.Service
 
         public async Task<EntrepotDTO?> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                var Entrepot = await _entrepotRepository.GetByIdAsync(id);
+
+                return Entrepot?.ToEntrepotDTO();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw new Exception(e.Message);
+            }
+
         }
 
         public async Task<Entrepot?> UpdateEntrepot(UpdateEntrepotRequestDTO updateEntrepotRequestDTO, string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var EntrepotModel = await _entrepotRepository.UpdateAsync(id, updateEntrepotRequestDTO);
+                return EntrepotModel;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message, e.StackTrace);
+                throw new Exception(e.Message);
+            }
         }
     }
 

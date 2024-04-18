@@ -21,7 +21,9 @@ namespace backend.Data
         public DbSet<Entrepot> Entrepot { get; set; }
         public DbSet<Utilisateur> Utilisateur { get; set; }
         public DbSet<Vehicule> Vehicule { get; set; }
-
+        //public DbSet<TypeVoyage> TypeVoyage { get; set; }
+        //public DbSet<Voyage> Voyage { get; set; }
+        //public DbSet<UtilisateurVoyage> UtilisateurVoyage { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -44,6 +46,18 @@ namespace backend.Data
                 },
             };
             builder.Entity<IdentityRole>().HasData(roles);
+    //         builder.Entity<Voyage>()
+    //         .HasMany(v => v.Utilisateurs)
+    //         .WithMany(u => u.Voyages)
+    //         .UsingEntity(j => j.ToTable("UtilisateurVoyage"));
+
+    //         builder.Entity<UtilisateurVoyage>()
+    //           .HasKey(uv => new { uv.UtilisateursID, uv.VoyagesId });
+    //         builder.Entity<Voyage>()
+    //   .HasOne(e => e.Magasinier)
+    //   .WithOne(e => e.Voyage)
+    //   .HasForeignKey<Voyage>(e => e.IdVoyage)
+    //   .IsRequired();
         }
     }
 }

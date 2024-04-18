@@ -146,3 +146,4 @@ D:\Projet PFE\code\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.Entity
 D:\Projet PFE\code\backend\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 D:\Projet PFE\code\backend\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
 D:\Projet PFE\code\backend\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\Projet PFE\code\backend\obj\Debug\net8.0\backend.sourcelink.json

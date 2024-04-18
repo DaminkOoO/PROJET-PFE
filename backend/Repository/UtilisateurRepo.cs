@@ -37,7 +37,13 @@ namespace backend.Repository
 
         public async Task<List<Utilisateur>> GetAllAsync()
         {
+            try{
             return await _userManager.Users.Include(v => v.Vehicule).Include(e => e.Entrepot).ToListAsync();
+                
+            }catch(Exception e){
+                Console.WriteLine(e.Message);
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<Utilisateur?> GetByMatriculeAsync(string matricule)
