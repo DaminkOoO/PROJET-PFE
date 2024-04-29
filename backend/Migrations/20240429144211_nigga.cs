@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class ISLIBRE : Migration
+    public partial class nigga : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,8 +62,8 @@ namespace backend.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Lattitude = table.Column<decimal>(type: "decimal(10,10)", nullable: false),
-                    Longitude = table.Column<decimal>(type: "decimal(10,10)", nullable: false)
+                    Lattitude = table.Column<decimal>(type: "decimal(20,17)", nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(20,17)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -336,10 +336,10 @@ namespace backend.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1c3ead24-e59b-470b-9e00-3d9666dcddc6", null, "Transporteur", "TRANSPORTEUR" },
-                    { "aab4db9b-2145-4ba6-bceb-d8ad3829ab67", null, "Demandeur", "DEMANDEUR" },
-                    { "f511bd08-ed01-4c6c-8e92-891a02570910", null, "Magasinier", "MAGASINIER" },
-                    { "f82c7fe1-62a2-4eba-a847-be9d59e8f96f", null, "Admin", "ADMIN" }
+                    { "1bb2addb-afeb-4163-acdc-87b5b601796c", null, "Demandeur", "DEMANDEUR" },
+                    { "b230c1f2-8e69-4a58-a1fa-6fc92c9988cd", null, "Transporteur", "TRANSPORTEUR" },
+                    { "be89a3aa-7294-4c6d-bbaf-85c8e64753aa", null, "Magasinier", "MAGASINIER" },
+                    { "dfcbb823-502c-4182-9378-032b477589be", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

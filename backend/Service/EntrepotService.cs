@@ -7,6 +7,7 @@ using backend.Helpers;
 using backend.Interfaces;
 using backend.Mappers;
 using backend.Models;
+using backend.Response;
 
 namespace backend.Service
 {
@@ -17,90 +18,140 @@ namespace backend.Service
         {
             _entrepotRepository = entrepotRepository;
         }
-        public async Task<EntrepotDTO> CreateEntrepot(RegisterEntrepotDTO registerEntrepotRequestDTO)
+
+        public async Task<ServiceResponse<EntrepotDTO>> CreateEntrepot(RegisterEntrepotDTO registerEntrepotRequestDTO)
         {
+            var serviceResponse = new ServiceResponse<EntrepotDTO>();
+
             try
             {
-                var entrepotModel = new Entrepot
+                var entrepot = new Entrepot
                 {
                     Id = registerEntrepotRequestDTO.Id,
+                    Nom = registerEntrepotRequestDTO.Nom,
                     Lattitude = registerEntrepotRequestDTO.Lattitude,
                     Longitude = registerEntrepotRequestDTO.Longitude,
-                    Nom = registerEntrepotRequestDTO.Nom,
                 };
-                await _entrepotRepository.CreateAsync(entrepotModel);
-                return entrepotModel.ToEntrepotDTO();
+                Console.WriteLine("$$$$$$$$$$$$$$$$$$",entrepot.Lattitude);
+                var newEntrepot = await _entrepotRepository.CreateAsync(entrepot);
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Entrepot créé avec succès";
+                serviceResponse.Data = newEntrepot.ToEntrepotDTO();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw new Exception(e.Message);
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
             }
 
+            return serviceResponse;
         }
 
-        public async Task<bool> DeleteEntrepot(string id)
+        public async Task<ServiceResponse<bool>> DeleteEntrepot(string matricule)
         {
+            var serviceResponse = new ServiceResponse<bool>();
+
             try
             {
-                var EntrepotModel = await _entrepotRepository.GetByIdAsync(id);
-                if (EntrepotModel == null)
-                    return false;
-                var deletingUser = await _entrepotRepository.DeleteAsync(id);
-                return deletingUser != null;
+                var isDeleted = await _entrepotRepository.DeleteAsync(matricule);
+                if (isDeleted != null)
+                {
+                    serviceResponse.Success = true;
+                    serviceResponse.Message = "Entrepot supprimé avec succès!";
+                    serviceResponse.Data = true;
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Erreur! Entrepot non supprimé!";
+                    serviceResponse.Data = false;
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw new Exception(e.Message);
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
             }
+
+            return serviceResponse;
         }
 
-        public async Task<List<EntrepotDTO>?> GetAllAsync(QueryObject QueryObject)
+
+        public async Task<ServiceResponse<List<EntrepotDTO>?>> GetAllAsync(QueryObject QueryObject)
         {
+            var serviceResponse = new ServiceResponse<List<EntrepotDTO>?>();
+
             try
             {
                 var entrepots = await _entrepotRepository.GetAllAsync(QueryObject);
-                var entrepotsDTO = entrepots.Select(s => s.ToEntrepotDTO()).ToList();
-                return entrepotsDTO;
+                var entrepotsDTO = entrepots.Select(e => e.ToEntrepotDTO()).ToList();
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Liste des entrepôts récupérée avec succès";
+                serviceResponse.Data = entrepotsDTO;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception(e.Message);
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
             }
+
+            return serviceResponse;
         }
 
-        public async Task<EntrepotDTO?> GetByIdAsync(string id)
+        public async Task<ServiceResponse<EntrepotDTO?>> GetByIdAsync(string id)
         {
+            var serviceResponse = new ServiceResponse<EntrepotDTO?>();
+
             try
             {
-
-                var Entrepot = await _entrepotRepository.GetByIdAsync(id);
-
-                return Entrepot?.ToEntrepotDTO();
+                var entrepot = await _entrepotRepository.GetByIdAsync(id);
+                if (entrepot != null)
+                {
+                    serviceResponse.Success = true;
+                    serviceResponse.Message = "Entrepot trouvé";
+                    serviceResponse.Data = entrepot.ToEntrepotDTO();
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Entrepot introuvable";
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
-                throw new Exception(e.Message);
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
             }
 
+            return serviceResponse;
         }
 
-        public async Task<Entrepot?> UpdateEntrepot(UpdateEntrepotRequestDTO updateEntrepotRequestDTO, string id)
+        public async Task<ServiceResponse<EntrepotDTO?>> UpdateEntrepot(UpdateEntrepotRequestDTO updateEntrepotRequestDTO, string id)
         {
+            var serviceResponse = new ServiceResponse<EntrepotDTO?>();
+
             try
             {
-                var EntrepotModel = await _entrepotRepository.UpdateAsync(id, updateEntrepotRequestDTO);
-                return EntrepotModel;
-
+                var updatedEntrepot = await _entrepotRepository.UpdateAsync(id, updateEntrepotRequestDTO);
+                if (updatedEntrepot != null)
+                {
+                    serviceResponse.Success = true;
+                    serviceResponse.Message = "Entrepot mis à jour avec succès";
+                    serviceResponse.Data = updatedEntrepot.ToEntrepotDTO();
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Entrepot introuvable";
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message, e.StackTrace);
-                throw new Exception(e.Message);
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
             }
+
+            return serviceResponse;
         }
     }
-
 }

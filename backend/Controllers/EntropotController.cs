@@ -25,8 +25,12 @@ namespace backend.Controllers
             return Ok(entrepots);
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<EntrepotDTO?>> GetByIdAsync([FromRoute] string id)
+        public async Task<ActionResult<EntrepotDTO?>> GetById([FromRoute] string id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var entrepot = await _entrepotService.GetByIdAsync(id);
             if (entrepot == null)
             {
@@ -37,12 +41,22 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<ActionResult<EntrepotDTO>> CreateEntrepot([FromBody] RegisterEntrepotDTO registerEntrepotRequestDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var newEntrepot = await _entrepotService.CreateEntrepot(registerEntrepotRequestDTO);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = newEntrepot.Id }, newEntrepot);
+            if (!newEntrepot.Success)
+                return BadRequest(newEntrepot.Message);
+            return CreatedAtAction(nameof(GetById), new { id = newEntrepot.Data!.Id }, newEntrepot.Data);
         }
         [HttpPut("{id}")]
         public async Task<ActionResult<EntrepotDTO>> UpdateEntrepot([FromRoute] string id, [FromBody] UpdateEntrepotRequestDTO updateEntrepotRequestDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var updatedEntrepot = await _entrepotService.UpdateEntrepot(updateEntrepotRequestDTO, id);
             if (updatedEntrepot == null)
             {
@@ -53,8 +67,12 @@ namespace backend.Controllers
         [HttpDelete("{matricule}")]
         public async Task<IActionResult> DeleteEntrepot([FromRoute] string matricule)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _entrepotService.DeleteEntrepot(matricule);
-            if (!result)
+            if (!result.Data)
             {
                 return NotFound();
             }

@@ -60,6 +60,7 @@ namespace backend.Repository
             existingEntrepot.Nom = EntrepotDto.Nom;
             existingEntrepot.Longitude = EntrepotDto.Longitude;
             existingEntrepot.Lattitude = EntrepotDto.Lattitude;
+            _context.Entrepot.Update(existingEntrepot);
             await _context.SaveChangesAsync();
             return existingEntrepot;
         }

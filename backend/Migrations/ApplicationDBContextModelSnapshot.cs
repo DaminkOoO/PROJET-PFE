@@ -51,25 +51,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7cde3150-9f20-4c10-b334-fc60b2e392a7",
+                            Id = "dfcbb823-502c-4182-9378-032b477589be",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3bdb57a0-0336-4acd-9dc2-fec966180c69",
+                            Id = "be89a3aa-7294-4c6d-bbaf-85c8e64753aa",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "1520bb5e-395c-48bd-9e67-6d3514ba091a",
+                            Id = "1bb2addb-afeb-4163-acdc-87b5b601796c",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "b11df156-bcb0-4f39-a9a1-a96b6c99708d",
+                            Id = "b230c1f2-8e69-4a58-a1fa-6fc92c9988cd",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -295,10 +295,10 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Lattitude")
-                        .HasColumnType("decimal(10, 10)");
+                        .HasColumnType("decimal(20, 17)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("decimal(10, 10)");
+                        .HasColumnType("decimal(20, 17)");
 
                     b.Property<string>("Nom")
                         .IsRequired()

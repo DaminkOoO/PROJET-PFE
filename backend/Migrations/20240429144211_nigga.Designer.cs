@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240426080149_ISLIBRE")]
-    partial class ISLIBRE
+    [Migration("20240429144211_nigga")]
+    partial class nigga
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,25 +54,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f82c7fe1-62a2-4eba-a847-be9d59e8f96f",
+                            Id = "dfcbb823-502c-4182-9378-032b477589be",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f511bd08-ed01-4c6c-8e92-891a02570910",
+                            Id = "be89a3aa-7294-4c6d-bbaf-85c8e64753aa",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "aab4db9b-2145-4ba6-bceb-d8ad3829ab67",
+                            Id = "1bb2addb-afeb-4163-acdc-87b5b601796c",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "1c3ead24-e59b-470b-9e00-3d9666dcddc6",
+                            Id = "b230c1f2-8e69-4a58-a1fa-6fc92c9988cd",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -298,10 +298,10 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Lattitude")
-                        .HasColumnType("decimal(10, 10)");
+                        .HasColumnType("decimal(20, 17)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("decimal(10, 10)");
+                        .HasColumnType("decimal(20, 17)");
 
                     b.Property<string>("Nom")
                         .IsRequired()

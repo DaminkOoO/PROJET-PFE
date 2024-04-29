@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 using backend.Dtos.EntrepotDTOs;
 using backend.Helpers;
 using backend.Models;
+using backend.Response;
 
 namespace backend.Interfaces
 {
     public interface IEntrepotService
     {
-        Task<List<EntrepotDTO>?> GetAllAsync(QueryObject QueryObject);
-        Task<EntrepotDTO?> GetByIdAsync(string id);
-        Task<EntrepotDTO> CreateEntrepot(RegisterEntrepotDTO registerEntrepotRequestDTO);
-        Task<Entrepot?> UpdateEntrepot(UpdateEntrepotRequestDTO updateEntrepotRequestDTO, string id);
-        Task<bool> DeleteEntrepot(string matricule);
+        Task<ServiceResponse<List<EntrepotDTO>?>> GetAllAsync(QueryObject QueryObject);
+        Task<ServiceResponse<EntrepotDTO?>> GetByIdAsync(string id);
+        Task<ServiceResponse<EntrepotDTO>> CreateEntrepot(RegisterEntrepotDTO registerEntrepotRequestDTO);
+        Task<ServiceResponse<EntrepotDTO?>> UpdateEntrepot(UpdateEntrepotRequestDTO updateEntrepotRequestDTO, string id);
+        Task<ServiceResponse<bool>> DeleteEntrepot(string matricule);
     }
 }

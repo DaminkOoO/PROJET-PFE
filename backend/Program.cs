@@ -66,6 +66,8 @@ builder.Services.AddScoped<ITransporteurRepo, TransporteurRepo>();
 /******* 
  * L'injection de dépendance pour la couche service 
  *******/
+
+builder.Services.AddScoped<IEntrepotService, EntrepotService>();
 builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
 builder.Services.AddScoped<IDemandeurService, DemandeurService>();
 builder.Services.AddScoped<IMagasinierService, MagasinierService>();
