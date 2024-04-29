@@ -12,15 +12,15 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240418105058_updatesToDb")]
-    partial class updatesToDb
+    [Migration("20240426080149_ISLIBRE")]
+    partial class ISLIBRE
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -54,25 +54,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "be05f52d-221c-493c-9458-88d45fc2fb82",
+                            Id = "f82c7fe1-62a2-4eba-a847-be9d59e8f96f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cc0bd1f2-3719-4cb9-a96d-d644280632e6",
+                            Id = "f511bd08-ed01-4c6c-8e92-891a02570910",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "ef46f809-9d19-4aac-98b8-e23de7496cbb",
+                            Id = "aab4db9b-2145-4ba6-bceb-d8ad3829ab67",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "2f463cfd-f42c-4f22-afa2-8b4c21ba52ad",
+                            Id = "1c3ead24-e59b-470b-9e00-3d9666dcddc6",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -101,6 +101,80 @@ namespace backend.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -184,16 +258,50 @@ namespace backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TransporteurVoyage", b =>
+                {
+                    b.Property<string>("TransporteursUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("VoyagesIdVoyage")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TransporteursUserId", "VoyagesIdVoyage");
+
+                    b.HasIndex("VoyagesIdVoyage");
+
+                    b.ToTable("TransporteurVoyage");
+                });
+
+            modelBuilder.Entity("backend.Models.Demandeur", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsMagasinier")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Lattitude")
+                        .HasColumnType("decimal(10, 10)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(10, 10)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Demandeur");
+                });
+
             modelBuilder.Entity("backend.Models.Entrepot", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Lattitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10, 10)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10, 10)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -202,6 +310,41 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Entrepot");
+                });
+
+            modelBuilder.Entity("backend.Models.Magasinier", b =>
+                {
+                    b.Property<string>("MatriculeSopal")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EntrepotId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("MatriculeSopal");
+
+                    b.HasIndex("EntrepotId")
+                        .IsUnique();
+
+                    b.ToTable("Magasinier");
+                });
+
+            modelBuilder.Entity("backend.Models.Transporteur", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("ExterneDuService")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("VehiculeMatricule")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("VehiculeMatricule");
+
+                    b.ToTable("Transporteur");
                 });
 
             modelBuilder.Entity("backend.Models.TypeVoyage", b =>
@@ -221,127 +364,15 @@ namespace backend.Migrations
                     b.ToTable("TypeVoyage");
                 });
 
-            modelBuilder.Entity("backend.Models.Utilisateur", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("EntrepotId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("MatriculeSOPAL")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nom")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Prenom")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("VehiculeId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VoyageIdVoyage")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntrepotId");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("VehiculeId");
-
-                    b.HasIndex("VoyageIdVoyage");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("backend.Models.UtilisateurVoyage", b =>
-                {
-                    b.Property<string>("UtilisateursID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VoyagesId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UtilisateurId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VoyageIdVoyage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UtilisateursID", "VoyagesId");
-
-                    b.HasIndex("UtilisateurId");
-
-                    b.HasIndex("VoyageIdVoyage");
-
-                    b.ToTable("UtilisateurVoyage");
-                });
-
             modelBuilder.Entity("backend.Models.Vehicule", b =>
                 {
                     b.Property<string>("Matricule")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Bloque")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLibre")
                         .HasColumnType("bit");
 
                     b.Property<string>("Marque")
@@ -374,39 +405,49 @@ namespace backend.Migrations
                     b.Property<DateTime>("DateSortieBon")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DemandeurId")
+                    b.Property<string>("DemandeurMatriculeSopal")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Etat")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdDemandeur")
+                    b.Property<string>("MagasinierMatriculeSopal")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdMagasinier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdTypeVoyage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MagasinierId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("TypeVoyageIdTypeVoyage")
+                    b.Property<int>("TypeVoyageId")
                         .HasColumnType("int");
 
                     b.HasKey("IdVoyage");
 
-                    b.HasIndex("DemandeurId");
+                    b.HasIndex("DemandeurMatriculeSopal");
 
-                    b.HasIndex("MagasinierId");
+                    b.HasIndex("MagasinierMatriculeSopal");
 
-                    b.HasIndex("TypeVoyageIdTypeVoyage");
+                    b.HasIndex("TypeVoyageId");
 
                     b.ToTable("Voyage");
+                });
+
+            modelBuilder.Entity("backend.Models.Utilisateur", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("MatriculeSopal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("Utilisateur");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -420,7 +461,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("backend.Models.Utilisateur", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -429,7 +470,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("backend.Models.Utilisateur", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -444,7 +485,7 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.Utilisateur", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -453,62 +494,93 @@ namespace backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("backend.Models.Utilisateur", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.Utilisateur", b =>
+            modelBuilder.Entity("TransporteurVoyage", b =>
                 {
-                    b.HasOne("backend.Models.Entrepot", "Entrepot")
+                    b.HasOne("backend.Models.Transporteur", null)
                         .WithMany()
-                        .HasForeignKey("EntrepotId");
-
-                    b.HasOne("backend.Models.Vehicule", "Vehicule")
-                        .WithMany()
-                        .HasForeignKey("VehiculeId");
+                        .HasForeignKey("TransporteursUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("backend.Models.Voyage", null)
-                        .WithMany("Transporteur")
-                        .HasForeignKey("VoyageIdVoyage");
-
-                    b.Navigation("Entrepot");
-
-                    b.Navigation("Vehicule");
+                        .WithMany()
+                        .HasForeignKey("VoyagesIdVoyage")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.UtilisateurVoyage", b =>
+            modelBuilder.Entity("backend.Models.Demandeur", b =>
                 {
                     b.HasOne("backend.Models.Utilisateur", "Utilisateur")
-                        .WithMany("UtilisateurVoyage")
-                        .HasForeignKey("UtilisateurId");
-
-                    b.HasOne("backend.Models.Voyage", "Voyage")
-                        .WithMany("UtilisateurVoyage")
-                        .HasForeignKey("VoyageIdVoyage")
+                        .WithOne()
+                        .HasForeignKey("backend.Models.Demandeur", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Utilisateur");
+                });
 
-                    b.Navigation("Voyage");
+            modelBuilder.Entity("backend.Models.Magasinier", b =>
+                {
+                    b.HasOne("backend.Models.Entrepot", "Entrepot")
+                        .WithOne("Magasinier")
+                        .HasForeignKey("backend.Models.Magasinier", "EntrepotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Utilisateur", "Utilisateur")
+                        .WithOne()
+                        .HasForeignKey("backend.Models.Magasinier", "MatriculeSopal")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entrepot");
+
+                    b.Navigation("Utilisateur");
+                });
+
+            modelBuilder.Entity("backend.Models.Transporteur", b =>
+                {
+                    b.HasOne("backend.Models.Utilisateur", "Utilisateur")
+                        .WithOne()
+                        .HasForeignKey("backend.Models.Transporteur", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Vehicule", "Vehicule")
+                        .WithMany()
+                        .HasForeignKey("VehiculeMatricule")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Utilisateur");
+
+                    b.Navigation("Vehicule");
                 });
 
             modelBuilder.Entity("backend.Models.Voyage", b =>
                 {
-                    b.HasOne("backend.Models.Utilisateur", "Demandeur")
-                        .WithMany()
-                        .HasForeignKey("DemandeurId");
+                    b.HasOne("backend.Models.Demandeur", "Demandeur")
+                        .WithMany("Voyages")
+                        .HasForeignKey("DemandeurMatriculeSopal")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.HasOne("backend.Models.Utilisateur", "Magasinier")
-                        .WithMany()
-                        .HasForeignKey("MagasinierId");
+                    b.HasOne("backend.Models.Magasinier", "Magasinier")
+                        .WithMany("Voyages")
+                        .HasForeignKey("MagasinierMatriculeSopal")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("backend.Models.TypeVoyage", "TypeVoyage")
-                        .WithMany()
-                        .HasForeignKey("TypeVoyageIdTypeVoyage")
+                        .WithMany("Voyages")
+                        .HasForeignKey("TypeVoyageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -519,16 +591,25 @@ namespace backend.Migrations
                     b.Navigation("TypeVoyage");
                 });
 
-            modelBuilder.Entity("backend.Models.Utilisateur", b =>
+            modelBuilder.Entity("backend.Models.Demandeur", b =>
                 {
-                    b.Navigation("UtilisateurVoyage");
+                    b.Navigation("Voyages");
                 });
 
-            modelBuilder.Entity("backend.Models.Voyage", b =>
+            modelBuilder.Entity("backend.Models.Entrepot", b =>
                 {
-                    b.Navigation("Transporteur");
+                    b.Navigation("Magasinier")
+                        .IsRequired();
+                });
 
-                    b.Navigation("UtilisateurVoyage");
+            modelBuilder.Entity("backend.Models.Magasinier", b =>
+                {
+                    b.Navigation("Voyages");
+                });
+
+            modelBuilder.Entity("backend.Models.TypeVoyage", b =>
+                {
+                    b.Navigation("Voyages");
                 });
 #pragma warning restore 612, 618
         }

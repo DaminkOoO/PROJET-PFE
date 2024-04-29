@@ -15,15 +15,14 @@ namespace backend.Models
 
         public string Etat { get; set; } = string.Empty;
         //Demandeur
-        public Utilisateur Utilisateur { get; set; } = null!;
-        public string IdDemandeur { get; set; } = string.Empty;
-        public ICollection<Utilisateur> Utilisateurs { get; set; } = new List<Utilisateur>();
-        public Utilisateur? Magasinier { get; set; }
-        public string IdMagasinier { get; set; } = string.Empty;
+        public Demandeur Demandeur { get; set; } = null!;
+        public string DemandeurMatriculeSopal { get; set; } = string.Empty;
+
+        public Magasinier Magasinier { get; set; } = null!;
+        public string MagasinierMatriculeSopal { get; set; } = string.Empty;
         public TypeVoyage TypeVoyage { get; set; } = null!;
-        // public int IdTypeVoyage { get; set; }
-        // public List<UtilisateurVoyage> UtilisateurVoyage { get; } = [];
-
-
+        public int TypeVoyageId { get; set; }
+        public List<Transporteur> Transporteurs { get; } = [];
+        //public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
     }
 }

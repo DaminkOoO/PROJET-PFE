@@ -18,7 +18,7 @@ namespace backend.Mappers
                 Matricule = vehiculeModel.Matricule,
                 Modele = vehiculeModel.Modele,
                 Poids = vehiculeModel.Poids,
-                
+                Volume = vehiculeModel.Volume,
             };
         }
         public static Vehicule ToVehiculeFromCreateDTO(this CreateVehiculeRequestDTO vehicule)

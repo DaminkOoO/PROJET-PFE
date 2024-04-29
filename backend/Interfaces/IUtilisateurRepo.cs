@@ -13,8 +13,9 @@ namespace backend.Interfaces
     {
         Task<List<Utilisateur>> GetAllAsync();
         Task<Utilisateur?> GetByMatriculeAsync(string matricule);
+        Task<List<string?>> GetRoles();
         Task<IdentityResult> AddToRole(Utilisateur utilisateur, string role);
-        Task<IdentityResult> RemoveFromRole(Utilisateur utilisateur, string role);
+        Task<IdentityResult> RemoveFromRoleAsync(Utilisateur utilisateur, string role);
         Task<IList<string>> GetUtilisateurRoles(Utilisateur utilisateurModel);
         Task<IdentityResult> CreateAsync(Utilisateur utilisateurModel);
         Task<IdentityResult> UpdateAsync(Utilisateur UtilisateurModel);

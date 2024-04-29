@@ -11,5 +11,6 @@ namespace backend.Models
         [Key]
         public int IdTypeVoyage { get; set; }
         public string Libelle { get; set; } = string.Empty;
+        public ICollection<Voyage> Voyages { get; set; } = [];
     }
 }

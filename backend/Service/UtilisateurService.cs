@@ -1,165 +1,318 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using backend.Dtos.User;
 using backend.Interfaces;
 using backend.Mappers;
 using backend.Models;
-using backend.Repository;
+using backend.Response;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 namespace backend.Service
 {
     public class UtilisateurService : IUtilisateurService
     {
-        private readonly IUtilisateurRepo _utilisateurRepo;
-        public UtilisateurService(IUtilisateurRepo utilisateurRepo)
-        {
-            _utilisateurRepo = utilisateurRepo;
-        }
+        private readonly IUtilisateurRepo _utilisateurRepository;
+        private IPasswordHasher<Utilisateur> _passwordHasher;
 
-        public async Task<IdentityResult> CreateUtilisateur(RegisterUserRequestDTO registerUserRequestDTO)
+        public UtilisateurService(IUtilisateurRepo utilisateurRepository, IPasswordHasher<Utilisateur> passwordHash)
         {
-            try
-            {
-                return await _utilisateurRepo.CreateAsync(new Utilisateur
-                {
-                    MatriculeSOPAL = registerUserRequestDTO.MatriculeSopal,
-                    Email = registerUserRequestDTO.Email,
-                    Nom = registerUserRequestDTO.Nom,
-                    Prenom = registerUserRequestDTO.Prenom,
-                    UserName = registerUserRequestDTO.MatriculeSopal
-                });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw new Exception(e.Message);
-            }
+            _utilisateurRepository = utilisateurRepository;
+            _passwordHasher = passwordHash;
         }
-        public async Task<IdentityResult> SetUserRole(Utilisateur utilisateur, string role)
+        public async Task<ServiceResponse<IdentityResult>> CreateUtilisateur(RegisterUserRequestDTO registerUserRequestDTO)
         {
-            try
-            {
-                return await _utilisateurRepo.AddToRole(utilisateur, role);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw new Exception(e.Message);
-            }
-        }
-        public async Task<bool> DeleteUtilisateur(string matricule)
-        {
-            try
-            {
-                var utilisateurModel = await _utilisateurRepo.GetByMatriculeAsync(matricule);
-                if (utilisateurModel == null)
-                    return false;
-                var deletingUser = await _utilisateurRepo.DeleteAsync(utilisateurModel);
-                if (deletingUser == null) return false;
-                return deletingUser.Succeeded;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return false;
-        }
 
-        public async Task<List<Utilisateur>?> GetAllAsync()
-        {
+            var serviceResponse = new ServiceResponse<IdentityResult>();
+            if (registerUserRequestDTO == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Veuillez remplir tous les champs";
+                return serviceResponse;
+            }
 
             try
             {
-                return await _utilisateurRepo.GetAllAsync();
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-
-            }
-            return null;
-        }
-
-        public async Task<UtilisateurDTO?> GetByMatriculeAsync(string matricule)
-        {
-            var utilisateur = await _utilisateurRepo.GetByMatriculeAsync(matricule);
-            if (utilisateur == null) return null;
-            var userRoles = await _utilisateurRepo.GetUtilisateurRoles(utilisateur);
-            var utilisateurDTO = utilisateur.ToUtilisateurDTO();
-            utilisateurDTO.Role = userRoles.FirstOrDefault();
-
-            return utilisateurDTO;
-        }
-
-        public async Task<Utilisateur?> UpdateUtilisateur(UpdateUserRequestDTO updateUserRequestDTO, string matricule)
-        {
-
-            if (updateUserRequestDTO == null) return null;
-            var utilisateurModel = await _utilisateurRepo.GetByMatriculeAsync(matricule);
-            if (utilisateurModel == null)
-            {
-
-                return null;
-
-            }
-            var roleActuel = _utilisateurRepo.GetUtilisateurRoles(utilisateurModel).Result.FirstOrDefault();
-            if (roleActuel != updateUserRequestDTO.Role)
-            {
-                if (roleActuel == null)
+                // var userExists = await GetByMatriculeAsync(registerUserRequestDTO.MatriculeSopal);
+                // if (userExists.Success)
+                // {
+                //     serviceResponse.Success = false;
+                //     serviceResponse.Message = "Utilisateur déja existe";
+                //     return serviceResponse;
+                // }
+                var user = registerUserRequestDTO.ToUtilisateur();
+                Console.WriteLine(user);
+                user.PasswordHash = _passwordHasher.HashPassword(user, registerUserRequestDTO.Password!);
+                var createdUser = await _utilisateurRepository.CreateAsync(user);
+                if (createdUser.Succeeded)
                 {
-                    Console.WriteLine("le role actuel est null");
-                    await SetUserRole(utilisateurModel, updateUserRequestDTO.Role);
+                    //To do tomorrow: add the actors
+                    var roleResult = await _utilisateurRepository.AddToRole(user, registerUserRequestDTO.Role);
 
-                }
-                else
-                {
-                    var result = await _utilisateurRepo.RemoveFromRole(utilisateurModel, roleActuel);
-                    await SetUserRole(utilisateurModel, updateUserRequestDTO.Role);
-                }
-            }
-            utilisateurModel.Nom = updateUserRequestDTO.Nom ?? utilisateurModel.Nom;
-            utilisateurModel.Prenom = updateUserRequestDTO.Prenom ?? utilisateurModel.Prenom;
-            utilisateurModel.Email = updateUserRequestDTO.Email ?? utilisateurModel.Email;
-            if (updateUserRequestDTO.Role == "Magasinier" && updateUserRequestDTO.EntrepotId != null)
-            {
-                utilisateurModel.EntrepotId = updateUserRequestDTO.EntrepotId;
-                if (utilisateurModel.VehiculeId != null)
-                {
-                    utilisateurModel.VehiculeId = null;
-                }
-            }
-            else
-            {
-                if (updateUserRequestDTO.Role == "Transporteur" && updateUserRequestDTO.VehiculeId != null)
-                {
-                    utilisateurModel.VehiculeId = updateUserRequestDTO.VehiculeId;
-                    if (utilisateurModel.EntrepotId != null)
+                    if (roleResult.Succeeded)
                     {
-                        utilisateurModel.EntrepotId = null;
-                    }
-                }
-                else
-                {
-                    if (updateUserRequestDTO.Role == "Admin" || updateUserRequestDTO.Role == "Demandeur")
-                    {
-                        utilisateurModel.VehiculeId = null;
-                        utilisateurModel.EntrepotId = null;
+
+                        serviceResponse.Success = true;
+                        serviceResponse.Message = "Utilisateur créé avec succès";
+                        serviceResponse.Data = roleResult;
+                        return serviceResponse;
                     }
                     else
                     {
-                        return null;
+                        serviceResponse.Success = false;
+                        serviceResponse.Message = "Erreur lors de l'ajout du rôle";
+                        return serviceResponse;
                     }
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = string.Join(", ", createdUser.Errors.Select(x => "Code " + x.Code + " Description" + x.Description));
+                    return serviceResponse;
+                }
 
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+
+        public async Task<ServiceResponse<bool>> DeleteUtilisateur(string matricule)
+        {
+            var serviceResponse = new ServiceResponse<bool>();
+            try
+            {
+                var utilisateur = await _utilisateurRepository.GetByMatriculeAsync(matricule);
+                if (utilisateur == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Erreur! Utilisateur non existant!";
+                    return serviceResponse;
 
                 }
+                var role = await _utilisateurRepository.GetUtilisateurRoles(utilisateur);
+
+
+                var isDeletedFromRole = await _utilisateurRepository.RemoveFromRoleAsync(utilisateur, role[0]);
+                if (!isDeletedFromRole.Succeeded)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Erreur! L'utilisateur n'appartient pas a cette role!";
+                    return serviceResponse;
+                }
+
+                var result = await _utilisateurRepository.DeleteAsync(utilisateur);
+                if (result.Succeeded)
+                {
+                    serviceResponse.Data = true;
+                    serviceResponse.Message = "Utilisateur supprimé avec succès!";
+                    return serviceResponse;
+                }
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Erreur! Utilisateur non supprimé!";
+                return serviceResponse;
             }
-            var updatingUser = await _utilisateurRepo.UpdateAsync(utilisateurModel);
-            if (updatingUser == null) return null;
-            return utilisateurModel;
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+
+        public async Task<ServiceResponse<List<UtilisateurDTO>?>> GetAllAsync()
+        {
+            var serviceResponse = new ServiceResponse<List<UtilisateurDTO>?>();
+            try
+            {
+                var utilisateurs = await _utilisateurRepository.GetAllAsync();
+                var utilisateursDTO = utilisateurs.Select(s => s.ToUtilisateurDTO()).ToList();
+                foreach (UtilisateurDTO utilisateurDTO in utilisateursDTO)
+                {
+                    Console.WriteLine(utilisateurDTO.MatriculeSOPAL);
+                    var userRoles = await _utilisateurRepository.GetUtilisateurRoles(utilisateurDTO.ToUtilisateur());
+                    utilisateurDTO.Role = userRoles[0];
+
+                }
+                if (utilisateurs == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Une erreur s'est produite";
+                    return serviceResponse;
+                }
+                serviceResponse.Success = true;
+                serviceResponse.Message = "";
+                serviceResponse.Data = utilisateursDTO;
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+
+        public async Task<ServiceResponse<UtilisateurDTO?>> GetByMatriculeAsync(string matricule)
+        {
+            var serviceResponse = new ServiceResponse<UtilisateurDTO?>();
+            try
+            {
+                var utilisateur = await _utilisateurRepository.GetByMatriculeAsync(matricule);
+
+
+
+                if (utilisateur == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Utilisateur introuvable";
+                    return serviceResponse;
+                }
+                var userRoles = await _utilisateurRepository.GetUtilisateurRoles(utilisateur!);
+                var utilisateurDTO = utilisateur.ToUtilisateurDTO();
+                utilisateurDTO.Role = userRoles[0];
+
+                serviceResponse.Success = true;
+                serviceResponse.Message = "";
+                serviceResponse.Data = utilisateurDTO;
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+        public async Task<ServiceResponse<bool>> DeleteAdmin(string matricule)
+        {
+            var serviceResponse = new ServiceResponse<bool>();
+            try
+            {
+                var utilisateur = await GetByMatriculeAsync(matricule);
+                if (!utilisateur.Success)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Erreur! Utilisateur non existant!";
+                    return serviceResponse;
+                }
+                var doesExist = await IsExistRole(utilisateur.Data!.ToUtilisateur(), "Admin");
+                if (doesExist.Success == false)
+                {
+
+                    return doesExist;
+                }
+                var deleteUtilisateur = await DeleteUtilisateur(matricule);
+                if (deleteUtilisateur.Success)
+                {
+                    serviceResponse.Data = true;
+                    serviceResponse.Message = "Demandeur Supprimer avec succée!!";
+                    return serviceResponse;
+                }
+                serviceResponse.Data = false;
+                serviceResponse.Message = "Erreur!";
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+        public async Task<ServiceResponse<bool>> IsExistRole(Utilisateur utilisateur, string role)
+        {
+            var serviceResponse = new ServiceResponse<bool>();
+            try
+            {
+                var userRoles = await _utilisateurRepository.GetUtilisateurRoles(utilisateur);
+                if (role == userRoles[0])
+                {
+                    serviceResponse.Success = true;
+                    serviceResponse.Message = $"";
+                    return serviceResponse;
+                }
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"L'utilisateur n'appartient pas a cette role!";
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+        public async Task<ServiceResponse<List<string>>> GetRoles()
+        {
+            var serviceResponse = new ServiceResponse<List<string>>();
+            try
+            {
+                var roles = await _utilisateurRepository.GetRoles();
+                if (roles == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Pas de roles";
+                    return serviceResponse;
+                }
+                serviceResponse.Success = true;
+                serviceResponse.Message = "";
+                serviceResponse.Data = roles!;
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+
+        //use the SetRole while creating other users 
+        public async Task<ServiceResponse<IdentityResult>> SetUserRole(Utilisateur utilisateur, string role)
+        {
+            await _utilisateurRepository.AddToRole(utilisateur, role);
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<Utilisateur?>> UpdateUtilisateur(UpdateUserRequestDTO updateUserRequestDTO, string matricule)
+        {
+            var serviceResponse = new ServiceResponse<Utilisateur?>();
+            try
+            {
+                var userModel = await _utilisateurRepository.GetByMatriculeAsync(matricule);
+
+                if (userModel == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Erreur! Utilisateur introuvable!";
+                    return serviceResponse;
+                }
+
+                userModel.Nom = updateUserRequestDTO.Nom;
+                userModel.Email = updateUserRequestDTO.Email;
+                userModel.Prenom = updateUserRequestDTO.Prenom;
+                
+                if(updateUserRequestDTO.MotDePasse!=null && updateUserRequestDTO.MotDePasse!="") 
+                    userModel.PasswordHash = _passwordHasher.HashPassword(userModel, updateUserRequestDTO.MotDePasse);
+                var utilisateurUpdate = _utilisateurRepository.UpdateAsync(userModel);
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Utilisateur Ajoutée!";
+                serviceResponse.Data = userModel;
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
         }
     }
 }

@@ -1,17 +1,22 @@
 ﻿using backend.Dtos.User;
 using backend.Models;
+using backend.Response;
 using Microsoft.AspNetCore.Identity;
 
 namespace backend.Interfaces
 {
     public interface IUtilisateurService
     {
-        Task<List<Utilisateur>?> GetAllAsync();
-        Task<UtilisateurDTO?> GetByMatriculeAsync(string matricule);
-        Task<IdentityResult> CreateUtilisateur(RegisterUserRequestDTO registerUserRequestDTO);
-        Task<Utilisateur?> UpdateUtilisateur (UpdateUserRequestDTO updateUserRequestDTO,string matricule);
-        Task<bool> DeleteUtilisateur (string matricule);
-        Task<IdentityResult> SetUserRole(Utilisateur utilisateur, string role);
+        //
+        Task<ServiceResponse<List<UtilisateurDTO>?>> GetAllAsync();
+        Task<ServiceResponse<UtilisateurDTO?>> GetByMatriculeAsync(string matricule);
+        Task<ServiceResponse<IdentityResult>> CreateUtilisateur(RegisterUserRequestDTO registerUserRequestDTO);
+        Task<ServiceResponse<Utilisateur?>> UpdateUtilisateur(UpdateUserRequestDTO updateUserRequestDTO, string matricule);
+        Task<ServiceResponse<bool>> DeleteUtilisateur(string matricule);
+        Task<ServiceResponse<IdentityResult>> SetUserRole(Utilisateur utilisateur, string role);
+        Task<ServiceResponse<List<string>>> GetRoles();
+        Task<ServiceResponse<bool>> IsExistRole(Utilisateur utilisateur, string role);
+        Task<ServiceResponse<bool>> DeleteAdmin(string matricule);
 
     }
 }

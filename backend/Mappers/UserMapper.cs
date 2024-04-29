@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Dtos.User;
 using backend.Models;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace backend.Mappers
 {
@@ -14,11 +15,9 @@ namespace backend.Mappers
             return new UtilisateurDTO
             {
                 Email = utilisateurModel.Email,
-                MatriculeSOPAL = utilisateurModel.MatriculeSOPAL,
+                MatriculeSOPAL = utilisateurModel.Id,
                 Nom = utilisateurModel.Nom,
                 Prenom = utilisateurModel.Prenom,
-                Entrepot = utilisateurModel.Entrepot,
-                Vehicule = utilisateurModel.Vehicule,
             };
         }
         public static Utilisateur ToUtilisateur(this UtilisateurDTO utilisateurDTO)
@@ -28,9 +27,22 @@ namespace backend.Mappers
                 Email = utilisateurDTO.Email,
                 Prenom = utilisateurDTO.Prenom,
                 Nom = utilisateurDTO.Nom,
-                MatriculeSOPAL = utilisateurDTO.MatriculeSOPAL,
-                
+                Id = utilisateurDTO.MatriculeSOPAL,
+
             };
+        }
+        public static Utilisateur ToUtilisateur(this RegisterUserRequestDTO registerUserRequestDTO)
+        {
+
+            return new Utilisateur
+            {
+                Email = registerUserRequestDTO.Email,
+                Nom = registerUserRequestDTO.Nom,
+                Prenom = registerUserRequestDTO.Prenom,
+                Id = registerUserRequestDTO.MatriculeSopal,
+                UserName = registerUserRequestDTO.MatriculeSopal + registerUserRequestDTO.Prenom,
+            };
+
         }
     }
 }

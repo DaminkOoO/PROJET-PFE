@@ -7,6 +7,8 @@ using backend.Dtos.VehiculeDTOs;
 using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
+using backend.Response;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
@@ -20,7 +22,7 @@ namespace backend.Repository
         }
         public async Task<Vehicule> CreateAsync(Vehicule VehiculeModel)
         {
-            
+            Console.WriteLine(VehiculeModel.Volume);
             await _context.Vehicule.AddAsync(VehiculeModel);
             await _context.SaveChangesAsync();
             return VehiculeModel;
@@ -60,20 +62,40 @@ namespace backend.Repository
             return await _context.Vehicule.FirstOrDefaultAsync(i => i.Matricule == matricule);
         }
 
+        public async Task<bool> SwitchLibre(string matricule)
+        {
+            var vehicule = await _context.Vehicule.FirstOrDefaultAsync(v => v.Matricule == matricule);
+            if (vehicule == null)
+            {
+                Console.WriteLine("Vehicule Introuvable");
+                return false;
+            }
+            Console.WriteLine("************************** " + vehicule.Matricule + " **************************");
+            vehicule.IsLibre = !vehicule.IsLibre;
+            _context.Vehicule.Update(vehicule);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<Vehicule?> UpdateAsync(string matricule, UpdateVehiculeRequestDTO VehiculeDto)
         {
-            var existingVehicule = await _context.Vehicule.FindAsync(matricule);
+            var existingVehicule = await _context.Vehicule.FirstOrDefaultAsync(v => v.Matricule == matricule);
 
             if (existingVehicule == null)
             {
                 return null;
             }
+
+
             existingVehicule.Marque = VehiculeDto.Marque;
             existingVehicule.Modele = VehiculeDto.Modele;
             existingVehicule.Poids = VehiculeDto.Poids;
             existingVehicule.Volume = VehiculeDto.Volume;
             existingVehicule.Bloque = VehiculeDto.Bloque;
+
+            _context.Vehicule.Update(existingVehicule);
             await _context.SaveChangesAsync();
+
             return existingVehicule;
         }
     }

@@ -24,9 +24,11 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+}, ServiceLifetime.Transient);
 
 builder.Services.AddIdentity<Utilisateur, IdentityRole>().AddEntityFrameworkStores<ApplicationDBContext>();
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -38,14 +40,16 @@ builder.Services.AddAuthentication(options =>
     options.DefaultSignOutScheme =
 JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(
-    options=>{
-        options.TokenValidationParameters = new TokenValidationParameters{
-            ValidateIssuer= true,
+    options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
             ValidIssuer = builder.Configuration["JWT:Issuer"],
             ValidateAudience = true,
             ValidAudience = builder.Configuration["JWT:Audience"],
-            ValidateIssuerSigningKey= true,
-            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes( builder.Configuration["JWT:SigningKey"]))
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]!))
         };
     }
 );
@@ -56,10 +60,17 @@ JwtBearerDefaults.AuthenticationScheme;
 builder.Services.AddScoped<IVehiculeRepo, VehiculeRepo>();
 builder.Services.AddScoped<IUtilisateurRepo, UtilisateurRepo>();
 builder.Services.AddScoped<IEntrepotRepo, EntrepotRepo>();
+builder.Services.AddScoped<IDemandeurRepo, DemandeurRepo>();
+builder.Services.AddScoped<IMagasinierRepo, MagasinierRepo>();
+builder.Services.AddScoped<ITransporteurRepo, TransporteurRepo>();
 /******* 
  * L'injection de dépendance pour la couche service 
  *******/
 builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
+builder.Services.AddScoped<IDemandeurService, DemandeurService>();
+builder.Services.AddScoped<IMagasinierService, MagasinierService>();
+builder.Services.AddScoped<ITransporteurService, TransporteurService>();
+builder.Services.AddScoped<IVehiculeService, VehiculeService>();
 
 
 var app = builder.Build();

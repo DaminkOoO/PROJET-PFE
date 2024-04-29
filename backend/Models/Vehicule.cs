@@ -14,7 +14,8 @@ namespace backend.Models
         public string Modele { get; set; } = string.Empty;
         public double Poids { get; set; }
         public double Volume { get; set; }
-        public bool Bloque { get; set; } = false;
-
+        public bool Bloque { get; set; }
+        public bool IsLibre { get; set; } =true;
+        public Transporteur? Transporteur;
     }
 }

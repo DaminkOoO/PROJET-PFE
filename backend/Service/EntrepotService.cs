@@ -66,7 +66,6 @@ namespace backend.Service
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 throw new Exception(e.Message);
             }
         }
@@ -82,7 +81,7 @@ namespace backend.Service
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+
                 throw new Exception(e.Message);
             }
 

@@ -15,7 +15,6 @@ namespace backend.Dtos.VehiculeDTOs
         public double Poids { get; set; }
         public double Volume { get; set; }
         public bool Bloque { get; set; } = false;
-        public string? TransporteurID { get; set; } = string.Empty;
         
 }
     }

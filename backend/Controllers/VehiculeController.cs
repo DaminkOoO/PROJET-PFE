@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using backend.Dtos.VehiculeDTOs;
 using backend.Helpers;
 using backend.Interfaces;
-using backend.Mappers;
-using backend.Models;
+using backend.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -15,79 +12,63 @@ namespace backend.Controllers
     [ApiController]
     public class VehiculeController : ControllerBase
     {
-        private readonly IVehiculeRepo _vehiculeRepo;
-        public VehiculeController(IVehiculeRepo VehiculeRepo)
+        private readonly IVehiculeService _vehiculeService;
+
+        public VehiculeController(IVehiculeService vehiculeService)
         {
-            _vehiculeRepo = VehiculeRepo;
+            _vehiculeService = vehiculeService;
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateVehiculeRequestDTO createVehicule)
         {
-
-            var vehiculeModel = createVehicule.ToVehiculeFromCreateDTO();
-            if (await _vehiculeRepo.GetByIdAsync(vehiculeModel.Matricule) == null)
+            var response = await _vehiculeService.CreateVehicule(createVehicule);
+            if (response.Success)
             {
-                await _vehiculeRepo.CreateAsync(vehiculeModel);
-                return CreatedAtAction(nameof(GetById), new { matricule = vehiculeModel.Matricule }, vehiculeModel.ToVehiculeDTO());
-
+                return CreatedAtAction(nameof(GetById), new { matricule = response.Data!.Matricule }, response.Data);
             }
-            return BadRequest("Vehicule déja existante");
-
-
+            return BadRequest(response.Message);
         }
 
         [HttpGet("{matricule}")]
         public async Task<IActionResult> GetById([FromRoute] string matricule)
         {
-            var vehicule = await _vehiculeRepo.GetByIdAsync(matricule);
-            if (vehicule == null)
+            var response = await _vehiculeService.GetVehiculeById(matricule);
+            if (response.Success)
             {
-                return NotFound();
+                return Ok(response.Data);
             }
-            else
-            {
-                return Ok(vehicule.ToVehiculeDTO());
-            }
+            return NotFound(response.Message);
+        }
+        [HttpGet("disponible")]
+        public async Task<IActionResult> GetAllLibre()
+        {
+            var response = await _vehiculeService.GetAllVehiculesLibre();
+            return response.Success ? Ok(response.Data) : BadRequest(response.Message);
         }
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var stocks = await _vehiculeRepo.GetAllAsync(query);
-            var stockDto = stocks.Select(s => s.ToVehiculeDTO()).ToList();
-            return Ok(stockDto);
+            var response = await _vehiculeService.GetAllAsync(query);
+            return response.Success ? Ok(response.Data) : BadRequest(response.Message);
         }
-        [HttpPut]
-        [Route("{matricule}")]
+
+        [HttpPut("{matricule}")]
         public async Task<IActionResult> Update([FromRoute] string matricule, [FromBody] UpdateVehiculeRequestDTO updateDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var vehiculeModel = await _vehiculeRepo.UpdateAsync(matricule, updateDto);
-
-            if (vehiculeModel == null)
+            var response = await _vehiculeService.UpdateVehicule(matricule, updateDto);
+            if (response.Success)
             {
-                return NotFound();
+                return Ok(response.Data);
             }
-
-            return Ok(vehiculeModel.ToVehiculeDTO());
+            return NotFound(response.Message);
         }
 
-        [HttpDelete]
-        [Route("{matriculeSopal}")]
+        [HttpDelete("{matriculeSopal}")]
         public async Task<IActionResult> Delete([FromRoute] string matriculeSopal)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var vehiculeModel = await _vehiculeRepo.DeleteAsync(matriculeSopal);
-            if (vehiculeModel == null)
-            {
-                return NotFound();
-            }
-            return NoContent();
+            var response = await _vehiculeService.DeleteVehicule(matriculeSopal);
+            return response.Success ? NoContent() : NotFound(response.Message);
         }
     }
 }

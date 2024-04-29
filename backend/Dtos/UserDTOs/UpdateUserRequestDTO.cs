@@ -2,6 +2,7 @@ using backend.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,8 +19,12 @@ namespace backend.Dtos.User
         public string? MotDePasse { get; set; } = string.Empty;
         [Required]
         public string Role { get; set; } = string.Empty;
-        public string? VehiculeId { get; set; } = string.Empty ;
-        public string? EntrepotId {  get; set; } = string.Empty ;
-
+        public string? VehiculeId { get; set; } = string.Empty;
+        public string EntrepotId { get; set; } = string.Empty;
+        [Column(TypeName = "decimal(10, 10)")]
+        public decimal Lattitude { get; set; }
+        [Column(TypeName = "decimal(10, 10)")]
+        public decimal Longitude { get; set; }
+        public bool ExterneDuService { get; set; }
     }
 }

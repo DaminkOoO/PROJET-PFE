@@ -12,11 +12,11 @@ namespace backend.Repository
     public class UtilisateurRepo : IUtilisateurRepo
     {
         private readonly UserManager<Utilisateur> _userManager;
-        private readonly ApplicationDBContext _context;
-        public UtilisateurRepo(UserManager<Utilisateur> userManager, ApplicationDBContext context)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public UtilisateurRepo(UserManager<Utilisateur> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
-            _context = context;
+            _roleManager = roleManager;
         }
 
         public async Task<IdentityResult> AddToRole(Utilisateur utilisateur, string role)
@@ -37,29 +37,21 @@ namespace backend.Repository
 
         public async Task<List<Utilisateur>> GetAllAsync()
         {
-            try{
-            return await _userManager.Users.Include(v => v.Vehicule).Include(e => e.Entrepot).ToListAsync();
-                
-            }catch(Exception e){
-                Console.WriteLine(e.Message);
-                throw new Exception(e.Message);
-            }
+            return await _userManager.Users.ToListAsync();
+
         }
 
         public async Task<Utilisateur?> GetByMatriculeAsync(string matricule)
         {
-            var utilisateur = await _userManager.FindByNameAsync(matricule);
-            if (utilisateur != null)
-            {
-                await _context.Entry(utilisateur)
-                    .Reference(u => u.Vehicule)
-                    .LoadAsync();
+            var utilisateur = await _userManager.FindByIdAsync(matricule);
 
-                await _context.Entry(utilisateur)
-                    .Reference(u => u.Entrepot)
-                    .LoadAsync();
-            }
             return utilisateur;
+        }
+
+        public async Task<List<string?>> GetRoles()
+        {
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            return roles;
         }
 
         public async Task<IList<string>> GetUtilisateurRoles(Utilisateur utilisateurModel)
@@ -67,7 +59,7 @@ namespace backend.Repository
             return await _userManager.GetRolesAsync(utilisateurModel);
         }
 
-        public async Task<IdentityResult> RemoveFromRole(Utilisateur utilisateur, string role)
+        public async Task<IdentityResult> RemoveFromRoleAsync(Utilisateur utilisateur, string role)
         {
             return await _userManager.RemoveFromRoleAsync(utilisateur, role);
         }
@@ -76,9 +68,9 @@ namespace backend.Repository
         {
             try
             {
-                Console.WriteLine("Hello");
+
                 var update = await _userManager.UpdateAsync(UtilisateurModel);
-                Console.WriteLine(update);
+
                 return update;
 
             }
