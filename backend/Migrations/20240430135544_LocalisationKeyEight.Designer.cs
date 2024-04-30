@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240430123901_LocalisationKeySeven")]
-    partial class LocalisationKeySeven
+    [Migration("20240430135544_LocalisationKeyEight")]
+    partial class LocalisationKeyEight
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,25 +54,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "558f8454-a6d8-4dff-b811-04c6482b50bb",
+                            Id = "2b59b72f-4d77-42f8-8300-64f9f740df22",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "da3685fe-2396-4989-a2eb-34edb1958b87",
+                            Id = "af0d3c84-0ee3-45ed-9643-cb9ca7cae752",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "ed61f420-9875-43f9-b26b-5a3b2338fb42",
+                            Id = "ec99a865-6064-4370-a772-221096a9f2fa",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "85f4ff5c-ad5e-4266-a3c2-9eadb569178d",
+                            Id = "4e69ed89-7690-4a3e-8fe2-2c04eeb7d710",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });

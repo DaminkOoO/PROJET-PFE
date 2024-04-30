@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class LocalisationKeySeven : Migration
+    public partial class LocalisationKeyEight : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -376,10 +376,10 @@ namespace backend.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "558f8454-a6d8-4dff-b811-04c6482b50bb", null, "Admin", "ADMIN" },
-                    { "85f4ff5c-ad5e-4266-a3c2-9eadb569178d", null, "Transporteur", "TRANSPORTEUR" },
-                    { "da3685fe-2396-4989-a2eb-34edb1958b87", null, "Magasinier", "MAGASINIER" },
-                    { "ed61f420-9875-43f9-b26b-5a3b2338fb42", null, "Demandeur", "DEMANDEUR" }
+                    { "2b59b72f-4d77-42f8-8300-64f9f740df22", null, "Admin", "ADMIN" },
+                    { "4e69ed89-7690-4a3e-8fe2-2c04eeb7d710", null, "Transporteur", "TRANSPORTEUR" },
+                    { "af0d3c84-0ee3-45ed-9643-cb9ca7cae752", null, "Magasinier", "MAGASINIER" },
+                    { "ec99a865-6064-4370-a772-221096a9f2fa", null, "Demandeur", "DEMANDEUR" }
                 });
 
             migrationBuilder.CreateIndex(

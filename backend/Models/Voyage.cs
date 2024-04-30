@@ -23,10 +23,7 @@ namespace backend.Models
         public TypeVoyage TypeVoyage { get; set; } = null!;
         public int TypeVoyageId { get; set; }
         public List<Transporteur> Transporteurs { get; } = [];
-        public Entrepot EntrepotDemandeur { get; set; } = new Entrepot();
-        public string EntrepotDemandeurId { get; set; } = string.Empty;
-        public Entrepot EntrepotExpedition { get; set; } = new Entrepot();
-        public string EntrepotExpeditionId { get; set; } = string.Empty;
+
         //public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
     }
 }
