@@ -7,12 +7,12 @@ using backend.Dtos.User;
 
 namespace backend.Dtos.DemandeurDTOs
 {
-    public class DemandeurDTO:UtilisateurDTO
+    public class DemandeurDTO : UtilisateurDTO
     {
 
-        [Column(TypeName = "decimal(10, 10)")]
+        [Column(TypeName = "decimal(20, 17)")]
         public decimal Lattitude { get; set; }
-        [Column(TypeName = "decimal(10, 10)")]
+        [Column(TypeName = "decimal(20, 17)")]
         public decimal Longitude { get; set; }
     }
 }

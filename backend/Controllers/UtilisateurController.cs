@@ -64,22 +64,21 @@ namespace backend.Controllers
                 }
                 if (RegisterDTO.Role == "Transporteur")
                 {
-                    var switchLibre = await _vehiculeService.SwitchLibre(RegisterDTO.VehiculeId);
-                    if (switchLibre.Success == true)
+                    var createdUser = await _transporteurService.CreateTransporteur(RegisterDTO);
+                    if (createdUser.Success)
                     {
-                        var createdUser = await _transporteurService.CreateTransporteur(RegisterDTO);
-                        if (createdUser.Success)
+                        var switchLibre = await _vehiculeService.SwitchLibre(RegisterDTO.VehiculeId);
+                        if (!switchLibre.Success)
                         {
-
-                            return Ok(createdUser.Data);
+                            return BadRequest(switchLibre.Message);
                         }
-                        else
-                        {
-                            return BadRequest(createdUser.Message);
-                        }
-                    }else{
-                        return BadRequest(switchLibre.Message);
+                        return Ok(createdUser.Data);
                     }
+                    else
+                    {
+                        return BadRequest(createdUser.Message);
+                    }
+
 
 
                 }
@@ -228,7 +227,7 @@ namespace backend.Controllers
             }
 
             if (deleteUser.Role == "Transporteur")
-        
+
             {
                 var libreVehicule = await _vehiculeService.SwitchLibre(deleteUser.VehiculeId);
                 var deleting = await _transporteurService.DeleteTransporteur(matricule);

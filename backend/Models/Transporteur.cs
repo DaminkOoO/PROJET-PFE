@@ -16,6 +16,8 @@ namespace backend.Models
         public string? VehiculeMatricule { get; set; } = string.Empty;
         public bool ExterneDuService { get; set; } = false;
         public List<Voyage> Voyages { get; } = [];
-        //public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
+        public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
+        public Localisation Localisation { get; set; } = new Localisation();
+        public int LocalisationId { get; set; }
     }
 }

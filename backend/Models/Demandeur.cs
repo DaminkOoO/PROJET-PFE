@@ -13,9 +13,9 @@ namespace backend.Models
         [Key]
         public string UserId { get; set; } = string.Empty;
         public Utilisateur Utilisateur { get; set; } = null!;
-        [Column(TypeName = "decimal(10, 10)")]
+        [Column(TypeName = "decimal(20, 17)")]
         public decimal Lattitude { get; set; }
-        [Column(TypeName = "decimal(10, 10)")]
+        [Column(TypeName = "decimal(20, 17)")]
         public decimal Longitude { get; set; }
         public bool IsMagasinier { get; set; }
         public ICollection<Voyage> Voyages { get; set; } = [];

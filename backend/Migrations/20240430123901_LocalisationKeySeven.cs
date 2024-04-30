@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class nigga : Migration
+    public partial class LocalisationKeySeven : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,6 +68,21 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Entrepot", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Localisation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Lattitude = table.Column<decimal>(type: "decimal(20,17)", nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(20,17)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Localisation", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,8 +226,8 @@ namespace backend.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Lattitude = table.Column<decimal>(type: "decimal(10,10)", nullable: false),
-                    Longitude = table.Column<decimal>(type: "decimal(10,10)", nullable: false),
+                    Lattitude = table.Column<decimal>(type: "decimal(20,17)", nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(20,17)", nullable: false),
                     IsMagasinier = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -256,7 +271,8 @@ namespace backend.Migrations
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     VehiculeMatricule = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ExterneDuService = table.Column<bool>(type: "bit", nullable: false)
+                    ExterneDuService = table.Column<bool>(type: "bit", nullable: false),
+                    LocalisationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -265,6 +281,12 @@ namespace backend.Migrations
                         name: "FK_Transporteur_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Transporteur_Localisation_LocalisationId",
+                        column: x => x.LocalisationId,
+                        principalTable: "Localisation",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -311,24 +333,42 @@ namespace backend.Migrations
                 name: "TransporteurVoyage",
                 columns: table => new
                 {
-                    TransporteursUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    VoyagesIdVoyage = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    TransporteurMatriculeSopal = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    VoyageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Panne = table.Column<bool>(type: "bit", nullable: false),
+                    VoyageIdVoyage = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TransporteurUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    LocalisationsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransporteurVoyage", x => new { x.TransporteursUserId, x.VoyagesIdVoyage });
+                    table.PrimaryKey("PK_TransporteurVoyage", x => new { x.TransporteurMatriculeSopal, x.VoyageId });
                     table.ForeignKey(
-                        name: "FK_TransporteurVoyage_Transporteur_TransporteursUserId",
-                        column: x => x.TransporteursUserId,
+                        name: "FK_TransporteurVoyage_Localisation_LocalisationsId",
+                        column: x => x.LocalisationsId,
+                        principalTable: "Localisation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TransporteurVoyage_Transporteur_TransporteurMatriculeSopal",
+                        column: x => x.TransporteurMatriculeSopal,
                         principalTable: "Transporteur",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                     table.ForeignKey(
-                        name: "FK_TransporteurVoyage_Voyage_VoyagesIdVoyage",
-                        column: x => x.VoyagesIdVoyage,
+                        name: "FK_TransporteurVoyage_Transporteur_TransporteurUserId",
+                        column: x => x.TransporteurUserId,
+                        principalTable: "Transporteur",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_TransporteurVoyage_Voyage_VoyageId",
+                        column: x => x.VoyageId,
                         principalTable: "Voyage",
-                        principalColumn: "IdVoyage",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdVoyage");
+                    table.ForeignKey(
+                        name: "FK_TransporteurVoyage_Voyage_VoyageIdVoyage",
+                        column: x => x.VoyageIdVoyage,
+                        principalTable: "Voyage",
+                        principalColumn: "IdVoyage");
                 });
 
             migrationBuilder.InsertData(
@@ -336,10 +376,10 @@ namespace backend.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1bb2addb-afeb-4163-acdc-87b5b601796c", null, "Demandeur", "DEMANDEUR" },
-                    { "b230c1f2-8e69-4a58-a1fa-6fc92c9988cd", null, "Transporteur", "TRANSPORTEUR" },
-                    { "be89a3aa-7294-4c6d-bbaf-85c8e64753aa", null, "Magasinier", "MAGASINIER" },
-                    { "dfcbb823-502c-4182-9378-032b477589be", null, "Admin", "ADMIN" }
+                    { "558f8454-a6d8-4dff-b811-04c6482b50bb", null, "Admin", "ADMIN" },
+                    { "85f4ff5c-ad5e-4266-a3c2-9eadb569178d", null, "Transporteur", "TRANSPORTEUR" },
+                    { "da3685fe-2396-4989-a2eb-34edb1958b87", null, "Magasinier", "MAGASINIER" },
+                    { "ed61f420-9875-43f9-b26b-5a3b2338fb42", null, "Demandeur", "DEMANDEUR" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -388,14 +428,35 @@ namespace backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transporteur_LocalisationId",
+                table: "Transporteur",
+                column: "LocalisationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transporteur_VehiculeMatricule",
                 table: "Transporteur",
                 column: "VehiculeMatricule");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TransporteurVoyage_VoyagesIdVoyage",
+                name: "IX_TransporteurVoyage_LocalisationsId",
                 table: "TransporteurVoyage",
-                column: "VoyagesIdVoyage");
+                column: "LocalisationsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransporteurVoyage_TransporteurUserId",
+                table: "TransporteurVoyage",
+                column: "TransporteurUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransporteurVoyage_VoyageId",
+                table: "TransporteurVoyage",
+                column: "VoyageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransporteurVoyage_VoyageIdVoyage",
+                table: "TransporteurVoyage",
+                column: "VoyageIdVoyage");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Voyage_DemandeurMatriculeSopal",
@@ -442,6 +503,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Voyage");
+
+            migrationBuilder.DropTable(
+                name: "Localisation");
 
             migrationBuilder.DropTable(
                 name: "Vehicule");

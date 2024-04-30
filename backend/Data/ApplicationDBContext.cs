@@ -51,7 +51,7 @@ namespace backend.Data
                     NormalizedName = "TRANSPORTEUR"
                 },
             };
-            
+
             builder.Entity<IdentityRole>().HasData(roles);
 
 
@@ -63,18 +63,18 @@ namespace backend.Data
             .HasOne(t => t.Vehicule)
             .WithMany()
             .HasForeignKey(t => t.VehiculeMatricule)
-            .HasPrincipalKey(v => v.Matricule) 
+            .HasPrincipalKey(v => v.Matricule)
             .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Demandeur>().HasMany(d => d.Voyages).WithOne(v => v.Demandeur).HasForeignKey(v => v.DemandeurMatriculeSopal).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Magasinier>().HasMany(d => d.Voyages).WithOne(v => v.Magasinier).HasForeignKey(v => v.MagasinierMatriculeSopal).OnDelete(DeleteBehavior.NoAction);
 
-            //             builder.Entity<Transporteur>()
-            //   .HasMany(t => t.Voyages)
-            //   .WithMany(v => v.Transporteurs)
-            //   .UsingEntity<TransporteurVoyage>(
-            //      l => l.HasOne<Voyage>().WithMany().HasForeignKey(e => e.VoyageId).OnDelete(DeleteBehavior.NoAction),
-            //             r => r.HasOne<Transporteur>().WithMany().HasForeignKey(e => e.TransporteurMatriculeSopal).OnDelete(DeleteBehavior.NoAction)
-            //   );
+            builder.Entity<Transporteur>()
+  .HasMany(t => t.Voyages)
+  .WithMany(v => v.Transporteurs)
+  .UsingEntity<TransporteurVoyage>(
+     l => l.HasOne<Voyage>().WithMany().HasForeignKey(e => e.VoyageId).OnDelete(DeleteBehavior.NoAction),
+            r => r.HasOne<Transporteur>().WithMany().HasForeignKey(e => e.TransporteurMatriculeSopal).OnDelete(DeleteBehavior.NoAction)
+  );
         }
     }
 }

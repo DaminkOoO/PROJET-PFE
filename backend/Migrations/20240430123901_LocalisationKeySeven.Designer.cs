@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240429144211_nigga")]
-    partial class nigga
+    [Migration("20240430123901_LocalisationKeySeven")]
+    partial class LocalisationKeySeven
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,25 +54,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dfcbb823-502c-4182-9378-032b477589be",
+                            Id = "558f8454-a6d8-4dff-b811-04c6482b50bb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "be89a3aa-7294-4c6d-bbaf-85c8e64753aa",
+                            Id = "da3685fe-2396-4989-a2eb-34edb1958b87",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "1bb2addb-afeb-4163-acdc-87b5b601796c",
+                            Id = "ed61f420-9875-43f9-b26b-5a3b2338fb42",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "b230c1f2-8e69-4a58-a1fa-6fc92c9988cd",
+                            Id = "85f4ff5c-ad5e-4266-a3c2-9eadb569178d",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -258,21 +258,6 @@ namespace backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TransporteurVoyage", b =>
-                {
-                    b.Property<string>("TransporteursUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VoyagesIdVoyage")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("TransporteursUserId", "VoyagesIdVoyage");
-
-                    b.HasIndex("VoyagesIdVoyage");
-
-                    b.ToTable("TransporteurVoyage");
-                });
-
             modelBuilder.Entity("backend.Models.Demandeur", b =>
                 {
                     b.Property<string>("UserId")
@@ -282,10 +267,10 @@ namespace backend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Lattitude")
-                        .HasColumnType("decimal(10, 10)");
+                        .HasColumnType("decimal(20, 17)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("decimal(10, 10)");
+                        .HasColumnType("decimal(20, 17)");
 
                     b.HasKey("UserId");
 
@@ -310,6 +295,28 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Entrepot");
+                });
+
+            modelBuilder.Entity("backend.Models.Localisation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Lattitude")
+                        .HasColumnType("decimal(20, 17)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(20, 17)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Localisation");
                 });
 
             modelBuilder.Entity("backend.Models.Magasinier", b =>
@@ -337,14 +344,53 @@ namespace backend.Migrations
                     b.Property<bool>("ExterneDuService")
                         .HasColumnType("bit");
 
+                    b.Property<int>("LocalisationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("VehiculeMatricule")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("LocalisationId")
+                        .IsUnique();
+
                     b.HasIndex("VehiculeMatricule");
 
                     b.ToTable("Transporteur");
+                });
+
+            modelBuilder.Entity("backend.Models.TransporteurVoyage", b =>
+                {
+                    b.Property<string>("TransporteurMatriculeSopal")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("VoyageId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("LocalisationsId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Panne")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TransporteurUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("VoyageIdVoyage")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TransporteurMatriculeSopal", "VoyageId");
+
+                    b.HasIndex("LocalisationsId");
+
+                    b.HasIndex("TransporteurUserId");
+
+                    b.HasIndex("VoyageId");
+
+                    b.HasIndex("VoyageIdVoyage");
+
+                    b.ToTable("TransporteurVoyage");
                 });
 
             modelBuilder.Entity("backend.Models.TypeVoyage", b =>
@@ -501,21 +547,6 @@ namespace backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TransporteurVoyage", b =>
-                {
-                    b.HasOne("backend.Models.Transporteur", null)
-                        .WithMany()
-                        .HasForeignKey("TransporteursUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Voyage", null)
-                        .WithMany()
-                        .HasForeignKey("VoyagesIdVoyage")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("backend.Models.Demandeur", b =>
                 {
                     b.HasOne("backend.Models.Utilisateur", "Utilisateur")
@@ -548,6 +579,12 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Transporteur", b =>
                 {
+                    b.HasOne("backend.Models.Localisation", "Localisation")
+                        .WithOne("Transporteur")
+                        .HasForeignKey("backend.Models.Transporteur", "LocalisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("backend.Models.Utilisateur", "Utilisateur")
                         .WithOne()
                         .HasForeignKey("backend.Models.Transporteur", "UserId")
@@ -559,9 +596,46 @@ namespace backend.Migrations
                         .HasForeignKey("VehiculeMatricule")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.Navigation("Localisation");
+
                     b.Navigation("Utilisateur");
 
                     b.Navigation("Vehicule");
+                });
+
+            modelBuilder.Entity("backend.Models.TransporteurVoyage", b =>
+                {
+                    b.HasOne("backend.Models.Localisation", "Localisations")
+                        .WithMany("TransporteurVoyages")
+                        .HasForeignKey("LocalisationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Transporteur", null)
+                        .WithMany()
+                        .HasForeignKey("TransporteurMatriculeSopal")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Transporteur", "Transporteur")
+                        .WithMany("TransporteurVoyages")
+                        .HasForeignKey("TransporteurUserId");
+
+                    b.HasOne("backend.Models.Voyage", null)
+                        .WithMany()
+                        .HasForeignKey("VoyageId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Voyage", "Voyage")
+                        .WithMany()
+                        .HasForeignKey("VoyageIdVoyage");
+
+                    b.Navigation("Localisations");
+
+                    b.Navigation("Transporteur");
+
+                    b.Navigation("Voyage");
                 });
 
             modelBuilder.Entity("backend.Models.Voyage", b =>
@@ -602,9 +676,22 @@ namespace backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("backend.Models.Localisation", b =>
+                {
+                    b.Navigation("Transporteur")
+                        .IsRequired();
+
+                    b.Navigation("TransporteurVoyages");
+                });
+
             modelBuilder.Entity("backend.Models.Magasinier", b =>
                 {
                     b.Navigation("Voyages");
+                });
+
+            modelBuilder.Entity("backend.Models.Transporteur", b =>
+                {
+                    b.Navigation("TransporteurVoyages");
                 });
 
             modelBuilder.Entity("backend.Models.TypeVoyage", b =>

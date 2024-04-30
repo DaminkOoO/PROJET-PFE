@@ -23,6 +23,7 @@ namespace backend.Service
             _utilisateurRepository = utilisateurRepository;
             _passwordHasher = passwordHash;
         }
+        
         public async Task<ServiceResponse<IdentityResult>> CreateUtilisateur(RegisterUserRequestDTO registerUserRequestDTO)
         {
 
@@ -36,13 +37,13 @@ namespace backend.Service
 
             try
             {
-                // var userExists = await GetByMatriculeAsync(registerUserRequestDTO.MatriculeSopal);
-                // if (userExists.Success)
-                // {
-                //     serviceResponse.Success = false;
-                //     serviceResponse.Message = "Utilisateur déja existe";
-                //     return serviceResponse;
-                // }
+                var userExists = await GetByMatriculeAsync(registerUserRequestDTO.MatriculeSopal);
+                if (userExists.Success)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Utilisateur déja existe";
+                    return serviceResponse;
+                }
                 var user = registerUserRequestDTO.ToUtilisateur();
                 Console.WriteLine(user);
                 user.PasswordHash = _passwordHasher.HashPassword(user, registerUserRequestDTO.Password!);
