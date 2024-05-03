@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend_mobile/components/voyage_info.dart';
+import 'package:frontend_mobile/components/voyage_info_card.dart';
 import 'package:frontend_mobile/service/voyage.dart';
 
 class ListVoyage extends StatefulWidget {
@@ -115,13 +115,13 @@ class _ListVoyageState extends State<ListVoyage> {
                           height: 15,
                           child: null,
                         ),
-                        VoyageInfo(
+                        VoyageInfoCard(
                           voyage: voyagesList[index],
                         ),
                       ],
                     );
                   }
-                  return VoyageInfo(
+                  return VoyageInfoCard(
                     voyage: voyagesList[index],
                   );
                 }),

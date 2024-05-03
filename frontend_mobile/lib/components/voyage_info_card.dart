@@ -6,8 +6,8 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:intl/intl.dart';
 
-class VoyageInfo extends StatelessWidget {
-  VoyageInfo({super.key, required this.voyage});
+class VoyageInfoCard extends StatelessWidget {
+  VoyageInfoCard({super.key, required this.voyage});
   Voyage voyage;
   @override
   Widget build(BuildContext context) {
