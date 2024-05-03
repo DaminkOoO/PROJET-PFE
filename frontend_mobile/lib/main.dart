@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/pages/list_voyage.dart';
 import 'package:frontend_mobile/pages/login_page.dart';
 
 void main() {
@@ -14,9 +15,10 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Center(
-        child: LoginPage(),
-      ),
+      routes: {
+        '/listevoyage': (context) => ListVoyage(),
+      },
+      home: LoginPage(),
     );
   }
 }
