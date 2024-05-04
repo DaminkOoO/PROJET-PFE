@@ -52,8 +52,17 @@ class _ListVoyageState extends State<ListVoyage> {
         children: [
           Container(
             width: double.infinity,
-            decoration:
-                const BoxDecoration(color: Color.fromRGBO(1, 55, 106, 1.0)),
+            decoration: const BoxDecoration(
+              color: Color.fromRGBO(1, 55, 106, 1.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
