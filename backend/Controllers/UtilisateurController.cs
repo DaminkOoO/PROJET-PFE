@@ -96,6 +96,14 @@ namespace backend.Controllers
                 return BadRequest(e);
             }
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserRequestDTO LoginDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var isLogged = await _utilisateurService.Login(LoginDTO);
+            return isLogged.Success?Ok(isLogged.Data):Unauthorized(isLogged.Message);
+        }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

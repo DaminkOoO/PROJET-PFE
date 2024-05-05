@@ -1,4 +1,5 @@
 ﻿using backend.Dtos.User;
+using backend.Dtos.UserDTOs;
 using backend.Models;
 using backend.Response;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,7 @@ namespace backend.Interfaces
         //
         Task<ServiceResponse<List<UtilisateurDTO>?>> GetAllAsync();
         Task<ServiceResponse<UtilisateurDTO?>> GetByMatriculeAsync(string matricule);
+        Task<ServiceResponse<LoginUserResponseDTO>> Login(LoginUserRequestDTO LoginUserRequestDTO);
         Task<ServiceResponse<IdentityResult>> CreateUtilisateur(RegisterUserRequestDTO registerUserRequestDTO);
         Task<ServiceResponse<Utilisateur?>> UpdateUtilisateur(UpdateUserRequestDTO updateUserRequestDTO, string matricule);
         Task<ServiceResponse<bool>> DeleteUtilisateur(string matricule);
@@ -19,4 +21,6 @@ namespace backend.Interfaces
         Task<ServiceResponse<bool>> DeleteAdmin(string matricule);
 
     }
+
+
 }

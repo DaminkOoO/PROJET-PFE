@@ -46,96 +46,98 @@ class _ListVoyageState extends State<ListVoyage> {
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(1, 55, 106, 1.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "Liste des voyages".toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 21,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(1, 55, 106, 1.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 2),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(right: 20.0, left: 20, bottom: 20),
-                  child: Container(
-                    width: double.infinity,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: const Color.fromARGB(112, 255, 255, 255),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Center(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          _searchController.text = value;
-                        },
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.search),
-                          suffixIcon: _searchController.text != ""
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    _searchController.clear();
-                                  },
-                                )
-                              : null,
-                          hintText: 'Rechercher...',
-                          border: InputBorder.none,
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Liste des voyages".toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 21,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 20.0, left: 20, bottom: 20),
+                    child: Container(
+                      width: double.infinity,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          color: const Color.fromARGB(112, 255, 255, 255),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Center(
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (value) {
+                            _searchController.text = value;
+                          },
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: _searchController.text != ""
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                    },
+                                  )
+                                : null,
+                            hintText: 'Rechercher...',
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: voyagesList.length,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 15,
-                          child: null,
-                        ),
-                        VoyageInfoCard(
-                          voyage: voyagesList[index],
-                        ),
-                      ],
+            Expanded(
+              child: ListView.builder(
+                  itemCount: voyagesList.length,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            height: 15,
+                            child: null,
+                          ),
+                          VoyageInfoCard(
+                            voyage: voyagesList[index],
+                          ),
+                        ],
+                      );
+                    }
+                    return VoyageInfoCard(
+                      voyage: voyagesList[index],
                     );
-                  }
-                  return VoyageInfoCard(
-                    voyage: voyagesList[index],
-                  );
-                }),
-          ),
-        ],
+                  }),
+            ),
+          ],
+        ),
       ),
     );
   }

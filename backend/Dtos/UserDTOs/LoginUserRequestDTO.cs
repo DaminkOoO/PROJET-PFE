@@ -10,7 +10,7 @@ namespace backend.Dtos.UserDTOs
     {
         [Required]
         public string MatriculeSopal { get; set; } = string.Empty;
-    
+
         [Required]
         public string Password { get; set; } = string.Empty;
     }

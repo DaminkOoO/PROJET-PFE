@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using backend.Dtos.User;
+using backend.Dtos.UserDTOs;
 using backend.Interfaces;
 using backend.Mappers;
 using backend.Models;
 using backend.Response;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
 
 namespace backend.Service
@@ -17,13 +22,19 @@ namespace backend.Service
     {
         private readonly IUtilisateurRepo _utilisateurRepository;
         private IPasswordHasher<Utilisateur> _passwordHasher;
+        private readonly SignInManager<Utilisateur> _signinManager;
+        private readonly IConfiguration _config;
+        private readonly SymmetricSecurityKey _key;
 
-        public UtilisateurService(IUtilisateurRepo utilisateurRepository, IPasswordHasher<Utilisateur> passwordHash)
+        public UtilisateurService(IUtilisateurRepo utilisateurRepository, IPasswordHasher<Utilisateur> passwordHash, SignInManager<Utilisateur> signInManager, IConfiguration config)
         {
             _utilisateurRepository = utilisateurRepository;
             _passwordHasher = passwordHash;
+            _signinManager = signInManager;
+            _config = config;
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]!));
         }
-        
+
         public async Task<ServiceResponse<IdentityResult>> CreateUtilisateur(RegisterUserRequestDTO registerUserRequestDTO)
         {
 
@@ -299,8 +310,8 @@ namespace backend.Service
                 userModel.Nom = updateUserRequestDTO.Nom;
                 userModel.Email = updateUserRequestDTO.Email;
                 userModel.Prenom = updateUserRequestDTO.Prenom;
-                
-                if(updateUserRequestDTO.MotDePasse!=null && updateUserRequestDTO.MotDePasse!="") 
+
+                if (updateUserRequestDTO.MotDePasse != null && updateUserRequestDTO.MotDePasse != "")
                     userModel.PasswordHash = _passwordHasher.HashPassword(userModel, updateUserRequestDTO.MotDePasse);
                 var utilisateurUpdate = _utilisateurRepository.UpdateAsync(userModel);
                 serviceResponse.Success = true;
@@ -315,5 +326,79 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
+        private string CreateToken(Utilisateur user)
+        {
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!)
+            };
+
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(7),
+                SigningCredentials = creds,
+                Issuer = _config["JWT:Issuer"],
+                Audience = _config["JWT:Audience"]
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+        }
+        public async Task<ServiceResponse<LoginUserResponseDTO>> Login(LoginUserRequestDTO LoginUserRequestDTO)
+        {
+            var serviceResponse = new ServiceResponse<LoginUserResponseDTO>();
+
+            try
+            {
+
+                var user = await _utilisateurRepository.GetByMatriculeAsync(LoginUserRequestDTO.MatriculeSopal);
+                if (user != null)
+                {
+                    var passwordCheck = await _signinManager.CheckPasswordSignInAsync(user, LoginUserRequestDTO.Password, false);
+                    if (passwordCheck != null)
+                    {
+                        var userRoles = await _utilisateurRepository.GetUtilisateurRoles(user);
+                        var role = userRoles[0];
+                        serviceResponse.Success = true;
+                        serviceResponse.Message = "Utilisateur Ajoutée!";
+                        serviceResponse.Data = new LoginUserResponseDTO
+                        {
+                            MatriculeSopal = LoginUserRequestDTO.MatriculeSopal,
+                            Role = role,
+                            Token = CreateToken(user)
+                        };
+                        return serviceResponse;
+                    }
+                    else
+                    {
+                        serviceResponse.Success = false;
+                        serviceResponse.Message = "Mot de passe incorrecte!";
+                        return serviceResponse;
+                    }
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Matricule introuvable";
+                    return serviceResponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+
+        }
+
     }
 }
