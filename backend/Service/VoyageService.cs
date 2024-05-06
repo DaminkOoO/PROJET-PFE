@@ -47,14 +47,8 @@ namespace backend.Service
             return voyages.Count == 0;
         }
 
-        public void PrintQueue()
-        {
-            foreach (var voyage in voyages)
-            {
-                Console.WriteLine($"Voyage ID: {voyage.IdVoyage}, Priorite: {voyage.Priorite}");
-            }
-        }
-        public static decimal CalculateDistance(decimal lat1, decimal lon1, decimal lat2, decimal lon2)
+       
+        public decimal CalculateDistance(decimal lat1, decimal lon1, decimal lat2, decimal lon2)
         {
             const decimal R = 6371; // Radius of the Earth in kilometers
 
@@ -70,5 +64,6 @@ namespace backend.Service
             decimal distance = R * c;
             return distance;
         }
+
     }
 }
