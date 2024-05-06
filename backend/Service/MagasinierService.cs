@@ -34,20 +34,20 @@ namespace backend.Service
             // }
             try
             {
-                // var utilisateur = await _utilisateurService.GetByMatriculeAsync(registerUserRequestDTO.MatriculeSopal);
-                // if (!utilisateur.Success)
-                // {
-                //     serviceResponse.Success = false;
-                //     serviceResponse.Message = "Utilisateur déja existant!";
-                //     return serviceResponse;
-                // }
+                var utilisateur = await _utilisateurService.GetByMatriculeAsync(registerUserRequestDTO.MatriculeSopal);
+                if (utilisateur.Success)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Utilisateur déja existant!";
+                    return serviceResponse;
+                }
                 var user = await _utilisateurService.CreateUtilisateur(registerUserRequestDTO);
                 if (user.Success)
                 {
                     await _magasinierRepository.CreateAsync(new Magasinier
                     {
                         MatriculeSopal = registerUserRequestDTO.MatriculeSopal,
-                        EntrepotId = "test",
+                        EntrepotId = registerUserRequestDTO.EntrepotId,
 
                     });
                     serviceResponse.Data = new MagasinierDTO

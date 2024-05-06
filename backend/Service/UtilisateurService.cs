@@ -326,13 +326,15 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
-        private string CreateToken(Utilisateur user)
+        private string CreateToken(Utilisateur user,string role)
         {
 
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!)
+                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!),
+                new Claim("role", role)
+
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
@@ -372,8 +374,7 @@ namespace backend.Service
                         serviceResponse.Data = new LoginUserResponseDTO
                         {
                             MatriculeSopal = LoginUserRequestDTO.MatriculeSopal,
-                            Role = role,
-                            Token = CreateToken(user)
+                            Token = CreateToken(user,role)
                         };
                         return serviceResponse;
                     }

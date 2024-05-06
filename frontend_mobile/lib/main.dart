@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/pages/list_voyage.dart';
 import 'package:frontend_mobile/pages/voyage_info.dart';
+import 'package:frontend_mobile/pages/login_page.dart';
 
 void main() {
   runApp(const MainPage());
@@ -18,7 +19,7 @@ class MainPage extends StatelessWidget {
       routes: {
         '/listevoyage': (context) => ListVoyage(),
       },
-      home: VoyageInfoPage(),
+      home: LoginPage(),
     );
   }
 }

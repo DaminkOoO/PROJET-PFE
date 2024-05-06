@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using backend.Dtos.EntrepotDTOs;
 using backend.Helpers;
 using backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
     [ApiController]
     [Route("api/Entrepot")]
+    [Authorize]
+
     public class EntropotController : ControllerBase
     {
         private readonly IEntrepotService _entrepotService;
@@ -19,12 +22,15 @@ namespace backend.Controllers
             _entrepotService = entrepotService;
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<List<EntrepotDTO>?>> GetAllAsync([FromQuery] QueryObject queryObject)
         {
             var entrepots = await _entrepotService.GetAllAsync(queryObject);
             return Ok(entrepots);
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EntrepotDTO?>> GetById([FromRoute] string id)
         {
             if (!ModelState.IsValid)
@@ -39,6 +45,7 @@ namespace backend.Controllers
             return Ok(entrepot);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EntrepotDTO>> CreateEntrepot([FromBody] RegisterEntrepotDTO registerEntrepotRequestDTO)
         {
             if (!ModelState.IsValid)
@@ -51,6 +58,7 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newEntrepot.Data!.Id }, newEntrepot.Data);
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EntrepotDTO>> UpdateEntrepot([FromRoute] string id, [FromBody] UpdateEntrepotRequestDTO updateEntrepotRequestDTO)
         {
             if (!ModelState.IsValid)
@@ -65,6 +73,7 @@ namespace backend.Controllers
             return Ok(updatedEntrepot);
         }
         [HttpDelete("{matricule}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteEntrepot([FromRoute] string matricule)
         {
             if (!ModelState.IsValid)

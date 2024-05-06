@@ -51,25 +51,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2b59b72f-4d77-42f8-8300-64f9f740df22",
+                            Id = "7e78c579-ccbf-4097-832c-775525d17014",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "af0d3c84-0ee3-45ed-9643-cb9ca7cae752",
+                            Id = "22b12c2e-7062-479b-8568-fcb69738a1a5",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "ec99a865-6064-4370-a772-221096a9f2fa",
+                            Id = "afcb2d30-93f6-4ad5-b08a-ca1e8e60261e",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "4e69ed89-7690-4a3e-8fe2-2c04eeb7d710",
+                            Id = "1a4ced6e-1247-4ddb-a580-24d9cdf501c9",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -341,7 +341,7 @@ namespace backend.Migrations
                     b.Property<bool>("ExterneDuService")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LocalisationId")
+                    b.Property<int?>("LocalisationId")
                         .HasColumnType("int");
 
                     b.Property<string>("VehiculeMatricule")
@@ -350,7 +350,8 @@ namespace backend.Migrations
                     b.HasKey("UserId");
 
                     b.HasIndex("LocalisationId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[LocalisationId] IS NOT NULL");
 
                     b.HasIndex("VehiculeMatricule");
 
@@ -459,6 +460,9 @@ namespace backend.Migrations
                     b.Property<string>("MagasinierMatriculeSopal")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Priorite")
+                        .HasColumnType("decimal(20, 17)");
 
                     b.Property<int>("TypeVoyageId")
                         .HasColumnType("int");
@@ -578,9 +582,7 @@ namespace backend.Migrations
                 {
                     b.HasOne("backend.Models.Localisation", "Localisation")
                         .WithOne("Transporteur")
-                        .HasForeignKey("backend.Models.Transporteur", "LocalisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("backend.Models.Transporteur", "LocalisationId");
 
                     b.HasOne("backend.Models.Utilisateur", "Utilisateur")
                         .WithOne()

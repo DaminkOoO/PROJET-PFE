@@ -13,6 +13,7 @@ using backend.Models;
 using backend.Repository;
 using backend.Response;
 using backend.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace backend.Controllers
 {
     [Route("api/user")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UtilisateurController : ControllerBase
     {
         private readonly IUtilisateurService _utilisateurService;
@@ -41,6 +43,7 @@ namespace backend.Controllers
             _transporteurService = transporteurService;
             _vehiculeService = vehiculeService;
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequestDTO RegisterDTO)
         {
@@ -96,13 +99,14 @@ namespace backend.Controllers
                 return BadRequest(e);
             }
         }
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserRequestDTO LoginDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var isLogged = await _utilisateurService.Login(LoginDTO);
-            return isLogged.Success?Ok(isLogged.Data):Unauthorized(isLogged.Message);
+            return isLogged.Success ? Ok(isLogged.Data) : Unauthorized(isLogged.Message);
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
