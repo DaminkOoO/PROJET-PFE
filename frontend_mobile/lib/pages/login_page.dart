@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:frontend_mobile/components/input.dart';
+import 'package:frontend_mobile/service/utilisateur_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -95,8 +96,10 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             onPressed: () async {
-                              Navigator.popAndPushNamed(
-                                  context, '/listevoyage');
+                              var isLogged = login(
+                                  _nomUtilisateurController.text,
+                                  _motDePasseController.text);
+                                
                             },
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
