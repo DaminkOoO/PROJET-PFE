@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Dtos.LocalisationDTO;
 using backend.Dtos.TransporteurDTOs;
 using backend.Dtos.User;
 using backend.Helpers;
@@ -16,11 +17,13 @@ namespace backend.Service
     {
         private readonly ITransporteurRepo _transporteurRepository;
         private readonly IUtilisateurService _utilisateurService;
+        private readonly ILocalisationRepo _localisationRepo;
 
-        public TransporteurService(ITransporteurRepo transporteurRepository, IUtilisateurService utilisateurService)
+        public TransporteurService(ITransporteurRepo transporteurRepository, IUtilisateurService utilisateurService, ILocalisationRepo localisationRepo)
         {
             _transporteurRepository = transporteurRepository;
             _utilisateurService = utilisateurService;
+            _localisationRepo = localisationRepo;
         }
         public async Task<ServiceResponse<TransporteurDTO>> CreateTransporteur(RegisterUserRequestDTO registerUserRequestDTO)
         {
@@ -123,7 +126,32 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
+        public async Task<ServiceResponse<LocalisationDTO>> UpdatePostion(string matricule,LocalisationDTO localisationDTO)
+        {
+            ServiceResponse<LocalisationDTO> serviceResponse = new ServiceResponse<LocalisationDTO>();
+            try
+            {
+                var transporteur = await _transporteurRepository.GetByIdAsync(localisationDTO.TransporteurId);
+                var Localisation = await _localisationRepo.CreateAsync(new Localisation{
+                    Lattitude = localisationDTO.Lattitude,
+                    Longitude= localisationDTO.Longitude,
+                    Date = DateTime.Now,
+                    Transporteur = transporteur!,
+                });
+                var positionUpdate = await _transporteurRepository.UpdatePostion(matricule,Localisation);
+                serviceResponse.Data = localisationDTO;
+                serviceResponse.Success = true;
+                serviceResponse.Message = $"Opération effectuer avec succèes!!";
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
 
+        }
         public async Task<ServiceResponse<List<TransporteurDTO>?>> GetAllAsync(QueryObject TransporteurQueryObject)
         {
             var serviceResponse = new ServiceResponse<List<TransporteurDTO>?>();

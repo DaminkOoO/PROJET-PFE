@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Dtos.LocalisationDTO;
 using backend.Dtos.TransporteurDTOs;
 using backend.Dtos.User;
 using backend.Helpers;
@@ -16,5 +17,6 @@ namespace backend.Interfaces
         Task<ServiceResponse<TransporteurDTO>> CreateTransporteur(RegisterUserRequestDTO registerUserRequestDTO);
         Task<ServiceResponse<TransporteurDTO?>> UpdateTransporteur(UpdateUserRequestDTO updateUserRequestDTO, string matricule);
         Task<ServiceResponse<bool>> DeleteTransporteur(string matricule);
+        Task<ServiceResponse<LocalisationDTO>> UpdatePostion(string matricule,LocalisationDTO localisationDTO);
     }
 }

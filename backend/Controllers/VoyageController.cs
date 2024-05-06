@@ -17,10 +17,13 @@ namespace backend.Controllers
     public class VoyageController : ControllerBase
     {
         private readonly IEntrepotService _entrepotService;
-        public VoyageController(IEntrepotService entrepotService)
+        private readonly ITransporteurService _transporteurService;
+        public VoyageController(IEntrepotService entrepotService, ITransporteurService transporteurService)
         {
             _entrepotService = entrepotService;
+            _transporteurService = transporteurService;
         }
+        
 
 
 

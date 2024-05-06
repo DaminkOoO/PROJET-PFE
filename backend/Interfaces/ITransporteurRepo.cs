@@ -16,5 +16,6 @@ namespace backend.Interfaces
         Task<Transporteur> CreateAsync(Transporteur TransporteurModel);
         Task<Transporteur?> UpdateAsync(string matricule, UpdateUserRequestDTO TransporteurDto);
         Task<Transporteur?> DeleteAsync(string matricule);
+        Task<Transporteur?> UpdatePostion(string matricule, Localisation localisation);
     }
 }

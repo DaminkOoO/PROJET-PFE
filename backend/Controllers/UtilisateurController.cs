@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Dtos.DemandeurDTOs;
+using backend.Dtos.LocalisationDTO;
 using backend.Dtos.User;
 using backend.Dtos.UserDTOs;
 using backend.Dtos.VehiculeDTOs;
@@ -259,6 +260,12 @@ namespace backend.Controllers
             }
             return NotFound();
         }
-
+        [HttpPut]
+        [Route("transporteur/{matricule}")]
+        [Authorize(Roles = "Transporteur")]
+        public async Task<IActionResult> UpdateLocation([FromRoute] string matricule, [FromBody] LocalisationDTO localisationDTO){
+            var updated = await _transporteurService.UpdatePostion( matricule,localisationDTO);
+            return updated.Success ? Ok(updated.Data) : BadRequest(updated.Message);
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace backend.Data
         }
 
         public DbSet<Entrepot> Entrepot { get; set; }
+        public DbSet<Localisation> Localisation { get; set; }
         public DbSet<Magasinier> Magasinier { get; set; }
         public DbSet<Transporteur> Transporteur { get; set; }
         //public DbSet<TransporteurVoyage> TransporteurVoyage { get; set; }

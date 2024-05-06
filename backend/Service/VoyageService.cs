@@ -18,10 +18,7 @@ namespace backend.Service
         {
             _localisationHub = hub;
         }
-        public async ServiceResponse<> UpdataLocalisation (LocalisationDTO localisation){
-            await _localisationHub.Clients.All.SendAsync("ReceiveLocalisation", localisation);
-
-        }
+        
         public void Enqueue(Voyage voyage)
         {
             voyages.Add(voyage);

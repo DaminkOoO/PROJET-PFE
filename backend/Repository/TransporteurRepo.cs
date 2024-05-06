@@ -42,7 +42,7 @@ namespace backend.Repository
 
         public async Task<List<Transporteur>> GetAllAsync(QueryObject queryObject)
         {
-            var transporteurs = _context.Transporteur.Include(t=>t.Vehicule).AsQueryable();
+            var transporteurs = _context.Transporteur.Include(t => t.Vehicule).AsQueryable();
             // if (!string.IsNullOrWhiteSpace(queryObject.Marque))
             // {
             //     transporteurs = transporteurs.Where(v => v.Marque == queryObject.Marque);
@@ -56,7 +56,7 @@ namespace backend.Repository
 
         public async Task<Transporteur?> GetByIdAsync(string matricule)
         {
-            return await _context.Transporteur.Include(t => t.Vehicule).FirstOrDefaultAsync(t => t.UserId==matricule);
+            return await _context.Transporteur.Include(t => t.Vehicule).FirstOrDefaultAsync(t => t.UserId == matricule);
         }
 
         public async Task<Transporteur?> UpdateAsync(string matricule, UpdateUserRequestDTO TransporteurDto)
@@ -69,6 +69,20 @@ namespace backend.Repository
             }
             existingTransporteur.ExterneDuService = TransporteurDto.ExterneDuService;
             existingTransporteur.VehiculeMatricule = TransporteurDto.VehiculeId;
+            _context.Transporteur.Update(existingTransporteur);
+            await _context.SaveChangesAsync();
+            return existingTransporteur;
+        }
+
+        public async Task<Transporteur?> UpdatePostion(string matricule, Localisation localisation)
+        {
+            var existingTransporteur = await _context.Transporteur.FindAsync(matricule);
+
+            if (existingTransporteur == null)
+            {
+                return existingTransporteur;
+            }
+            existingTransporteur.LocalisationId = localisation.Id;
             _context.Transporteur.Update(existingTransporteur);
             await _context.SaveChangesAsync();
             return existingTransporteur;

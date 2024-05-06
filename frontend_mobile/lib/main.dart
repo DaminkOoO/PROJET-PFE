@@ -19,7 +19,7 @@ class MainPage extends StatelessWidget {
       routes: {
         '/listevoyage': (context) => ListVoyage(),
       },
-      home: LoginPage(),
+      home: ,
     );
   }
 }
