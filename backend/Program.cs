@@ -1,9 +1,11 @@
 
 using backend.Data;
+
 using backend.Interfaces;
 using backend.Models;
 using backend.Repository;
 using backend.Service;
+using Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +15,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-
+builder.Services.AddSignalR();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -117,8 +119,10 @@ app.UseCors(builder => builder
 .AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseAuthentication();
+
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<LocalisationHub>("/LocalisationHub");
 app.Run();
 
 

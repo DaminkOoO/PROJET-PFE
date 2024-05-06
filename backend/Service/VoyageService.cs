@@ -3,13 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
+using backend.Response;
+using Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace backend.Service
 {
     public class VoyageService
     {
-        private List<Voyage> voyages = new List<Voyage>();
 
+        private List<Voyage> voyages = new List<Voyage>();
+        private IHubContext<LocalisationHub> _localisationHub;
+        public VoyageService(IHubContext<LocalisationHub> hub)
+        {
+            _localisationHub = hub;
+        }
+        public async ServiceResponse<> UpdataLocalisation (LocalisationDTO localisation){
+            await _localisationHub.Clients.All.SendAsync("ReceiveLocalisation", localisation);
+
+        }
         public void Enqueue(Voyage voyage)
         {
             voyages.Add(voyage);
@@ -47,10 +59,10 @@ namespace backend.Service
             return voyages.Count == 0;
         }
 
-       
+
         public decimal CalculateDistance(decimal lat1, decimal lon1, decimal lat2, decimal lon2)
         {
-            const decimal R = 6371; // Radius of the Earth in kilometers
+            const decimal R = 6371;
 
             decimal dLat = (lat2 - lat1) * (decimal)Math.PI / 180;
             decimal dLon = (lon2 - lon1) * (decimal)Math.PI / 180;
@@ -64,6 +76,7 @@ namespace backend.Service
             decimal distance = R * c;
             return distance;
         }
+
 
     }
 }

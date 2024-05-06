@@ -147,3 +147,4 @@ D:\Projet PFE\code\backend\obj\Debug\net8.0\refint\backend.dll
 D:\Projet PFE\code\backend\obj\Debug\net8.0\backend.pdb
 D:\Projet PFE\code\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\Projet PFE\code\backend\obj\Debug\net8.0\ref\backend.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
