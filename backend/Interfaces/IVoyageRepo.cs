@@ -8,11 +8,11 @@ namespace backend.Interfaces
 {
     public interface IVoyageRepo
     {
-        Voyage Create(Voyage voyage);
+        Task<Voyage> Create(Voyage voyage);
         Voyage GetVoyageById(int id);
-        List<Voyage> GetAll(string transporteurId, string magasinierId);
+        Task<List<Voyage>> GetAll(string? transporteurId, string? magasinierId, string? magasinierName);
         Voyage Update(Voyage voyage);
-        
+
 
     }
 }

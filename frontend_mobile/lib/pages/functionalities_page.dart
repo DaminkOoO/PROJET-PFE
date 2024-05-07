@@ -33,6 +33,7 @@ class _FunctionalitiesPageState extends State<FunctionalitiesPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.highlight_off)),
           IconButton(
               onPressed: () async {
                 const storage = FlutterSecureStorage();

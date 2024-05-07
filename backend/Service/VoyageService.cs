@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Dtos.VoyageDTOs;
+using backend.Interfaces;
+using backend.Mappers;
 using backend.Models;
 using backend.Response;
 using Hubs;
@@ -9,16 +12,24 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace backend.Service
 {
-    public class VoyageService
+    public class VoyageService : IVoyageService
     {
-
+        private readonly IVoyageRepo _voyageRepo;
+        private readonly ITypeVoyageRepo _typeVoyageRepo;
+        private readonly ITransporteurRepo _transporteurRepo;
+        private readonly IMagasinierRepo _magasinierRepo;
+        private readonly IDemandeurRepo _demandeurRepo;
         private List<Voyage> voyages = new List<Voyage>();
 
-        public VoyageService()
+        public VoyageService(IVoyageRepo voyageRepo, ITypeVoyageRepo typeVoyageRepo, ITransporteurRepo transporteurRepo, IMagasinierRepo magasinierRepo, IDemandeurRepo demandeurRepo)
         {
-            
+            _typeVoyageRepo = typeVoyageRepo;
+            _voyageRepo = voyageRepo;
+            _transporteurRepo = transporteurRepo;
+            _magasinierRepo = magasinierRepo;
+            _demandeurRepo = demandeurRepo;
         }
-        
+
         public void Enqueue(Voyage voyage)
         {
             voyages.Add(voyage);
@@ -51,7 +62,7 @@ namespace backend.Service
             }
         }
 
-        public bool IsEmpty()
+        private bool IsEmpty()
         {
             return voyages.Count == 0;
         }
@@ -74,6 +85,48 @@ namespace backend.Service
             return distance;
         }
 
+        public async Task<ServiceResponse<VoyageDTO>> CreateVoyage(VoyageDTO voyageDTO)
+        {
+            ServiceResponse<VoyageDTO> serviceResponse = new ServiceResponse<VoyageDTO>();
+            try
+            {
+                //TODO: find Transporteur by id from VoyageDTO and type Voyage By Nom;
+                var voyage = voyageDTO.ToVoyage();
+                voyage.MagasinierMatriculeSopal = voyageDTO.MagasinierMatriculeSopal;
+                voyage.Magasinier = await _magasinierRepo.GetByIdAsync(voyageDTO.MagasinierMatriculeSopal);
+                voyage.Transporteurs[0] = await _transporteurRepo.GetByIdAsync(voyageDTO.TransporteursId);
+                if (!voyageDTO.DemandeurMatriculeSopal.Equals(""))
+                {
+                    voyage.DemandeurMatriculeSopal = voyageDTO.DemandeurMatriculeSopal;
+                    voyage.Demandeur = await _demandeurRepo.GetByIdAsync(voyageDTO.DemandeurMatriculeSopal);
+                    voyage.Priorite = CalculateDistance(voyage.Demandeur!.Lattitude,
+                                        voyage.Demandeur!.Longitude,
+                                        voyage.Transporteurs[0].Localisation!.Lattitude,
+                                        voyage.Transporteurs[0].Localisation!.Longitude
+                                        );
+                }
+                voyage.Priorite = CalculateDistance(voyage.Magasinier!.Entrepot.Lattitude,
+                                    voyage.Magasinier.Entrepot.Longitude,
+                                    voyage.Transporteurs[0].Localisation!.Lattitude,
+                                    voyage.Transporteurs[0].Localisation!.Longitude);
+                var createVoyage = await _voyageRepo.Create(voyage);
 
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Une erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+
+        public Task<ServiceResponse<List<VoyageDTO>>> GetAllVoyages(string? transporteurId, string? magasinierId, string? demandeurId)
+        {
+            //TODO: populate the list if it's null or empty 
+
+
+            throw new NotImplementedException();
+        }
     }
 }

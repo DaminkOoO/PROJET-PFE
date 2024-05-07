@@ -42,7 +42,7 @@ namespace backend.Repository
 
         public async Task<List<Demandeur>> GetAllAsync(QueryObject queryObject)
         {
-            var demandeurs = _context.Demandeur.AsQueryable();
+            var demandeurs = _context.Demandeur.Include(d => d.Utilisateur).AsQueryable();
 
             // if (!string.IsNullOrWhiteSpace(queryObject.Marque))
             // {
@@ -58,7 +58,7 @@ namespace backend.Repository
 
         public async Task<Demandeur?> GetByIdAsync(string matricule)
         {
-            return await _context.Demandeur.FindAsync(matricule);
+            return await _context.Demandeur.Include(d => d.Utilisateur).FirstOrDefaultAsync(d => d.UserId == matricule);
         }
 
         public async Task<Demandeur?> UpdateAsync(string matricule, UpdateUserRequestDTO DemandeurDto)
@@ -71,7 +71,7 @@ namespace backend.Repository
             }
             existingDemandeur.Longitude = DemandeurDto.Longitude;
             existingDemandeur.Lattitude = DemandeurDto.Lattitude;
-            existingDemandeur.IsMagasinier = DemandeurDto.Role=="Magasinier";
+            existingDemandeur.IsMagasinier = DemandeurDto.Role == "Magasinier";
             await _context.SaveChangesAsync();
             return existingDemandeur;
         }

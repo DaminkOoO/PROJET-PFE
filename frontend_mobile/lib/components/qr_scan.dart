@@ -25,6 +25,7 @@ class _QrScanState extends State<QrScan> {
                 setState(() {
                   qrCodeResult = codeScanner.rawContent;
                 });
+                //TODO: Get When the the qr is scanned.
                 print(codeScanner);
               },
             ),

@@ -94,6 +94,9 @@ builder.Services.AddScoped<IDemandeurRepo, DemandeurRepo>();
 builder.Services.AddScoped<IMagasinierRepo, MagasinierRepo>();
 builder.Services.AddScoped<ITransporteurRepo, TransporteurRepo>();
 builder.Services.AddScoped<ILocalisationRepo, LocalisationRepo>();
+builder.Services.AddScoped<IVoyageRepo, VoyageRepo>();
+builder.Services.AddScoped<ITypeVoyageRepo, TypeVoyageRepo>();
+
 /******* 
  * L'injection de dépendance pour la couche service 
  *******/
@@ -104,6 +107,7 @@ builder.Services.AddScoped<IDemandeurService, DemandeurService>();
 builder.Services.AddScoped<IMagasinierService, MagasinierService>();
 builder.Services.AddScoped<ITransporteurService, TransporteurService>();
 builder.Services.AddScoped<IVehiculeService, VehiculeService>();
+builder.Services.AddScoped<IVoyageService, VoyageService>();
 
 
 

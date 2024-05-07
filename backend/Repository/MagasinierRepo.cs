@@ -42,7 +42,7 @@ namespace backend.Repository
 
         public async Task<List<Magasinier>> GetAllAsync(QueryObject queryObject)
         {
-           var magasiniers = _context.Magasinier.AsQueryable();
+            var magasiniers = _context.Magasinier.Include(m => m.Utilisateur).Include(m => m.Entrepot).AsQueryable();
             // if (!string.IsNullOrWhiteSpace(queryObject.Marque))
             // {
             //     magasiniers = magasiniers.Where(v => v.Marque == queryObject.Marque);
@@ -56,7 +56,7 @@ namespace backend.Repository
 
         public async Task<Magasinier?> GetByIdAsync(string matricule)
         {
-            return await _context.Magasinier.FirstOrDefaultAsync(i => i.MatriculeSopal == matricule);
+            return await _context.Magasinier.Include(m => m.Utilisateur).Include(m => m.Entrepot).FirstOrDefaultAsync(i => i.MatriculeSopal == matricule);
 
         }
 

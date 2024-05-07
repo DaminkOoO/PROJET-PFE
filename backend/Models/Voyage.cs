@@ -25,7 +25,6 @@ namespace backend.Models
         public TypeVoyage TypeVoyage { get; set; } = null!;
         public int TypeVoyageId { get; set; }
         public List<Transporteur> Transporteurs { get; } = [];
-
-        //public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
+        public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
     }
 }

@@ -29,6 +29,7 @@ namespace backend.Data
         public DbSet<Vehicule> Vehicule { get; set; }
         public DbSet<TypeVoyage> TypeVoyage { get; set; }
         public DbSet<Voyage> Voyage { get; set; }
+        public DbSet<TypeVoyage> TypeVoyages {get; set;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
