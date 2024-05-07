@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:frontend_mobile/pages/list_voyage.dart';
+import 'package:frontend_mobile/components/list_voyage.dart';
+import 'package:frontend_mobile/pages/functionalities_page.dart';
 import 'package:frontend_mobile/pages/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -24,9 +25,10 @@ class MainPage extends StatelessWidget {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               routes: {
-                '/listevoyage': (context) => ListVoyage(),
+                '/functions': (context) => FunctionalitiesPage(),
+                '/login': (context) => LoginPage(),
               },
-              home: snapshot.data! ? ListVoyage() : LoginPage(),
+              home: snapshot.data! ? FunctionalitiesPage() : LoginPage(),
             );
           } else {
             // Handle error if isLoggedIn function fails

@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                                   if (connect.statusCode == 200) {
                                     // Navigate to the next screen (e.g., home screen)
                                     Navigator.pushReplacementNamed(
-                                        context, '/listevoyage');
+                                        context, '/functions');
                                   } else {
                                     // If the server returns an error, show an error message
                                     showDialog(
