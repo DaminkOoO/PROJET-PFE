@@ -24,6 +24,9 @@ class MainPage extends StatelessWidget {
           if (snapshot.hasData) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                  primarySwatch: Colors.blue //Color.fromRGBO(14, 61, 93, 1.0)
+                  ),
               routes: {
                 '/functions': (context) => FunctionalitiesPage(),
                 '/login': (context) => LoginPage(),

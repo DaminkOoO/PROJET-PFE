@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend_mobile/components/list_voyage.dart';
+import 'package:frontend_mobile/components/qr_scan.dart';
+import 'package:frontend_mobile/pages/voyage_info.dart';
 
 class FunctionalitiesPage extends StatefulWidget {
   const FunctionalitiesPage({super.key});
@@ -18,7 +20,8 @@ class _FunctionalitiesPageState extends State<FunctionalitiesPage> {
   }
 
   final _pageList = [
-    ListVoyage(),
+    const ListVoyage(),
+    const QrScan(),
   ];
   @override
   void initState() {
