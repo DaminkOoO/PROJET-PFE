@@ -13,10 +13,10 @@ namespace backend.Service
     {
 
         private List<Voyage> voyages = new List<Voyage>();
-        private IHubContext<LocalisationHub> _localisationHub;
-        public VoyageService(IHubContext<LocalisationHub> hub)
+
+        public VoyageService()
         {
-            _localisationHub = hub;
+            
         }
         
         public void Enqueue(Voyage voyage)
