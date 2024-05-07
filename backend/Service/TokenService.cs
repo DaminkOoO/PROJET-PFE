@@ -22,13 +22,16 @@ namespace backend.Service
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]!));
         }
-        public string CreateToken(Utilisateur utilisateur)
+        public string CreateToken(Utilisateur utilisateur, string role)
         {
             if (utilisateur != null)
             {
                 var claims = new List<Claim>{
                 new Claim(JwtRegisteredClaimNames.Email, utilisateur.Email!),
-                new Claim(JwtRegisteredClaimNames.GivenName, utilisateur.UserName!),};
+                new Claim(JwtRegisteredClaimNames.GivenName, utilisateur.UserName!),
+                new Claim("UserId", utilisateur.Id),
+                new Claim("Role", role ),
+                };
 
                 var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
