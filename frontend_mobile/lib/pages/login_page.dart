@@ -96,26 +96,20 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             onPressed: () async {
-                              
                               var connect = await login(
                                 _nomUtilisateurController.text,
                                 _motDePasseController.text,
                               );
 
                               if (context.mounted) {
-                                if (connect?.statusCode == 200) {
-                                  // Navigate to the next screen (e.g., home screen)
-                                  Navigator.pushReplacementNamed(
-                                      context, '/listevoyage');
-                                } else {
-                                  // If the server returns an error, show an error message
+                                if (connect == null) {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text('Login Failed'),
+                                        title: Text('Erreur'),
                                         content: Text(
-                                            'Nom d\'utilisateur ou mot de passe incorrect'),
+                                            'Probléme au niveau du serveur!'),
                                         actions: <Widget>[
                                           TextButton(
                                             child: Text('OK'),
@@ -127,6 +121,33 @@ class _LoginPageState extends State<LoginPage> {
                                       );
                                     },
                                   );
+                                } else {
+                                  if (connect.statusCode == 200) {
+                                    // Navigate to the next screen (e.g., home screen)
+                                    Navigator.pushReplacementNamed(
+                                        context, '/listevoyage');
+                                  } else {
+                                    // If the server returns an error, show an error message
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                              'Impossible de se connecter'),
+                                          content: Text(
+                                              'Nom d\'utilisateur ou mot de passe incorrect'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 }
                               }
                             },
