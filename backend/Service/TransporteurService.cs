@@ -126,19 +126,20 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
-        public async Task<ServiceResponse<LocalisationDTO>> UpdatePostion(string matricule,LocalisationDTO localisationDTO)
+        public async Task<ServiceResponse<LocalisationDTO>> UpdatePostion(string matricule, LocalisationDTO localisationDTO)
         {
             ServiceResponse<LocalisationDTO> serviceResponse = new ServiceResponse<LocalisationDTO>();
             try
             {
-                var transporteur = await _transporteurRepository.GetByIdAsync(localisationDTO.TransporteurId);
-                var Localisation = await _localisationRepo.CreateAsync(new Localisation{
+                var transporteur = await _transporteurRepository.GetByIdAsync(matricule);
+                var Localisation = await _localisationRepo.CreateAsync(new Localisation
+                {
                     Lattitude = localisationDTO.Lattitude,
-                    Longitude= localisationDTO.Longitude,
+                    Longitude = localisationDTO.Longitude,
                     Date = DateTime.Now,
                     Transporteur = transporteur!,
                 });
-                var positionUpdate = await _transporteurRepository.UpdatePostion(matricule,Localisation);
+                var positionUpdate = await _transporteurRepository.UpdatePostion(matricule, Localisation);
                 serviceResponse.Data = localisationDTO;
                 serviceResponse.Success = true;
                 serviceResponse.Message = $"Opération effectuer avec succèes!!";

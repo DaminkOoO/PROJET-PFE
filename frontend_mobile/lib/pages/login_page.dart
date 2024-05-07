@@ -96,10 +96,39 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             onPressed: () async {
-                              var isLogged = login(
-                                  _nomUtilisateurController.text,
-                                  _motDePasseController.text);
-                                
+                              
+                              var connect = await login(
+                                _nomUtilisateurController.text,
+                                _motDePasseController.text,
+                              );
+
+                              if (context.mounted) {
+                                if (connect?.statusCode == 200) {
+                                  // Navigate to the next screen (e.g., home screen)
+                                  Navigator.pushReplacementNamed(
+                                      context, '/listevoyage');
+                                } else {
+                                  // If the server returns an error, show an error message
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Login Failed'),
+                                        content: Text(
+                                            'Nom d\'utilisateur ou mot de passe incorrect'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              }
                             },
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,

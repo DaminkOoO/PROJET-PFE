@@ -44,7 +44,7 @@ namespace backend.Controllers
             _transporteurService = transporteurService;
             _vehiculeService = vehiculeService;
         }
-
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequestDTO RegisterDTO)
         {
@@ -263,8 +263,9 @@ namespace backend.Controllers
         [HttpPut]
         [Route("transporteur/{matricule}")]
         [Authorize(Roles = "Transporteur")]
-        public async Task<IActionResult> UpdateLocation([FromRoute] string matricule, [FromBody] LocalisationDTO localisationDTO){
-            var updated = await _transporteurService.UpdatePostion( matricule,localisationDTO);
+        public async Task<IActionResult> UpdateLocation([FromRoute] string matricule, [FromBody] LocalisationDTO localisationDTO)
+        {
+            var updated = await _transporteurService.UpdatePostion(matricule, localisationDTO);
             return updated.Success ? Ok(updated.Data) : BadRequest(updated.Message);
         }
     }

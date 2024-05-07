@@ -21,7 +21,6 @@ class MainPage extends StatelessWidget {
           return CircularProgressIndicator();
         } else {
           if (snapshot.hasData) {
-            // Use the result of isLoggedIn function to decide which screen to display
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               routes: {
