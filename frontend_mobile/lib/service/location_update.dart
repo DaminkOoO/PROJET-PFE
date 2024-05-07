@@ -24,11 +24,11 @@ class LocationUpdater {
     try {
       var storage = const FlutterSecureStorage();
       var token = await storage.read(key: 'token');
-      var userId = JwtDecoder.decode(token!)['role'];
+      var userId = JwtDecoder.decode(token!)['UserId'];
       await http.post(Uri.parse('http://your-backend-api.com/location'), body: {
         'latitude': position.latitude.toString(),
         'longitude': position.longitude.toString(),
-        
+        'UserId': userId
       });
       print('Location update sent successfully');
     } catch (e) {
