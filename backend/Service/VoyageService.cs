@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Dtos.VoyageDTOs;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Mappers;
 using backend.Models;
@@ -84,33 +85,60 @@ namespace backend.Service
             decimal distance = R * c;
             return distance;
         }
+        private Transporteur GetClosestTransporteur(List<Transporteur> transporteurs, decimal lat, decimal lon)
+        {
+            Transporteur closest = new Transporteur();
+            decimal closestDistance = Decimal.MaxValue;
+
+            foreach (var transporteur in transporteurs)
+            {
+                decimal distance = CalculateDistance(lat, lon, transporteur.Localisation!.Lattitude, transporteur.Localisation.Longitude);
+                if (distance < closestDistance && transporteur.Active)
+                {
+                    closest = transporteur;
+                    closestDistance = distance;
+                }
+            }
+
+            return closest;
+        }
 
         public async Task<ServiceResponse<VoyageDTO>> CreateVoyage(VoyageDTO voyageDTO)
         {
             ServiceResponse<VoyageDTO> serviceResponse = new ServiceResponse<VoyageDTO>();
             try
             {
-                //TODO: find Transporteur by id from VoyageDTO and type Voyage By Nom;
                 var voyage = voyageDTO.ToVoyage();
-                voyage.MagasinierMatriculeSopal = voyageDTO.MagasinierMatriculeSopal;
-                voyage.Magasinier = await _magasinierRepo.GetByIdAsync(voyageDTO.MagasinierMatriculeSopal);
-                voyage.Transporteurs[0] = await _transporteurRepo.GetByIdAsync(voyageDTO.TransporteursId);
-                if (!voyageDTO.DemandeurMatriculeSopal.Equals(""))
-                {
-                    voyage.DemandeurMatriculeSopal = voyageDTO.DemandeurMatriculeSopal;
-                    voyage.Demandeur = await _demandeurRepo.GetByIdAsync(voyageDTO.DemandeurMatriculeSopal);
-                    voyage.Priorite = CalculateDistance(voyage.Demandeur!.Lattitude,
-                                        voyage.Demandeur!.Longitude,
-                                        voyage.Transporteurs[0].Localisation!.Lattitude,
-                                        voyage.Transporteurs[0].Localisation!.Longitude
-                                        );
-                }
-                voyage.Priorite = CalculateDistance(voyage.Magasinier!.Entrepot.Lattitude,
-                                    voyage.Magasinier.Entrepot.Longitude,
-                                    voyage.Transporteurs[0].Localisation!.Lattitude,
-                                    voyage.Transporteurs[0].Localisation!.Longitude);
-                var createVoyage = await _voyageRepo.Create(voyage);
 
+                // Assign Magasinier
+                voyage.Magasinier = await _magasinierRepo.GetByIdAsync(voyageDTO.MagasinierMatriculeSopal);
+                voyage.MagasinierMatriculeSopal = voyage.Magasinier.MatriculeSopal;
+
+                // Assign Demandeur if exists
+                if (!string.IsNullOrEmpty(voyageDTO.DemandeurMatriculeSopal))
+                {
+                    voyage.Demandeur = await _demandeurRepo.GetByIdAsync(voyageDTO.DemandeurMatriculeSopal);
+                    voyage.DemandeurMatriculeSopal = voyage.Demandeur.UserId;
+                }
+
+                // Get all Transporteurs
+                var transporteurs = await _transporteurRepo.GetAllAsync(new QueryObject());
+
+                // Assign closest Transporteur
+                var closestTransporteur = GetClosestTransporteur(transporteurs, voyage.Magasinier.Entrepot.Lattitude, voyage.Magasinier.Entrepot.Longitude);
+                voyage.Transporteurs[0] = closestTransporteur;
+
+                // Calculate and assign Priorite
+                decimal lat1 = voyage.Demandeur != null ? voyage.Demandeur.Lattitude : voyage.Magasinier.Entrepot.Lattitude;
+                decimal lon1 = voyage.Demandeur != null ? voyage.Demandeur.Longitude : voyage.Magasinier.Entrepot.Longitude;
+                voyage.Priorite = CalculateDistance(lat1, lon1, voyage.Transporteurs[0].Localisation.Lattitude, voyage.Transporteurs[0].Localisation.Longitude);
+
+                // Create Voyage
+                var createdVoyage = await _voyageRepo.Create(voyage);
+                Enqueue(createdVoyage);
+
+                // Prepare response
+                serviceResponse.Data = createdVoyage.ToVoyageDTO();
                 return serviceResponse;
             }
             catch (Exception ex)

@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend_mobile/components/list_voyage.dart';
 import 'package:frontend_mobile/components/qr_scan.dart';
 import 'package:frontend_mobile/pages/voyage_info.dart';
+import 'package:frontend_mobile/service/location_update.dart';
+import 'package:frontend_mobile/service/utilisateur_service.dart';
 
 class FunctionalitiesPage extends StatefulWidget {
   const FunctionalitiesPage({super.key});
@@ -26,6 +28,14 @@ class _FunctionalitiesPageState extends State<FunctionalitiesPage> {
   @override
   void initState() {
     super.initState();
+    initializeState();
+  }
+
+  Future<void> initializeState() async {
+    var tr = await isTransporteur();
+    if (tr) {
+      LocationUpdater.startLocationUpdates();
+    }
   }
 
   @override

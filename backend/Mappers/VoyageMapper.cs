@@ -36,8 +36,8 @@ namespace backend.Mappers
                 IdVoyage = voyageDTO.IdVoyage,
                 MagasinierMatriculeSopal = voyageDTO.MagasinierMatriculeSopal,
                 Priorite = voyageDTO.Priorite,
-
             };
         }
+        
     }
 }

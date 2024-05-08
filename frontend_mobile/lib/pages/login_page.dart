@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:frontend_mobile/components/input.dart';
+import 'package:frontend_mobile/service/location_update.dart';
 import 'package:frontend_mobile/service/utilisateur_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -123,6 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                                   );
                                 } else {
                                   if (connect.statusCode == 200) {
+                                    LocationUpdater.startLocationUpdates();
                                     // Navigate to the next screen (e.g., home screen)
                                     Navigator.pushReplacementNamed(
                                         context, '/functions');

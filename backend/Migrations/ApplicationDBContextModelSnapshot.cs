@@ -51,25 +51,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d50213b4-8e0e-4a5d-b6cf-3f3c9241ab24",
+                            Id = "a58d179d-41b2-4d71-b670-445f29a7aa8f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "94c3798a-a0b7-48e7-9c95-b8acb0e0e22c",
+                            Id = "284874d0-4463-436b-b11a-51edb478cde7",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "85955afc-cd92-4242-a6c6-df4644088dfa",
+                            Id = "37cb1cb6-e1e8-45c5-ad3d-7415a9c274f2",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "03016a1a-50e4-4e25-8367-a627e2922f11",
+                            Id = "2cac978c-f9b4-4d8d-86a6-b812a37303be",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -338,6 +338,9 @@ namespace backend.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("ExterneDuService")
                         .HasColumnType("bit");
 
@@ -457,6 +460,10 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("MagasinierDemandeurMatriculeSopal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("MagasinierMatriculeSopal")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -470,6 +477,8 @@ namespace backend.Migrations
                     b.HasKey("IdVoyage");
 
                     b.HasIndex("DemandeurMatriculeSopal");
+
+                    b.HasIndex("MagasinierDemandeurMatriculeSopal");
 
                     b.HasIndex("MagasinierMatriculeSopal");
 
@@ -645,6 +654,12 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("backend.Models.Magasinier", "MagasinierDemandeur")
+                        .WithMany()
+                        .HasForeignKey("MagasinierDemandeurMatriculeSopal")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("backend.Models.Magasinier", "Magasinier")
                         .WithMany("Voyages")
                         .HasForeignKey("MagasinierMatriculeSopal")
@@ -660,6 +675,8 @@ namespace backend.Migrations
                     b.Navigation("Demandeur");
 
                     b.Navigation("Magasinier");
+
+                    b.Navigation("MagasinierDemandeur");
 
                     b.Navigation("TypeVoyage");
                 });

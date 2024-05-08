@@ -26,8 +26,11 @@ namespace backend.Controllers
             _transporteurService = transporteurService;
             _voyageService = voyageService;
         }
+
         [HttpPost]
-        public async Task<ActionResult<VoyageDTO>> CreateVoyage([FromBody] VoyageDTO voyageDTO){
+        [Authorize(Roles = "Admin,Magasinier,Demandeur")]
+        public async Task<ActionResult<VoyageDTO>> CreateVoyage([FromBody] VoyageDTO voyageDTO)
+        {
             var voyage = await _voyageService.CreateVoyage(voyageDTO);
             return voyage.Success ? Ok(voyage.Data) : BadRequest(voyage.Message);
         }

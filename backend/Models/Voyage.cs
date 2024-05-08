@@ -20,6 +20,8 @@ namespace backend.Models
         public string DemandeurMatriculeSopal { get; set; } = string.Empty;
         [Column(TypeName = "decimal(20, 17)")]
         public decimal Priorite { get; set; }
+        public Magasinier MagasinierDemandeur { get; set; } = null!;
+        public string MagasinierDemandeurMatriculeSopal { get; set; } = string.Empty;
         public Magasinier Magasinier { get; set; } = null!;
         public string MagasinierMatriculeSopal { get; set; } = string.Empty;
         public TypeVoyage TypeVoyage { get; set; } = null!;

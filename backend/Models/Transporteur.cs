@@ -19,5 +19,6 @@ namespace backend.Models
         public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
         public Localisation? Localisation { get; set; } = null!;
         public int? LocalisationId { get; set; }
+        public bool Active {get;set;} = true;
     }
 }

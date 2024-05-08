@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:frontend_mobile/components/voyage_details.dart';
 
 class QrScan extends StatefulWidget {
   const QrScan({super.key});
@@ -25,8 +26,16 @@ class _QrScanState extends State<QrScan> {
                 setState(() {
                   qrCodeResult = codeScanner.rawContent;
                 });
-                //TODO: Get When the the qr is scanned.
                 print(codeScanner);
+
+                // Navigate to VoyageDetails page with qrCodeResult
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        VoyageDetails(qrCodeResult: qrCodeResult),
+                  ),
+                );
               },
             ),
           ],

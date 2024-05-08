@@ -326,14 +326,15 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
-        private string CreateToken(Utilisateur user,string role)
+        private string CreateToken(Utilisateur user, string role)
         {
 
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!),
-                new Claim("role", role)
+                new Claim("role", role),
+                new Claim("userId", user.Id)
 
             };
 
@@ -368,13 +369,14 @@ namespace backend.Service
                     if (passwordCheck != null)
                     {
                         var userRoles = await _utilisateurRepository.GetUtilisateurRoles(user);
-                        var role = userRoles[0];
+                        Console.WriteLine("****************************" + userRoles.Count);
+                        var role = userRoles[userRoles.Count - 1];
                         serviceResponse.Success = true;
                         serviceResponse.Message = "Utilisateur Ajoutée!";
                         serviceResponse.Data = new LoginUserResponseDTO
                         {
                             MatriculeSopal = LoginUserRequestDTO.MatriculeSopal,
-                            Token = CreateToken(user,role)
+                            Token = CreateToken(user, role)
                         };
                         return serviceResponse;
                     }

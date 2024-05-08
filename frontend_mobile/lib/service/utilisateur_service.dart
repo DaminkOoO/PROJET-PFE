@@ -2,11 +2,26 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decode/jwt_decode.dart';
+
+Future<bool> isLoggedIn() async {
+  const storage = FlutterSecureStorage();
+  String? token = await storage.read(key: 'token');
+  return token != null;
+}
+
+Future<bool> isTransporteur() async {
+  const storage = FlutterSecureStorage();
+  String? token = await storage.read(key: 'token');
+  Map<String, dynamic> decodedToken = Jwt.parseJwt(token!);
+
+  return decodedToken["role"] == "Transporteur";
+}
 
 Future<http.Response?> login(String matricule, String motPasse) async {
   try {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5052/api/user/login'),
+      Uri.parse('http://192.168.1.217:5000/api/user/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -17,7 +32,6 @@ Future<http.Response?> login(String matricule, String motPasse) async {
     );
 
     if (response.statusCode == 200) {
-
       final token = jsonDecode(response.body)['token'];
       print(token);
 

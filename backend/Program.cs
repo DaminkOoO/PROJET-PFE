@@ -7,6 +7,7 @@ using backend.Repository;
 using backend.Service;
 using Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -14,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseKestrel().UseUrls("http://*:5000") // Listen on all network interfaces
+    .UseContentRoot(Directory.GetCurrentDirectory()).UseIISIntegration();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 // Add services to the container.

@@ -8,7 +8,6 @@ namespace backend.Dtos.VoyageDTOs
 {
     public class VoyageDTO
     {
-
         public string IdVoyage { get; set; } = string.Empty;
         public DateTime DateSortieBon { get; set; }
         public DateTime DateDepartVoyage { get; set; }
