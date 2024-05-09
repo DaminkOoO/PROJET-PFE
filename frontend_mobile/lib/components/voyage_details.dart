@@ -23,9 +23,8 @@ class VoyageDetails extends StatelessWidget {
                 Text('Demandeur: ${voyage.demandeurMatriculeSopal}'),
                 Text('Priorite: ${voyage.priorite}'),
                 Text(
-                    'Magasinier Matricule Sopal: ${voyage.magasinierMatriculeSopal}'),
+                    'Entrepot: ${voyage.magasinierMatriculeSopal}'),
                 Text('Type Voyage: ${voyage.typeVoyage}'),
-                Text('Transporteurs ID: ${voyage.transporteursId}'),
                 Text('Poids: ${voyage.poids}')
               ],
             ),

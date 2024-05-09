@@ -35,7 +35,7 @@ class MainPage extends StatelessWidget {
               home: snapshot.data! ? FunctionalitiesPage() : LoginPage(),
             );
           } else {
-            // Handle error if isLoggedIn function fails 
+            // Handle error if isLoggedIn function fails
             return Text('Error: ${snapshot.error}');
           }
         }
@@ -43,5 +43,3 @@ class MainPage extends StatelessWidget {
     );
   }
 }
-
-

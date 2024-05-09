@@ -111,7 +111,7 @@ namespace backend.Service
                 var voyage = voyageDTO.ToVoyage();
 
                 // Assign Magasinier
-                voyage.Magasinier = await _magasinierRepo.GetByIdAsync(voyageDTO.MagasinierMatriculeSopal);
+                voyage.Magasinier = await _magasinierRepo.getby(voyageDTO.MagasinierMatriculeSopal);
                 voyage.MagasinierMatriculeSopal = voyage.Magasinier.MatriculeSopal;
 
                 // Assign Demandeur if exists

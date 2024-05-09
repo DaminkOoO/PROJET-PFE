@@ -84,33 +84,65 @@ class _LoginPageState extends State<LoginPage> {
                           height: 24,
                         ),
                         ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0.0,
-                              shadowColor: Colors.transparent,
-                              backgroundColor: Color.fromRGBO(14, 61, 93, 1.0),
-                              padding: const EdgeInsets.all(10),
-                              side: BorderSide(color: Colors.white),
-                              textStyle: const TextStyle(fontSize: 18),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                              ),
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0.0,
+                            shadowColor: Colors.transparent,
+                            backgroundColor: Color.fromRGBO(14, 61, 93, 1.0),
+                            padding: const EdgeInsets.all(10),
+                            side: BorderSide(color: Colors.white),
+                            textStyle: const TextStyle(fontSize: 18),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                             ),
-                            onPressed: () async {
-                              var connect = await login(
-                                _nomUtilisateurController.text,
-                                _motDePasseController.text,
-                              );
+                          ),
+                          onPressed: () async {
+                            var connect = await login(
+                              _nomUtilisateurController.text,
+                              _motDePasseController.text,
+                            );
 
-                              if (context.mounted) {
-                                if (connect == null) {
+                            if (context.mounted) {
+                              if (connect == null) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Erreur'),
+                                      content: Text(
+                                          'Probléme au niveau du serveur!'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                if (connect.statusCode == 200) {
+                                  if (await getInfoFromToken("role") ==
+                                      "Transporteur") {
+                                    LocationUpdater.startLocationUpdates();
+                                  }
+                                  // Navigate to the next screen (e.g., home screen)
+                                  if (context.mounted) {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/functions');
+                                  }
+                                } else {
+                                  // If the server returns an error, show an error message
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text('Erreur'),
+                                        title:
+                                            Text('Impossible de se connecter'),
                                         content: Text(
-                                            'Probléme au niveau du serveur!'),
+                                            'Nom d\'utilisateur ou mot de passe incorrect'),
                                         actions: <Widget>[
                                           TextButton(
                                             child: Text('OK'),
@@ -122,54 +154,28 @@ class _LoginPageState extends State<LoginPage> {
                                       );
                                     },
                                   );
-                                } else {
-                                  if (connect.statusCode == 200) {
-                                    LocationUpdater.startLocationUpdates();
-                                    // Navigate to the next screen (e.g., home screen)
-                                    Navigator.pushReplacementNamed(
-                                        context, '/functions');
-                                  } else {
-                                    // If the server returns an error, show an error message
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              'Impossible de se connecter'),
-                                          content: Text(
-                                              'Nom d\'utilisateur ou mot de passe incorrect'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: Text('OK'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  }
                                 }
                               }
-                            },
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.login,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "Se connecter",
-                                  style: TextStyle(color: Colors.white),
-                                )
-                              ],
-                            ))
+                            }
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.login,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Se connecter",
+                                style: TextStyle(color: Colors.white),
+                              )
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),

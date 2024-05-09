@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend_mobile/components/Voyage_details.dart';
+import 'package:frontend_mobile/service/utilisateur_service.dart';
 import 'package:frontend_mobile/service/voyage.dart'; // Import Voyage model
 
 class VoyageInfoPage extends StatefulWidget {
@@ -80,9 +83,93 @@ class _VoyageInfoPageState extends State<VoyageInfoPage> {
                           return "";
                         },
                         decoration: const InputDecoration(
-                          labelText: "4",
+                          labelText: "Nombre de palettes",
                           hintText: "Nombre de palettes",
-                          icon: Icon(Icons.phone_iphone),
+                          icon: Icon(Icons.aod_sharp),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0.0,
+                          shadowColor: Colors.transparent,
+                          backgroundColor:
+                              const Color.fromRGBO(14, 61, 93, 1.0),
+                          padding: const EdgeInsets.all(10),
+                          side: const BorderSide(color: Colors.white),
+                          textStyle: const TextStyle(fontSize: 18),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
+                        onPressed: () async {
+                          var connect = await Voyage.postVoyage(
+                              widget.voyageToDisplay,
+                              int.parse(_nbrePalettesController.text));
+
+                          if (context.mounted) {
+                            if (connect == null) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Erreur'),
+                                    content: const Text(
+                                        'Probléme au niveau du serveur!'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              if (connect.statusCode == 200) {
+                              } else {
+                                // If the server returns an error, show an error message
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Erreur'),
+                                      content: Text(connect.body),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('OK'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            }
+                          }
+                        },
+                        child: const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.login,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Valider",
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
                         ),
                       ),
                     ],

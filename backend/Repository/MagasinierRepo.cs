@@ -59,7 +59,11 @@ namespace backend.Repository
             return await _context.Magasinier.Include(m => m.Utilisateur).Include(m => m.Entrepot).FirstOrDefaultAsync(i => i.MatriculeSopal == matricule);
 
         }
+        public async Task<Magasinier?> GetByEntropotAsync(string entrepotId)
+        {
+            return await _context.Magasinier.Include(m => m.Utilisateur).Include(m => m.Entrepot).FirstOrDefaultAsync(i => i.EntrepotId == entrepotId);
 
+        }
         public async Task<Magasinier?> UpdateAsync(string matricule, UpdateUserRequestDTO MagasinierDto)
         {
             var existingMagasinier = await _context.Magasinier.FindAsync(matricule);
@@ -72,5 +76,6 @@ namespace backend.Repository
             await _context.SaveChangesAsync();
             return existingMagasinier;
         }
+
     }
 }

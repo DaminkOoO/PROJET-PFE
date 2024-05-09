@@ -26,7 +26,8 @@ class _QrScanState extends State<QrScan> {
             ElevatedButton(
               child: const Text("Scan"),
               onPressed: () async {
-                var codeScanner = await BarcodeScanner.scan(); //barcode scanner
+                var codeScanner = await BarcodeScanner.scan();
+                if (!mounted) return;
                 setState(() {
                   qrCodeResult = codeScanner.rawContent;
                 });
@@ -37,15 +38,17 @@ class _QrScanState extends State<QrScan> {
                   if (qrCodeResult.isEmpty) {
                     Navigator.pushNamed(context, "/functions");
                   } else {
-                    var v = Voyage.fromString(qrCodeResult);
+                    var v = await Voyage.fromString(qrCodeResult);
                     print("Is v==null $v");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            VoyageInfoPage(voyageToDisplay: v),
-                      ),
-                    );
+                    if (context.mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              VoyageInfoPage(voyageToDisplay: v),
+                        ),
+                      );
+                    }
                   }
                 }
               },
