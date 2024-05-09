@@ -14,9 +14,8 @@ namespace backend.Mappers
             var transporteur = voyage.Transporteurs[voyage.Transporteurs.Count - 1].UserId;
             return new VoyageDTO
             {
-                DateDepartVoyage = voyage.DateDepartVoyage,
+                MagasinierDemandeurMatriculeSopal = voyage.MagasinierDemandeurMatriculeSopal,
                 DateSortieBon = voyage.DateSortieBon,
-                DemandeurMatriculeSopal = voyage.DemandeurMatriculeSopal,
                 Etat = voyage.Etat,
                 IdVoyage = voyage.IdVoyage,
                 MagasinierMatriculeSopal = voyage.MagasinierMatriculeSopal,
@@ -34,6 +33,7 @@ namespace backend.Mappers
                 DateDepartVoyage = voyageDTO.DateDepartVoyage,
                 DateSortieBon = voyageDTO.DateSortieBon,
                 DemandeurMatriculeSopal = voyageDTO.DemandeurMatriculeSopal,
+                MagasinierDemandeurMatriculeSopal = voyageDTO.MagasinierDemandeurMatriculeSopal,
                 Etat = voyageDTO.Etat,
                 IdVoyage = voyageDTO.IdVoyage,
                 MagasinierMatriculeSopal = voyageDTO.MagasinierMatriculeSopal,

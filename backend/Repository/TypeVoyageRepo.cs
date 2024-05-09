@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
 {
-    public class TypeVoyageRepo:ITypeVoyageRepo
+    public class TypeVoyageRepo : ITypeVoyageRepo
     {
         private readonly ApplicationDBContext _context;
         public TypeVoyageRepo(ApplicationDBContext context)

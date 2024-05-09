@@ -19,6 +19,7 @@ namespace backend.Service
         private readonly IUtilisateurService _utilisateurService;
         private readonly ILocalisationRepo _localisationRepo;
 
+
         public TransporteurService(ITransporteurRepo transporteurRepository, IUtilisateurService utilisateurService, ILocalisationRepo localisationRepo)
         {
             _transporteurRepository = transporteurRepository;
@@ -43,13 +44,22 @@ namespace backend.Service
                 if (user.Success)
                 {
 
+                    var localisation = new Localisation
+                    {
+                        Date = DateTime.Now,
+                        Lattitude = 0,
+                        Longitude = 0,
+
+                    };
                     var transporteur = new Transporteur
                     {
                         UserId = registerUserRequestDTO.MatriculeSopal,
                         ExterneDuService = registerUserRequestDTO.ExterneDuService,
-                        VehiculeMatricule = registerUserRequestDTO.VehiculeId
+                        VehiculeMatricule = registerUserRequestDTO.VehiculeId,
+                        Localisation = localisation
                     };
                     Console.WriteLine(transporteur.VehiculeMatricule);
+
                     await _transporteurRepository.CreateAsync(transporteur);
                     serviceResponse.Data = new TransporteurDTO
                     {

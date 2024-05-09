@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:barcode_scan2/barcode_scan2.dart';
-import 'package:frontend_mobile/components/voyage_details.dart';
+
 import 'package:frontend_mobile/pages/voyage_info.dart';
 import 'package:frontend_mobile/service/voyage.dart';
 

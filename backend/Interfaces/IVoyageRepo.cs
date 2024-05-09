@@ -9,7 +9,7 @@ namespace backend.Interfaces
     public interface IVoyageRepo
     {
         Task<Voyage> Create(Voyage voyage);
-        Voyage GetVoyageById(int id);
+        Task<Voyage?> GetVoyageById(string id);
         Task<List<Voyage>> GetAll(string? transporteurId, string? magasinierId, string? magasinierName);
         Voyage Update(Voyage voyage);
 

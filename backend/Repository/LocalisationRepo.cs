@@ -17,9 +17,10 @@ namespace backend.Repository
         }
         public async Task<Localisation> CreateAsync(Localisation LocalisationModel)
         {
+
             await _context.Localisation.AddAsync(LocalisationModel);
             await _context.SaveChangesAsync();
-            Console.WriteLine(LocalisationModel);
+
             return LocalisationModel;
         }
     }

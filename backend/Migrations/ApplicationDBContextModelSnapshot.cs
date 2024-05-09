@@ -51,25 +51,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a58d179d-41b2-4d71-b670-445f29a7aa8f",
+                            Id = "df13f693-1460-4c1a-94c3-54caf01393a0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "284874d0-4463-436b-b11a-51edb478cde7",
+                            Id = "e7e72bf7-301d-4ffb-a96f-37125729bfa1",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "37cb1cb6-e1e8-45c5-ad3d-7415a9c274f2",
+                            Id = "fcdd6e01-7b47-4278-9a91-1fdc061d3f23",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "2cac978c-f9b4-4d8d-86a6-b812a37303be",
+                            Id = "f2e7971b-18eb-4e86-92fa-fbe1d4a18003",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -446,14 +446,13 @@ namespace backend.Migrations
                     b.Property<string>("IdVoyage")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("DateDepartVoyage")
+                    b.Property<DateTime?>("DateDepartVoyage")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateSortieBon")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DemandeurMatriculeSopal")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Etat")
@@ -461,15 +460,20 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MagasinierDemandeurMatriculeSopal")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MagasinierMatriculeSopal")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("NbrePalette")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Poids")
+                        .HasColumnType("float");
+
                     b.Property<decimal>("Priorite")
-                        .HasColumnType("decimal(20, 17)");
+                        .HasColumnType("decimal(30, 25)");
 
                     b.Property<int>("TypeVoyageId")
                         .HasColumnType("int");
@@ -651,14 +655,11 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Demandeur", "Demandeur")
                         .WithMany("Voyages")
                         .HasForeignKey("DemandeurMatriculeSopal")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("backend.Models.Magasinier", "MagasinierDemandeur")
                         .WithMany()
-                        .HasForeignKey("MagasinierDemandeurMatriculeSopal")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MagasinierDemandeurMatriculeSopal");
 
                     b.HasOne("backend.Models.Magasinier", "Magasinier")
                         .WithMany("Voyages")

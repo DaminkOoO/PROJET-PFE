@@ -17,8 +17,13 @@ namespace backend.Models
         public bool ExterneDuService { get; set; } = false;
         public List<Voyage> Voyages { get; } = [];
         public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
-        public Localisation? Localisation { get; set; } = null!;
+        public Localisation? Localisation { get; set; } = null;
         public int? LocalisationId { get; set; }
-        public bool Active {get;set;} = true;
+        public bool Active { get; set; } = true;
+
+        public static implicit operator string(Transporteur v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -40,23 +40,25 @@ class Voyage {
     try {
       const storage = FlutterSecureStorage();
       String? jwtToken = await storage.read(key: 'token');
+      var jsonBody = jsonEncode(<String, dynamic>{
+        "idVoyage": voyage.idVoyage,
+        "dateSortieBon": "2024-05-09T09:00:26.740Z",
+        "etat": "En attente du transporteur",
+        "demandeurMatriculeSopal": "",
+        "magasinierMatriculeSopal": voyage.magasinierMatriculeSopal,
+        "magasinierDemandeurMatriculeSopal": voyage.demandeurMatriculeSopal,
+        "typeVoyage": voyage.typeVoyage,
+        "poids": voyage.poids,
+        "nbrePalette": nbrePalettes
+      });
+      print(jsonBody);
       final response = await http.post(
-        Uri.parse('http://10.255.1.239:5000/api/voyage'),
+        Uri.parse('http://192.168.1.217:5000/api/voyage'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',
         },
-        body: jsonEncode(<String, dynamic>{
-          "idVoyage": voyage.idVoyage,
-          "dateSortieBon": "2024-05-09T09:00:26.740Z",
-          "etat": "En attente du transporteur",
-          "demandeurMatriculeSopal": voyage.demandeurMatriculeSopal,
-          "magasinierMatriculeSopal": voyage.magasinierMatriculeSopal,
-          "magasinierDemandeurMatriculeSopal": voyage.demandeurMatriculeSopal,
-          "typeVoyage": voyage.typeVoyage,
-          "poids": voyage.poids,
-          "nbrePalette": nbrePalettes
-        }),
+        body: jsonBody,
       );
 
       return response;

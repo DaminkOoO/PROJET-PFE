@@ -21,6 +21,12 @@ namespace backend.Repository
         }
         public async Task<Transporteur> CreateAsync(Transporteur TransporteurModel)
         {
+            TransporteurModel.Localisation = new Localisation
+            {
+                Date = DateTime.Now,
+                Lattitude = 0,
+                Longitude = 0,
+            };
             await _context.Transporteur.AddAsync(TransporteurModel);
             await _context.SaveChangesAsync();
             return TransporteurModel;
@@ -42,7 +48,7 @@ namespace backend.Repository
 
         public async Task<List<Transporteur>> GetAllAsync(QueryObject queryObject)
         {
-            var transporteurs = _context.Transporteur.Include(t => t.Vehicule).Include(t => t.Utilisateur).AsQueryable();
+            var transporteurs = _context.Transporteur.Include(t => t.Vehicule).Include(t => t.Localisation).Include(t => t.Utilisateur).AsQueryable();
             // if (!string.IsNullOrWhiteSpace(queryObject.Marque))
             // {
             //     transporteurs = transporteurs.Where(v => v.Marque == queryObject.Marque);
@@ -56,7 +62,14 @@ namespace backend.Repository
 
         public async Task<Transporteur?> GetByIdAsync(string matricule)
         {
-            return await _context.Transporteur.Include(t => t.Vehicule).Include(t => t.Utilisateur).FirstOrDefaultAsync(t => t.UserId == matricule);
+            return await _context.Transporteur.Include(t => t.Vehicule).Include(t => t.Localisation).Include(t => t.Utilisateur).FirstOrDefaultAsync(t => t.UserId == matricule);
+        }
+
+        public Task<List<Transporteur>> GetTransporteursDisponible()
+        {
+             var transporteurs = _context.Transporteur.Include(t => t.Vehicule).
+             Include(t => t.Localisation).Include(t => t.Utilisateur).Where(t=>t.Active );
+             return transporteurs.ToListAsync();
         }
 
         public async Task<Transporteur?> UpdateAsync(string matricule, UpdateUserRequestDTO TransporteurDto)

@@ -268,5 +268,6 @@ namespace backend.Controllers
             var updated = await _transporteurService.UpdatePostion(matricule, localisationDTO);
             return updated.Success ? Ok(updated.Data) : BadRequest(updated.Message);
         }
+
     }
 }

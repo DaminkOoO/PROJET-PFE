@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend_mobile/service/voyage.dart';
 
 class VoyageDetails extends StatelessWidget {
-  Voyage voyage;
+  final Voyage voyage;
 
-  VoyageDetails({super.key, required this.voyage});
+  const VoyageDetails({super.key, required this.voyage});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +22,7 @@ class VoyageDetails extends StatelessWidget {
                 Text('Etat: ${voyage.etat}'),
                 Text('Demandeur: ${voyage.demandeurMatriculeSopal}'),
                 Text('Priorite: ${voyage.priorite}'),
-                Text(
-                    'Entrepot: ${voyage.magasinierMatriculeSopal}'),
+                Text('Entrepot: ${voyage.magasinierMatriculeSopal}'),
                 Text('Type Voyage: ${voyage.typeVoyage}'),
                 Text('Poids: ${voyage.poids}')
               ],
