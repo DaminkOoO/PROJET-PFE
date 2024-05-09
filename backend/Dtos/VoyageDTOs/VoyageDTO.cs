@@ -16,6 +16,9 @@ namespace backend.Dtos.VoyageDTOs
         [Column(TypeName = "decimal(20, 17)")]
         public decimal Priorite { get; set; }
         public string MagasinierMatriculeSopal { get; set; } = string.Empty;
+        public string MagasinierDemandeurMatriculeSopal { get; set; } = string.Empty;
+        public double Poids { get; set; }
+        public int NbrePalette { get; set; }
         public string TypeVoyage { get; set; } = string.Empty;
         public string TransporteursId { get; set; } = string.Empty;
     }

@@ -1,7 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:frontend_mobile/components/voyage_details.dart';
+import 'package:frontend_mobile/pages/voyage_info.dart';
+import 'package:frontend_mobile/service/voyage.dart';
 
 class QrScan extends StatefulWidget {
   const QrScan({super.key});
@@ -28,14 +32,22 @@ class _QrScanState extends State<QrScan> {
                 });
                 print(codeScanner);
 
-                // Navigate to VoyageDetails page with qrCodeResult
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        VoyageDetails(qrCodeResult: qrCodeResult),
-                  ),
-                );
+                // TODO: focus on this tomorrow
+                if (context.mounted) {
+                  if (qrCodeResult.isEmpty) {
+                    Navigator.pushNamed(context, "/functions");
+                  } else {
+                    var v = Voyage.fromString(qrCodeResult);
+                    print("Is v==null $v");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            VoyageInfoPage(voyageToDisplay: v),
+                      ),
+                    );
+                  }
+                }
               },
             ),
           ],

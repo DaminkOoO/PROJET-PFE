@@ -41,7 +41,7 @@ namespace backend.Controllers
             var voyages = await _voyageService.GetAllVoyages(null, null, null);
             return voyages.Success ? Ok(voyages.Data) : BadRequest(voyages.Message);
         }
-        [HttpGet("GetVoyagesTranspoteur/{matricule}")]
+        [HttpGet("GetVoyagesTransporteur/{matricule}")]
         [Authorize(Roles = "Admin,Transporteur")]
         public async Task<ActionResult<List<VoyageDTO>>> GetAllVoyagesTransporteur([FromRoute] string matricule)
         {

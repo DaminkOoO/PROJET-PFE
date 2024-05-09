@@ -10,18 +10,19 @@ Future<bool> isLoggedIn() async {
   return token != null;
 }
 
-Future<bool> isTransporteur() async {
+Future<String> getInfoFromToken(String info) async {
   const storage = FlutterSecureStorage();
   String? token = await storage.read(key: 'token');
   Map<String, dynamic> decodedToken = Jwt.parseJwt(token!);
 
-  return decodedToken["role"] == "Transporteur";
+  return decodedToken[info];
 }
+
 
 Future<http.Response?> login(String matricule, String motPasse) async {
   try {
     final response = await http.post(
-      Uri.parse('http://192.168.1.217:5000/api/user/login'),
+      Uri.parse('http://10.255.1.239:5000/api/user/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

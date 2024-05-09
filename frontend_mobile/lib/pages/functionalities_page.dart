@@ -32,8 +32,8 @@ class _FunctionalitiesPageState extends State<FunctionalitiesPage> {
   }
 
   Future<void> initializeState() async {
-    var tr = await isTransporteur();
-    if (tr) {
+    var tr = await getInfoFromToken("role");
+    if (tr == "Transporteur") {
       LocationUpdater.startLocationUpdates();
     }
   }

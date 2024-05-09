@@ -23,6 +23,8 @@ namespace backend.Mappers
                 Priorite = voyage.Priorite,
                 TransporteursId = transporteur,
                 TypeVoyage = voyage.TypeVoyage.Libelle,
+                NbrePalette = voyage.NbrePalette,
+                Poids = voyage.Poids
             };
         }
         public static Voyage ToVoyage(this VoyageDTO voyageDTO)
@@ -36,8 +38,10 @@ namespace backend.Mappers
                 IdVoyage = voyageDTO.IdVoyage,
                 MagasinierMatriculeSopal = voyageDTO.MagasinierMatriculeSopal,
                 Priorite = voyageDTO.Priorite,
+                NbrePalette = voyageDTO.NbrePalette,
+                Poids = voyageDTO.Poids
             };
         }
-        
+
     }
 }

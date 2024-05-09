@@ -15,6 +15,9 @@ namespace backend.Models
         public DateTime DateDepartVoyage { get; set; }
 
         public string Etat { get; set; } = string.Empty;
+        public double Poids {get; set;}
+        public int NbrePalette {get; set;}
+    
         //Demandeur
         public Demandeur Demandeur { get; set; } = null!;
         public string DemandeurMatriculeSopal { get; set; } = string.Empty;

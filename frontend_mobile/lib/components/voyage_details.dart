@@ -1,87 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/service/voyage.dart';
 
 class VoyageDetails extends StatelessWidget {
-  const VoyageDetails({super.key});
+  Voyage voyage;
+
+  VoyageDetails({super.key, required this.voyage});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          "Identifiant du voyage:",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ListTile(
+            title: Text('ID Voyage: ${voyage.idVoyage}'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Date Sortie Bon: ${voyage.dateSortieBon}'),
+                Text('Date Depart Voyage: ${voyage.dateDepartVoyage}'),
+                Text('Etat: ${voyage.etat}'),
+                Text('Demandeur: ${voyage.demandeurMatriculeSopal}'),
+                Text('Priorite: ${voyage.priorite}'),
+                Text(
+                    'Magasinier Matricule Sopal: ${voyage.magasinierMatriculeSopal}'),
+                Text('Type Voyage: ${voyage.typeVoyage}'),
+                Text('Transporteurs ID: ${voyage.transporteursId}'),
+                Text('Poids: ${voyage.poids}')
+              ],
+            ),
           ),
-        ),
-        Text(
-          "SLPF25/03/2023:8:48:33SO1-PF",
-          style: const TextStyle(color: Colors.black, fontSize: 16),
-        ),
-        const Text(
-          "Date et heure demande:",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
-          ),
-        ),
-        Text(
-          "25/03/2023 8:48",
-          style: const TextStyle(color: Colors.black, fontSize: 16),
-        ),
-        const Text(
-          "Demandeur:",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
-          ),
-        ),
-        Text(
-          "Fathi Hamrouni",
-          style: const TextStyle(color: Colors.black, fontSize: 16),
-        ),
-        const Text(
-          "Dépot Demandeur:",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
-          ),
-        ),
-        Text(
-          "SL-PF\nDépôt PF Sopal Thyna Km10",
-          style: const TextStyle(color: Colors.black, fontSize: 16),
-        ),
-        const Text(
-          "Dépot d'expédition:",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
-          ),
-        ),
-        Text(
-          "SO1-PF\nDépôt PF Sopal Batiment SOPAL 5 route de Gabes KM1.5",
-          style: const TextStyle(color: Colors.black, fontSize: 16),
-        ),
-        const Text(
-          "Etat:",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
-          ),
-        ),
-        Text(
-          "En Cours",
-          style: const TextStyle(color: Colors.black, fontSize: 16),
-        ),
-      ],
-    );
+        ]);
   }
 }

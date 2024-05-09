@@ -66,7 +66,7 @@ class VoyageInfoCard extends StatelessWidget {
                             ),
                             textAlign: TextAlign.right,
                           ),
-                          Text(voyage.demandeur,
+                          Text(voyage.demandeurMatriculeSopal,
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 16)),
                         ],
@@ -88,7 +88,7 @@ class VoyageInfoCard extends StatelessWidget {
                               fontSize: 19,
                             ),
                           ),
-                          Text(voyage.depotDestination!,
+                          Text(voyage.magasinierMatriculeSopal,
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 16)),
                         ],

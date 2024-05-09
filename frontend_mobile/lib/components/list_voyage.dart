@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:frontend_mobile/components/voyage_info_card.dart';
 import 'package:frontend_mobile/service/voyage.dart';
 
@@ -12,16 +11,18 @@ class ListVoyage extends StatefulWidget {
 
 class _ListVoyageState extends State<ListVoyage> {
   late TextEditingController _searchController;
+  late Future<List<Voyage>> voyagesList;
+
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    voyagesList = Voyage.getAllVoyage();
   }
 
-  var voyagesList = Voyage.getAllVoyage();
   @override
   void dispose() {
-    _searchController.dispose(); // Dispose the text editing controller
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -34,10 +35,10 @@ class _ListVoyageState extends State<ListVoyage> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color.fromRGBO(13, 128, 217, 1.0), // End color (#0D80D9)
-                Color.fromRGBO(7, 94, 165, 1.0), // Additional color (#075EA5)
-                Color.fromRGBO(3, 68, 126, 1.0), // Middle color (#03447E)
-                Color.fromRGBO(1, 55, 106, 1.0), // Start color (#01376A)
+                Color.fromRGBO(13, 128, 217, 1.0),
+                Color.fromRGBO(7, 94, 165, 1.0),
+                Color.fromRGBO(3, 68, 126, 1.0),
+                Color.fromRGBO(1, 55, 106, 1.0),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -115,26 +116,38 @@ class _ListVoyageState extends State<ListVoyage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: voyagesList.length,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return Column(
-                        children: [
-                          const SizedBox(
-                            height: 15,
-                            child: null,
-                          ),
-                          VoyageInfoCard(
-                            voyage: voyagesList[index],
-                          ),
-                        ],
-                      );
-                    }
-                    return VoyageInfoCard(
-                      voyage: voyagesList[index],
+              child: FutureBuilder<List<Voyage>>(
+                future: voyagesList,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return Column(
+                            children: [
+                              const SizedBox(
+                                height: 15,
+                                child: null,
+                              ),
+                              VoyageInfoCard(
+                                voyage: snapshot.data![index],
+                              ),
+                            ],
+                          );
+                        }
+                        return VoyageInfoCard(
+                          voyage: snapshot.data![index],
+                        );
+                      },
                     );
-                  }),
+                  }
+                },
+              ),
             ),
           ],
         ),
