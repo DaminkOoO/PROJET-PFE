@@ -1,13 +1,19 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/components/list_voyage.dart';
+import 'package:frontend_mobile/firebase_options.dart';
 import 'package:frontend_mobile/pages/functionalities_page.dart';
 import 'package:frontend_mobile/pages/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend_mobile/service/firebase.dart';
 import 'package:frontend_mobile/service/utilisateur_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseApi().initNotifications();
   runApp(const MainPage());
 }
 
