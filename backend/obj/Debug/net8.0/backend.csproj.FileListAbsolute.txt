@@ -148,3 +148,11 @@ D:\Projet PFE\code\backend\obj\Debug\net8.0\backend.pdb
 D:\Projet PFE\code\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\Projet PFE\code\backend\obj\Debug\net8.0\ref\backend.dll
 D:\Projet PFE\code\backend\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\FirebaseAdmin.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\Google.Api.Gax.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\Google.Api.Gax.Rest.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\Google.Apis.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\Google.Apis.Auth.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\Google.Apis.Core.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\System.Management.dll
+D:\Projet PFE\code\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
