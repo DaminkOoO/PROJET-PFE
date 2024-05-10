@@ -9,8 +9,72 @@ import 'package:http/http.dart' as http;
 
 Future<List<Voyage>> fetchVoyagesBasedOnRoleAndId(
     String? role, String? userId) async {
-  // Implement your API call logic here and return a list of Voyage objects
-  return [];
+  switch (role) {
+    case 'Transporteur':
+      return await fetchVoyagesForTransporteur(userId);
+    case 'Demandeur':
+      return await fetchVoyagesForDemandeur(userId);
+    case 'Magasinier':
+      return await fetchVoyagesForMagasinier(userId);
+    default:
+      throw Exception('Unsupported user role: $role');
+  }
+}
+
+Future<List<Voyage>> fetchVoyagesForTransporteur(String? userId) async {
+  try {
+    var token = getInfoFromToken("token");
+    final response = await http.get(
+      Uri.parse(
+          'http://192.168.1.217:5000/api/Voyage/GetVoyagesTransporteur/$userId'),
+      headers: <String, String>{
+        'accept': 'text/plain',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Decode the response body
+      final List<dynamic> data = json.decode(response.body);
+      List<Voyage> list =
+          data.map<Voyage>((json) => Voyage.fromJson(json)).toList();
+      return list;
+    } else {
+      // If the server did not return a 200 OK response,
+      // throw an exception.
+      print(response.statusCode);
+      throw Exception('Failed to load voyages');
+    }
+  } catch (e) {
+    print('Error fetching voyages for transporteur: $e');
+    throw Exception('Failed to fetch voyages for transporteur');
+  }
+}
+
+Future<List<Voyage>> fetchVoyagesForDemandeur(String? userId) async {
+  try {
+    // Implement your API call logic to fetch voyages for demandeur using the userId
+    // Example:
+    // final response = await http.get('http://localhost:5000/api/Voyage/GetVoyagesDemandeur/$userId');
+    // Parse the response and return a list of Voyage objects
+    return [];
+  } catch (e) {
+    print('Error fetching voyages for demandeur: $e');
+    throw Exception('Failed to fetch voyages for demandeur');
+  }
+}
+
+Future<List<Voyage>> fetchVoyagesForMagasinier(String? userId) async {
+  try {
+    // Implement your API call logic to fetch voyages for magasinier using the userId
+    // Example:
+    // final response = await http.get('http://localhost:5000/api/Voyage/GetVoyagesMagasinier/$userId');
+    // Parse the response and return a list of Voyage objects
+    return [];
+  } catch (e) {
+    print('Error fetching voyages for magasinier: $e');
+    throw Exception('Failed to fetch voyages for magasinier');
+  }
 }
 
 class Voyage {
@@ -19,7 +83,7 @@ class Voyage {
   DateTime dateDepartVoyage;
   String etat = "Préparation";
   String demandeurMatriculeSopal;
-  int priorite;
+  double priorite;
   String magasinierMatriculeSopal;
   String typeVoyage;
   String transporteursId;
@@ -36,6 +100,20 @@ class Voyage {
       required this.typeVoyage,
       required this.transporteursId,
       required this.poids});
+  factory Voyage.fromJson(Map<String, dynamic> json) {
+    return Voyage(
+      idVoyage: json['idVoyage'] ?? '',
+      dateSortieBon: DateTime.parse(json['dateSortieBon'] ?? ''),
+      dateDepartVoyage: DateTime.parse(json['dateDepartVoyage'] ?? ''),
+      etat: json['etat'] ?? '',
+      demandeurMatriculeSopal: json['demandeurMatriculeSopal'] ?? '',
+      priorite: json['priorite'] ?? 0,
+      magasinierMatriculeSopal: json['magasinierMatriculeSopal'] ?? '',
+      typeVoyage: json['typeVoyage'] ?? '',
+      transporteursId: json['transporteursId'] ?? '',
+      poids: (json['poids'] ?? 0.0).toDouble(), // Convert to double
+    );
+  }
   static Future<Response?> postVoyage(Voyage voyage, int nbrePalettes) async {
     try {
       const storage = FlutterSecureStorage();

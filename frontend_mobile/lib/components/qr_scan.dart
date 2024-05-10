@@ -38,6 +38,9 @@ class _QrScanState extends State<QrScan> {
                   if (qrCodeResult.isEmpty) {
                     Navigator.pushNamed(context, "/functions");
                   } else {
+                    if(qrCodeResult.split(':')[0]=="MAG"){
+                      
+                    }
                     var v = await Voyage.fromString(qrCodeResult);
                     print("Is v==null $v");
                     if (context.mounted) {

@@ -10,9 +10,39 @@ Future<bool> isLoggedIn() async {
   return token != null;
 }
 
+Future<List<dynamic>?> getAllVoyagesForTransporteur() async {
+  try {
+    var token = getInfoFromToken("token");
+    final response = await http.get(
+      Uri.parse(
+          'http://localhost:5000/api/Voyage/GetVoyagesTransporteur/transporteur'),
+      headers: <String, String>{
+        'accept': 'text/plain',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Decode the response body
+      final List<dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      // If the server did not return a 200 OK response,
+      // throw an exception.
+      throw Exception('Failed to load voyages');
+    }
+  } catch (e) {
+    print(e);
+    return null;
+  }
+}
+
 Future<String> getInfoFromToken(String info) async {
   const storage = FlutterSecureStorage();
   String? token = await storage.read(key: 'token');
+  if (info == "token") {
+    return token!;
+  }
   Map<String, dynamic> decodedToken = Jwt.parseJwt(token!);
 
   return decodedToken[info];
@@ -38,6 +68,26 @@ Future<http.Response?> login(String matricule, String motPasse) async {
       const storage = FlutterSecureStorage();
       await storage.write(key: 'token', value: token);
     }
+    return response;
+  } catch (e) {
+    print(e);
+    return null;
+  }
+}
+
+Future<http.Response?> updateMessageToken(
+    String matricule, String token) async {
+  try {
+    final response = await http.put(
+      Uri.parse(
+          'http://192.168.1.217:5000/api/user/transporteur/token/$matricule'),
+      headers: <String, String>{
+        'accept': '*/*',
+        'Content-Type': 'application/json-patch+json',
+      },
+      body: jsonEncode(token), // Assuming token is a string
+    );
+    print(response.body);
     return response;
   } catch (e) {
     print(e);

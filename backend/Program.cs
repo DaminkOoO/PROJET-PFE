@@ -5,6 +5,8 @@ using backend.Interfaces;
 using backend.Models;
 using backend.Repository;
 using backend.Service;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.WebHost.UseKestrel().UseUrls("http://*:5000") // Listen on all network interfaces
     .UseContentRoot(Directory.GetCurrentDirectory()).UseIISIntegration();
 builder.Services.AddControllers();

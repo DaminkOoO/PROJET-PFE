@@ -29,7 +29,8 @@ namespace backend.Models
         public string MagasinierMatriculeSopal { get; set; } = string.Empty;
         public TypeVoyage TypeVoyage { get; set; } = null!;
         public int TypeVoyageId { get; set; }
-        public List<Transporteur> Transporteurs { get; set; } = [];
-        public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
+        public Transporteur Transporteur { get; set; } = null!;
+        public string TransporteurId { get; set; } = string.Empty;
+        // public ICollection<TransporteurVoyage> TransporteurVoyages { get; } = [];
     }
 }

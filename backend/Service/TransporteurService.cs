@@ -147,7 +147,7 @@ namespace backend.Service
                     Lattitude = localisationDTO.Lattitude,
                     Longitude = localisationDTO.Longitude,
                     Date = DateTime.Now,
-                    Transporteur = transporteur!,
+                    
                 });
                 var positionUpdate = await _transporteurRepository.UpdatePostion(matricule, Localisation);
                 serviceResponse.Data = localisationDTO;
@@ -278,6 +278,30 @@ namespace backend.Service
                     Role = "Transporteur"
                 };
 
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
+        public async Task<ServiceResponse<Transporteur?>> UpdateToken(string matricule, string token)
+        {
+            ServiceResponse<Transporteur?> serviceResponse = new ServiceResponse<Transporteur?>();
+            try
+            {
+                var updatedUser = await _transporteurRepository.UpdateToken(matricule, token);
+                if (updatedUser == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Erreur! Utilisateur non existant!";
+                    return serviceResponse;
+                }
+                serviceResponse.Success = true;
+                serviceResponse.Data = updatedUser;
+                serviceResponse.Message = "Token mis à jour avec succès.";
                 return serviceResponse;
             }
             catch (Exception ex)

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:frontend_mobile/components/input.dart';
+import 'package:frontend_mobile/service/firebase.dart';
 import 'package:frontend_mobile/service/location_update.dart';
 import 'package:frontend_mobile/service/utilisateur_service.dart';
 
@@ -124,6 +125,8 @@ class _LoginPageState extends State<LoginPage> {
                                 );
                               } else {
                                 if (connect.statusCode == 200) {
+                                  await FirebaseApi().initNotifications(
+                                      _nomUtilisateurController.text);
                                   if (await getInfoFromToken("role") ==
                                       "Transporteur") {
                                     LocationUpdater.startLocationUpdates();

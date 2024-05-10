@@ -11,7 +11,7 @@ namespace backend.Mappers
     {
         public static VoyageDTO ToVoyageDTO(this Voyage voyage)
         {
-            var transporteur = voyage.Transporteurs[voyage.Transporteurs.Count - 1].UserId;
+
             return new VoyageDTO
             {
                 MagasinierDemandeurMatriculeSopal = voyage.MagasinierDemandeurMatriculeSopal,
@@ -20,7 +20,7 @@ namespace backend.Mappers
                 IdVoyage = voyage.IdVoyage,
                 MagasinierMatriculeSopal = voyage.MagasinierMatriculeSopal,
                 Priorite = voyage.Priorite,
-                TransporteursId = transporteur,
+                TransporteursId = voyage.TransporteurId,
                 TypeVoyage = voyage.TypeVoyage.Libelle,
                 NbrePalette = voyage.NbrePalette,
                 Poids = voyage.Poids

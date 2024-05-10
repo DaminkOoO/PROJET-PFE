@@ -42,7 +42,7 @@ namespace backend.Controllers
             return voyages.Success ? Ok(voyages.Data) : BadRequest(voyages.Message);
         }
         [HttpGet("GetVoyagesTransporteur/{matricule}")]
-        [Authorize(Roles = "Admin,Transporteur")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<VoyageDTO>>> GetAllVoyagesTransporteur([FromRoute] string matricule)
         {
             var voyages = await _voyageService.GetAllVoyages(matricule, null, null);

@@ -11,6 +11,7 @@ namespace backend.Interfaces
     public interface IVoyageService
     {
         Task<ServiceResponse<Voyage>> CreateVoyage(VoyageDTO voyageDTO);
+
         Task<ServiceResponse<List<VoyageDTO>>> GetAllVoyages(string? transporteurId, string? magasinierId, string? demandeurId);
     }
 }

@@ -16,7 +16,7 @@ namespace backend.Models
         public decimal Lattitude { get; set; } = 0;
         [Column(TypeName = "decimal(20, 17)")]
         public decimal Longitude { get; set; } = 0;
-        public Transporteur Transporteur { get; set; } = new Transporteur();
-        public List<TransporteurVoyage>? TransporteurVoyages { get; set; } = [];
+        public Transporteur? Transporteur { get; set; } = null;
+        // public List<TransporteurVoyage>? TransporteurVoyages { get; set; } = [];
     }
 }

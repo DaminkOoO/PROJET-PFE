@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend_mobile/service/utilisateur_service.dart';
@@ -8,7 +9,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocationUpdater {
-  static const updateInterval = Duration(seconds: 15);
+  static const updateInterval = Duration(minutes: 3);
 
   static void startLocationUpdates() {
     // Start periodic location updates
@@ -29,12 +30,34 @@ class LocationUpdater {
         var token = await storage.read(key: 'token');
         var userId = JwtDecoder.decode(token!)['userId'];
         print(position);
-        // await http.post(Uri.parse('http://your-backend-api.com/location'), body: {
-        //   'latitude': position.latitude.toString(),
-        //   'longitude': position.longitude.toString(),
-        //   'UserId': userId
-        // });
-        print('Location update sent successfully');
+        String apiUrl =
+            'http://192.168.1.217:5000/api/user/transporteur/$userId';
+
+        // Construct the request body
+        Map<String, dynamic> requestBody = {
+          'lattitude': position.latitude.toString(),
+          'longitude': position.longitude.toString(),
+        };
+
+        // Encode the request body to JSON
+        String requestBodyJson = json.encode(requestBody);
+
+        // Make the PUT request
+        var response = await http.put(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'accept': '*/*',
+            'Content-Type': 'application/json-patch+json',
+            'Authorization': 'Bearer $token',
+          },
+          body: requestBodyJson,
+        );
+
+        if (response.statusCode == 200) {
+          print('Location update sent successfully');
+        } else {
+          print('Error sending location update: ${response.body} ');
+        }
       } catch (e) {
         print('Error sending location update: $e');
       }

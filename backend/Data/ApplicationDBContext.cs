@@ -24,7 +24,7 @@ namespace backend.Data
         public DbSet<Localisation> Localisation { get; set; }
         public DbSet<Magasinier> Magasinier { get; set; }
         public DbSet<Transporteur> Transporteur { get; set; }
-        public DbSet<TransporteurVoyage> TransporteurVoyage { get; set; }
+        // public DbSet<TransporteurVoyage> TransporteurVoyage { get; set; }
         public DbSet<Demandeur> Demandeur { get; set; }
         public DbSet<Vehicule> Vehicule { get; set; }
         public DbSet<TypeVoyage> TypeVoyage { get; set; }
@@ -70,13 +70,7 @@ namespace backend.Data
             builder.Entity<Demandeur>().HasMany(d => d.Voyages).WithOne(v => v.Demandeur).HasForeignKey(v => v.DemandeurMatriculeSopal).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Magasinier>().HasMany(d => d.Voyages).WithOne(v => v.Magasinier).HasForeignKey(v => v.MagasinierMatriculeSopal).OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Transporteur>()
-  .HasMany(t => t.Voyages)
-  .WithMany(v => v.Transporteurs)
-  .UsingEntity<TransporteurVoyage>(
-     l => l.HasOne<Voyage>().WithMany().HasForeignKey(e => e.VoyageId).OnDelete(DeleteBehavior.NoAction),
-            r => r.HasOne<Transporteur>().WithMany().HasForeignKey(e => e.TransporteurMatriculeSopal).OnDelete(DeleteBehavior.NoAction)
-  );
+            
         }
     }
 }

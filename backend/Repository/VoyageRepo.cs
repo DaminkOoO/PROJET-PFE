@@ -21,9 +21,9 @@ namespace backend.Repository
         public async Task<Voyage> Create(Voyage voyage)
         {
             string query = @"
-INSERT INTO Voyage (IdVoyage, DateSortieBon, DateDepartVoyage, Etat, Poids, NbrePalette, Priorite, MagasinierDemandeurMatriculeSopal, MagasinierMatriculeSopal, TypeVoyageId)
-VALUES (@IdVoyage, @DateSortieBon, @DateDepartVoyage, @Etat, @Poids, @NbrePalette,  @Priorite, @MagasinierDemandeurMatriculeSopal, @MagasinierMatriculeSopal, @TypeVoyageId); 
-";
+        INSERT INTO Voyage (IdVoyage, DateSortieBon, DateDepartVoyage, Etat, Poids, NbrePalette, Priorite, MagasinierDemandeurMatriculeSopal, MagasinierMatriculeSopal, TypeVoyageId,TransporteurId)
+        VALUES (@IdVoyage, @DateSortieBon, @DateDepartVoyage, @Etat, @Poids, @NbrePalette,  @Priorite, @MagasinierDemandeurMatriculeSopal, @MagasinierMatriculeSopal, @TypeVoyageId,@TransporteurId); 
+        SELECT SCOPE_IDENTITY();"; // This retrieves the last identity value inserted in the current scope
 
             using (var connection = new SqlConnection("Data Source=DESKTOP-MJ7O2KC\\SQLEXPRESS;Initial Catalog=sopal2;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
             {
@@ -37,19 +37,19 @@ VALUES (@IdVoyage, @DateSortieBon, @DateDepartVoyage, @Etat, @Poids, @NbrePalett
                     command.Parameters.AddWithValue("@Etat", voyage.Etat);
                     command.Parameters.AddWithValue("@Poids", voyage.Poids);
                     command.Parameters.AddWithValue("@NbrePalette", voyage.NbrePalette);
-                    command.Parameters.AddWithValue("@DemandeurMatriculeSopal", voyage.DemandeurMatriculeSopal == "" ? null : voyage.DemandeurMatriculeSopal);
                     command.Parameters.AddWithValue("@Priorite", voyage.Priorite);
                     command.Parameters.AddWithValue("@MagasinierDemandeurMatriculeSopal", voyage.MagasinierDemandeurMatriculeSopal);
                     command.Parameters.AddWithValue("@MagasinierMatriculeSopal", voyage.MagasinierMatriculeSopal);
                     command.Parameters.AddWithValue("@TypeVoyageId", voyage.TypeVoyageId);
-                    // Set other parameters as needed
+                    command.Parameters.AddWithValue("@TransporteurId", voyage.TransporteurId);
 
-                    // Execute the command and get the inserted identity (assuming it's an identity column)
+                    // Execute the command and get the inserted identity
                     int newVoyageId = Convert.ToInt32(await command.ExecuteScalarAsync());
 
-                    // Optionally, retrieve the newly inserted voyage from the database and return it
-                    // You would need another SQL query to fetch the newly inserted record
+                    // Optionally, retrieve the newly inserted voyage from the database
+                    // You would need another SQL query to fetch the newly inserted record based on the newVoyageId
 
+                    // Return the original voyage object or the newly inserted voyage
                     return voyage;
                 }
             }
@@ -58,11 +58,11 @@ VALUES (@IdVoyage, @DateSortieBon, @DateDepartVoyage, @Etat, @Poids, @NbrePalett
 
         public async Task<List<Voyage>> GetAll(string? transporteurId, string? magasinierId, string? demandeurId)
         {
-            IQueryable<Voyage> query = _context.Voyage.Include(voyage => voyage.Transporteurs);
+            IQueryable<Voyage> query = _context.Voyage.Include(voyage => voyage.Transporteur);
 
             if (transporteurId != null)
             {
-                query = query.Where(voyage => voyage.Transporteurs.Any(t => t.UserId == transporteurId));
+                query = query.Where(voyage => voyage.TransporteurId == transporteurId);
             }
 
             if (magasinierId != null)
@@ -82,7 +82,7 @@ VALUES (@IdVoyage, @DateSortieBon, @DateDepartVoyage, @Etat, @Poids, @NbrePalett
         {
             //return await _context.Magasinier.Include(m => m.Utilisateur).Include(m => m.Entrepot).FirstOrDefaultAsync(i => i.MatriculeSopal == matricule);
             return await _context.Voyage.Include(v => v.TypeVoyage)
-            .Include(v => v.Demandeur).Include(v => v.Transporteurs)
+            .Include(v => v.Demandeur).Include(v => v.Transporteur)
             .Include(v => v.Magasinier)
             .Include(v => v.MagasinierDemandeur).FirstOrDefaultAsync(v => v.IdVoyage == id);
         }

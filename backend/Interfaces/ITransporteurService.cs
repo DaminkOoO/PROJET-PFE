@@ -6,6 +6,7 @@ using backend.Dtos.LocalisationDTO;
 using backend.Dtos.TransporteurDTOs;
 using backend.Dtos.User;
 using backend.Helpers;
+using backend.Models;
 using backend.Response;
 
 namespace backend.Interfaces
@@ -17,6 +18,7 @@ namespace backend.Interfaces
         Task<ServiceResponse<TransporteurDTO>> CreateTransporteur(RegisterUserRequestDTO registerUserRequestDTO);
         Task<ServiceResponse<TransporteurDTO?>> UpdateTransporteur(UpdateUserRequestDTO updateUserRequestDTO, string matricule);
         Task<ServiceResponse<bool>> DeleteTransporteur(string matricule);
-        Task<ServiceResponse<LocalisationDTO>> UpdatePostion(string matricule,LocalisationDTO localisationDTO);
+        Task<ServiceResponse<LocalisationDTO>> UpdatePostion(string matricule, LocalisationDTO localisationDTO);
+        Task<ServiceResponse<Transporteur?>> UpdateToken(string matricule, string token);
     }
 }

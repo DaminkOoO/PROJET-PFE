@@ -262,10 +262,18 @@ namespace backend.Controllers
         }
         [HttpPut]
         [Route("transporteur/{matricule}")]
-        [Authorize(Roles = "Transporteur")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateLocation([FromRoute] string matricule, [FromBody] LocalisationDTO localisationDTO)
         {
             var updated = await _transporteurService.UpdatePostion(matricule, localisationDTO);
+            return updated.Success ? Ok(updated.Data) : BadRequest(updated.Message);
+        }
+        [HttpPut]
+        [Route("transporteur/token/{matricule}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateToken([FromRoute] string matricule, [FromBody] string token)
+        {
+            var updated = await _transporteurService.UpdateToken(matricule, token);
             return updated.Success ? Ok(updated.Data) : BadRequest(updated.Message);
         }
 

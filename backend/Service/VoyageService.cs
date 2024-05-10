@@ -9,6 +9,9 @@ using backend.Interfaces;
 using backend.Mappers;
 using backend.Models;
 using backend.Response;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 using Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
@@ -97,6 +100,7 @@ namespace backend.Service
 
 
         }
+
         private Transporteur GetClosestTransporteur(List<Transporteur> transporteurs, decimal lat, decimal lon)
         {
             try
@@ -207,8 +211,8 @@ namespace backend.Service
                     serviceResponse.Message = $"Pas de transporteur actif";
                     return serviceResponse;
                 }
-                voyage.Transporteurs.Add(closestTransporteur);
-
+                voyage.TransporteurId = closestTransporteur.UserId;
+                await SendNotification(closestTransporteur, "Nouveau voyage affecté!", "Vous avez un nouveau affecté! Merci de vérifier la liste des voyages");
                 // Calculate and assign Priorite
                 voyage.Priorite = CalculateDistance(lat1, lon1, closestTransporteur.Localisation.Lattitude, closestTransporteur.Localisation.Longitude);
                 // Create Voyage
@@ -234,14 +238,94 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
+        private async Task<string> SendNotification(Transporteur transporteur, string title, string body)
+        {
+            try
+            {
+                FirebaseApp firebaseApp = FirebaseApp.DefaultInstance;
+                if (firebaseApp == null)
+                {
+                    GoogleCredential googleCredential;
+                    using (var stream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pushnotif-e2732-firebase-adminsdk-2fir6-63f1e18b85.json"), FileMode.Open, FileAccess.Read))
+                    {
+                        googleCredential = GoogleCredential.FromStream(stream);
+                    }
 
+                    firebaseApp = FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = googleCredential
+                    });
+                }
 
-        public Task<ServiceResponse<List<VoyageDTO>>> GetAllVoyages(string? transporteurId, string? magasinierId, string? demandeurId)
+                FirebaseMessaging messaging = FirebaseMessaging.DefaultInstance;
+
+                var message = new Message()
+                {
+                    Notification = new Notification
+                    {
+                        Title = title,
+                        Body = body
+                    },
+                    Token = transporteur.Token // Assuming Token is the FCM token of the recipient
+                };
+
+                // Send the message
+                string response = await messaging.SendAsync(message);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                Console.WriteLine($"Error sending notification: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<ServiceResponse<List<VoyageDTO>>> GetAllVoyages(string? transporteurId, string? magasinierId, string? demandeurId)
         {
             //TODO: populate the list if it's null or empty 
+            ServiceResponse<List<VoyageDTO>> serviceResponse = new ServiceResponse<List<VoyageDTO>>();
 
+            try
+            {
+                // Call the repository method to get the list of voyages
+                var voyages = await _voyageRepo.GetAll(transporteurId, magasinierId, demandeurId);
 
-            throw new NotImplementedException();
+                // Check if the result is null or empty
+                if (voyages == null || voyages.Count == 0)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "No voyages found.";
+                    return serviceResponse;
+                }
+
+                // Map the list of Voyage to list of VoyageDTO
+                var voyageDTOs = voyages.Select(voyage => new VoyageDTO
+                {
+                    IdVoyage = voyage.IdVoyage,
+                    DateSortieBon = voyage.DateSortieBon,
+                    Etat = voyage.Etat,
+                    MagasinierDemandeurMatriculeSopal = voyage.MagasinierDemandeurMatriculeSopal,
+
+                    // Map other properties as needed
+                }).ToList();
+
+                serviceResponse.Data = voyageDTOs;
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Voyages retrieved successfully.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"An error occurred: {ex.Message}";
+
+                // Log the error if needed
+            }
+
+            return serviceResponse;
         }
+
+
     }
 }

@@ -15,9 +15,10 @@ namespace backend.Interfaces
         Task<ServiceResponse<VehiculeDTO>> GetVehiculeById(string matricule);
         Task<ServiceResponse<VehiculeDTO>> CreateVehicule(CreateVehiculeRequestDTO createVehiculeRequestDTO);
         Task<ServiceResponse<bool>> DeleteVehicule(string matricule);
-        Task <ServiceResponse<VehiculeDTO>> UpdateVehicule(string matricule, UpdateVehiculeRequestDTO updateVehiculeRequestDTO);
+        Task<ServiceResponse<VehiculeDTO>> UpdateVehicule(string matricule, UpdateVehiculeRequestDTO updateVehiculeRequestDTO);
         Task<ServiceResponse<List<VehiculeDTO>?>> GetAllVehiculesLibre();
         Task<ServiceResponse<bool>> SwitchLibre(string matricule);
+        
 
     }
 }

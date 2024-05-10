@@ -51,25 +51,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "df13f693-1460-4c1a-94c3-54caf01393a0",
+                            Id = "ba5eae5f-0d2d-49ad-b9c8-b22e7f74ba6d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e7e72bf7-301d-4ffb-a96f-37125729bfa1",
+                            Id = "0e7c79a3-167d-403f-8103-f81ad30e0e13",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "fcdd6e01-7b47-4278-9a91-1fdc061d3f23",
+                            Id = "710f36c2-4a59-498e-b2ef-86f242c0838e",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "f2e7971b-18eb-4e86-92fa-fbe1d4a18003",
+                            Id = "1347a5bf-d3f3-4a42-842b-8f369021318d",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -347,6 +347,10 @@ namespace backend.Migrations
                     b.Property<int?>("LocalisationId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("VehiculeMatricule")
                         .HasColumnType("nvarchar(450)");
 
@@ -359,39 +363,6 @@ namespace backend.Migrations
                     b.HasIndex("VehiculeMatricule");
 
                     b.ToTable("Transporteur");
-                });
-
-            modelBuilder.Entity("backend.Models.TransporteurVoyage", b =>
-                {
-                    b.Property<string>("TransporteurMatriculeSopal")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VoyageId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("LocalisationsId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Panne")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("TransporteurUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VoyageIdVoyage")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("TransporteurMatriculeSopal", "VoyageId");
-
-                    b.HasIndex("LocalisationsId");
-
-                    b.HasIndex("TransporteurUserId");
-
-                    b.HasIndex("VoyageId");
-
-                    b.HasIndex("VoyageIdVoyage");
-
-                    b.ToTable("TransporteurVoyage");
                 });
 
             modelBuilder.Entity("backend.Models.TypeVoyage", b =>
@@ -475,6 +446,10 @@ namespace backend.Migrations
                     b.Property<decimal>("Priorite")
                         .HasColumnType("decimal(30, 25)");
 
+                    b.Property<string>("TransporteurId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("TypeVoyageId")
                         .HasColumnType("int");
 
@@ -485,6 +460,8 @@ namespace backend.Migrations
                     b.HasIndex("MagasinierDemandeurMatriculeSopal");
 
                     b.HasIndex("MagasinierMatriculeSopal");
+
+                    b.HasIndex("TransporteurId");
 
                     b.HasIndex("TypeVoyageId");
 
@@ -615,41 +592,6 @@ namespace backend.Migrations
                     b.Navigation("Vehicule");
                 });
 
-            modelBuilder.Entity("backend.Models.TransporteurVoyage", b =>
-                {
-                    b.HasOne("backend.Models.Localisation", "Localisations")
-                        .WithMany("TransporteurVoyages")
-                        .HasForeignKey("LocalisationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Transporteur", null)
-                        .WithMany()
-                        .HasForeignKey("TransporteurMatriculeSopal")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Transporteur", "Transporteur")
-                        .WithMany("TransporteurVoyages")
-                        .HasForeignKey("TransporteurUserId");
-
-                    b.HasOne("backend.Models.Voyage", null)
-                        .WithMany()
-                        .HasForeignKey("VoyageId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Voyage", "Voyage")
-                        .WithMany("TransporteurVoyages")
-                        .HasForeignKey("VoyageIdVoyage");
-
-                    b.Navigation("Localisations");
-
-                    b.Navigation("Transporteur");
-
-                    b.Navigation("Voyage");
-                });
-
             modelBuilder.Entity("backend.Models.Voyage", b =>
                 {
                     b.HasOne("backend.Models.Demandeur", "Demandeur")
@@ -667,6 +609,12 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("backend.Models.Transporteur", "Transporteur")
+                        .WithMany("Voyages")
+                        .HasForeignKey("TransporteurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("backend.Models.TypeVoyage", "TypeVoyage")
                         .WithMany("Voyages")
                         .HasForeignKey("TypeVoyageId")
@@ -678,6 +626,8 @@ namespace backend.Migrations
                     b.Navigation("Magasinier");
 
                     b.Navigation("MagasinierDemandeur");
+
+                    b.Navigation("Transporteur");
 
                     b.Navigation("TypeVoyage");
                 });
@@ -695,10 +645,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Localisation", b =>
                 {
-                    b.Navigation("Transporteur")
-                        .IsRequired();
-
-                    b.Navigation("TransporteurVoyages");
+                    b.Navigation("Transporteur");
                 });
 
             modelBuilder.Entity("backend.Models.Magasinier", b =>
@@ -708,17 +655,12 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Transporteur", b =>
                 {
-                    b.Navigation("TransporteurVoyages");
+                    b.Navigation("Voyages");
                 });
 
             modelBuilder.Entity("backend.Models.TypeVoyage", b =>
                 {
                     b.Navigation("Voyages");
-                });
-
-            modelBuilder.Entity("backend.Models.Voyage", b =>
-                {
-                    b.Navigation("TransporteurVoyages");
                 });
 #pragma warning restore 612, 618
         }

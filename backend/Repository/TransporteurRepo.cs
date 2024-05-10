@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using backend.Data;
 using backend.Dtos.TransporteurDTOs;
@@ -67,9 +68,9 @@ namespace backend.Repository
 
         public Task<List<Transporteur>> GetTransporteursDisponible()
         {
-             var transporteurs = _context.Transporteur.Include(t => t.Vehicule).
-             Include(t => t.Localisation).Include(t => t.Utilisateur).Where(t=>t.Active );
-             return transporteurs.ToListAsync();
+            var transporteurs = _context.Transporteur.Include(t => t.Vehicule).
+            Include(t => t.Localisation).Include(t => t.Utilisateur).Where(t => t.Active);
+            return transporteurs.ToListAsync();
         }
 
         public async Task<Transporteur?> UpdateAsync(string matricule, UpdateUserRequestDTO TransporteurDto)
@@ -96,6 +97,21 @@ namespace backend.Repository
                 return existingTransporteur;
             }
             existingTransporteur.LocalisationId = localisation.Id;
+            _context.Transporteur.Update(existingTransporteur);
+            await _context.SaveChangesAsync();
+            return existingTransporteur;
+        }
+
+        public async Task<Transporteur?> UpdateToken(string matricule, string token)
+        {
+            var existingTransporteur = await _context.Transporteur.FindAsync(matricule);
+
+            if (existingTransporteur == null)
+            {
+                return existingTransporteur;
+            }
+            existingTransporteur.Token = token;
+            Console.WriteLine("Suiiii");
             _context.Transporteur.Update(existingTransporteur);
             await _context.SaveChangesAsync();
             return existingTransporteur;
