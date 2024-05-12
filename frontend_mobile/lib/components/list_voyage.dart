@@ -29,24 +29,6 @@ class _ListVoyageState extends State<ListVoyage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromRGBO(13, 128, 217, 1.0),
-                Color.fromRGBO(7, 94, 165, 1.0),
-                Color.fromRGBO(3, 68, 126, 1.0),
-                Color.fromRGBO(1, 55, 106, 1.0),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.0, 0.4, 0.75, 1.0],
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,6 +50,7 @@ class _ListVoyageState extends State<ListVoyage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 20),
                   Text(
                     "Liste des voyages".toUpperCase(),
                     style: const TextStyle(

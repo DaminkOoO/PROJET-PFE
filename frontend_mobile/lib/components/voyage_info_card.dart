@@ -15,9 +15,14 @@ class VoyageInfoCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Card(
-        color: const Color.fromRGBO(1, 55, 106, 1.0),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            color: Colors.deepPurpleAccent, //<-- SEE HERE
+          ),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        elevation: 1.2,
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: Row(
@@ -36,7 +41,7 @@ class VoyageInfoCard extends StatelessWidget {
                           const Text(
                             "Date et heure Demande:",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Color.fromRGBO(1, 55, 106, 1.0),
                               fontWeight: FontWeight.bold,
                               fontSize: 19,
                             ),
@@ -44,7 +49,8 @@ class VoyageInfoCard extends StatelessWidget {
                           Text(
                             "${DateFormat.yMd('fr_FR').format(voyage.dateSortieBon)} ${DateFormat.Hms().format(voyage.dateSortieBon)}",
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 16),
+                                color: Color.fromRGBO(1, 55, 106, 1.0),
+                                fontSize: 16),
                           ),
                         ],
                       ),
@@ -62,13 +68,14 @@ class VoyageInfoCard extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 19,
-                              color: Colors.white,
+                              color: Color.fromRGBO(1, 55, 106, 1.0),
                             ),
                             textAlign: TextAlign.right,
                           ),
                           Text(voyage.demandeurMatriculeSopal,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 16)),
+                                  color: Color.fromRGBO(1, 55, 106, 1.0),
+                                  fontSize: 16)),
                         ],
                       ),
                     ),
@@ -83,21 +90,22 @@ class VoyageInfoCard extends StatelessWidget {
                           const Text(
                             "Destination:",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Color.fromRGBO(1, 55, 106, 1.0),
                               fontWeight: FontWeight.bold,
                               fontSize: 19,
                             ),
                           ),
                           Text(voyage.magasinierMatriculeSopal,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 16)),
+                                  color: Color.fromRGBO(1, 55, 106, 1.0),
+                                  fontSize: 16)),
                         ],
                       ),
                     ),
                   ]),
               const Icon(
                 Icons.arrow_forward_ios_sharp,
-                color: Colors.white,
+                color: Color.fromRGBO(1, 55, 106, 1.0),
               )
             ],
           ),
