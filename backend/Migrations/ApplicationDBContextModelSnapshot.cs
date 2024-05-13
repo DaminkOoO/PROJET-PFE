@@ -51,25 +51,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ba5eae5f-0d2d-49ad-b9c8-b22e7f74ba6d",
+                            Id = "6873b8b4-792e-4540-b274-8c2db82edfac",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0e7c79a3-167d-403f-8103-f81ad30e0e13",
+                            Id = "be0d6657-ba29-48a1-8605-00b660754c46",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "710f36c2-4a59-498e-b2ef-86f242c0838e",
+                            Id = "36364ad5-a1c0-4cee-b628-74409af3de77",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "1347a5bf-d3f3-4a42-842b-8f369021318d",
+                            Id = "a23f7b22-5cb7-482a-ba08-4de89bd4c8fc",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -481,6 +481,10 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TokenMessage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

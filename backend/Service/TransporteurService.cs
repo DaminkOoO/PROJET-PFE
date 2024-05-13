@@ -18,13 +18,14 @@ namespace backend.Service
         private readonly ITransporteurRepo _transporteurRepository;
         private readonly IUtilisateurService _utilisateurService;
         private readonly ILocalisationRepo _localisationRepo;
+        private readonly IVoyageService _voyageService;
 
-
-        public TransporteurService(ITransporteurRepo transporteurRepository, IUtilisateurService utilisateurService, ILocalisationRepo localisationRepo)
+        public TransporteurService(ITransporteurRepo transporteurRepository, IUtilisateurService utilisateurService, ILocalisationRepo localisationRepo,IVoyageService voyageService)
         {
             _transporteurRepository = transporteurRepository;
             _utilisateurService = utilisateurService;
             _localisationRepo = localisationRepo;
+            _voyageService = voyageService;
         }
         public async Task<ServiceResponse<TransporteurDTO>> CreateTransporteur(RegisterUserRequestDTO registerUserRequestDTO)
         {
@@ -150,6 +151,8 @@ namespace backend.Service
                     
                 });
                 var positionUpdate = await _transporteurRepository.UpdatePostion(matricule, Localisation);
+                //En cours de livraison
+
                 serviceResponse.Data = localisationDTO;
                 serviceResponse.Success = true;
                 serviceResponse.Message = $"Opération effectuer avec succèes!!";

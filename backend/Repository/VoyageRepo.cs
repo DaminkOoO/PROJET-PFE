@@ -84,7 +84,7 @@ namespace backend.Repository
             return await _context.Voyage.Include(v => v.TypeVoyage)
             .Include(v => v.Demandeur).Include(v => v.Transporteur)
             .Include(v => v.Magasinier).ThenInclude(m => m.Entrepot)
-            .Include(v => v.MagasinierDemandeur).ThenInclude(m => m.Entrepot).FirstOrDefaultAsync(v => v.IdVoyage == id);
+            .Include(v => v.MagasinierDemandeur).ThenInclude(m => m!.Entrepot).FirstOrDefaultAsync(v => v.IdVoyage == id);
         }
 
         public async Task<Voyage> Update(Voyage voyage)
@@ -93,7 +93,7 @@ namespace backend.Repository
 
             if (existingVoyage == null)
             {
-                return null;
+                return null!;
             }
             existingVoyage = voyage;
             _context.Voyage.Update(existingVoyage);

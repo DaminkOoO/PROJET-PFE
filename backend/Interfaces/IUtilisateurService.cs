@@ -19,7 +19,7 @@ namespace backend.Interfaces
         Task<ServiceResponse<List<string>>> GetRoles();
         Task<ServiceResponse<bool>> IsExistRole(Utilisateur utilisateur, string role);
         Task<ServiceResponse<bool>> DeleteAdmin(string matricule);
-
+        Task<ServiceResponse<Utilisateur?>> UpdateToken(string matricule, string token);
     }
 
 

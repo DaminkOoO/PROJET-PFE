@@ -403,5 +403,33 @@ namespace backend.Service
 
         }
 
+        public async Task<ServiceResponse<Utilisateur?>> UpdateToken(string matricule, string token)
+        {
+            ServiceResponse<Utilisateur?> serviceResponse = new ServiceResponse<Utilisateur?>();
+            try
+            {
+                var userModel = await _utilisateurRepository.GetByMatriculeAsync(matricule);
+                if (userModel == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Erreur! Utilisateur non existant!";
+                    return serviceResponse;
+                }
+                userModel.TokenMessage = token;
+                serviceResponse.Success = true;
+                serviceResponse.Data = userModel;
+                userModel.TokenMessage = token;
+
+                var utilisateurUpdate = _utilisateurRepository.UpdateAsync(userModel);
+                serviceResponse.Message = "Token mis à jour avec succès.";
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"Erreur s'est produite : {ex.Message}";
+                return serviceResponse;
+            }
+        }
     }
 }

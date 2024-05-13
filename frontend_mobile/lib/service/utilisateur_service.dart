@@ -82,7 +82,7 @@ Future<http.Response?> updateMessageToken(
   try {
     final response = await http.put(
       Uri.parse(
-          'http://10.255.1.222:5000/api/user/transporteur/token/$matricule'),
+          'http://10.255.1.222:5000/api/user/token/$matricule'),
       headers: <String, String>{
         'accept': '*/*',
         'Content-Type': 'application/json-patch+json',

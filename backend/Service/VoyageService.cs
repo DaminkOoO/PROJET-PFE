@@ -213,9 +213,9 @@ namespace backend.Service
                     return serviceResponse;
                 }
                 voyage.TransporteurId = closestTransporteur.UserId;
-                await SendNotification(closestTransporteur, "Nouveau voyage affecté!", "Vous avez un nouveau affecté! Merci de vérifier la liste des voyages");
+                await SendNotification(closestTransporteur.Utilisateur, "Nouveau voyage affecté!", "Vous avez un nouveau affecté! Merci de vérifier la liste des voyages");
                 // Calculate and assign Priorite
-                voyage.Priorite = CalculateDistance(lat1, lon1, closestTransporteur.Localisation.Lattitude, closestTransporteur.Localisation.Longitude);
+                voyage.Priorite = CalculateDistance(lat1, lon1, closestTransporteur.Localisation!.Lattitude, closestTransporteur.Localisation.Longitude);
                 // Create Voyage
                 var createdVoyage = await _voyageRepo.Create(voyage);
                 Enqueue(createdVoyage);
@@ -239,7 +239,7 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
-        private async Task<string> SendNotification(Transporteur transporteur, string title, string body)
+        private async Task<string> SendNotification(Utilisateur utilisateur, string title, string body)
         {
             try
             {
@@ -267,7 +267,7 @@ namespace backend.Service
                         Title = title,
                         Body = body
                     },
-                    Token = transporteur.Token // Assuming Token is the FCM token of the recipient
+                    Token = utilisateur.TokenMessage // Assuming Token is the FCM token of the recipient
                 };
 
                 // Send the message
@@ -279,7 +279,7 @@ namespace backend.Service
             {
                 // Handle exceptions here
                 Console.WriteLine($"Error sending notification: {ex.Message}");
-                return null;
+                return null!;
             }
         }
 

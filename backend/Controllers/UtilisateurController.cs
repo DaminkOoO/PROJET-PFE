@@ -273,8 +273,10 @@ namespace backend.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> UpdateToken([FromRoute] string matricule, [FromBody] string token)
         {
-            var updated = await _transporteurService.UpdateToken(matricule, token);
+
+            var updated = await _utilisateurService.UpdateToken(matricule, token);
             return updated.Success ? Ok(updated.Data) : BadRequest(updated.Message);
+
         }
 
     }

@@ -10,4 +10,5 @@ class Maps extends StatelessWidget {
   }
 }
 
-//
+//make a function that calls getLocalisationVoyage() from voyage_service.dart that gets the voyage from the parameters and return the response as an array
+
