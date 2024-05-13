@@ -1,23 +1,26 @@
-// ignore_for_file: must_be_immutable, avoid_unnecessary_containers
-
 import 'package:flutter/material.dart';
-import 'package:frontend_mobile/service/voyage.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
 import 'package:intl/intl.dart';
+import 'package:frontend_mobile/service/voyage.dart';
 
 class VoyageInfoCard extends StatelessWidget {
-  VoyageInfoCard({super.key, required this.voyage});
-  Voyage voyage;
+  final Voyage voyage;
+  final String userRole;
+
+  const VoyageInfoCard(
+      {super.key, required this.voyage, required this.userRole});
+
   @override
   Widget build(BuildContext context) {
+    // Initialize locale data for date formatting
     initializeDateFormatting('fr_FR');
+
     return GestureDetector(
       onTap: () {},
       child: Card(
         shape: RoundedRectangleBorder(
           side: const BorderSide(
-            color: Colors.deepPurpleAccent, //<-- SEE HERE
+            color: Color.fromRGBO(1, 55, 106, 1.0), //<-- SEE HERE
           ),
           borderRadius: BorderRadius.circular(20.0),
         ),
@@ -30,87 +33,88 @@ class VoyageInfoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Date et heure Demande:",
-                            style: TextStyle(
-                              color: Color.fromRGBO(1, 55, 106, 1.0),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 19,
-                            ),
-                          ),
-                          Text(
-                            "${DateFormat.yMd('fr_FR').format(voyage.dateSortieBon)} ${DateFormat.Hms().format(voyage.dateSortieBon)}",
-                            style: const TextStyle(
-                                color: Color.fromRGBO(1, 55, 106, 1.0),
-                                fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Demandeur:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 19,
-                              color: Color.fromRGBO(1, 55, 106, 1.0),
-                            ),
-                            textAlign: TextAlign.right,
-                          ),
-                          Text(voyage.demandeurMatriculeSopal,
-                              style: const TextStyle(
-                                  color: Color.fromRGBO(1, 55, 106, 1.0),
-                                  fontSize: 16)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Destination:",
-                            style: TextStyle(
-                              color: Color.fromRGBO(1, 55, 106, 1.0),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 19,
-                            ),
-                          ),
-                          Text(voyage.magasinierMatriculeSopal,
-                              style: const TextStyle(
-                                  color: Color.fromRGBO(1, 55, 106, 1.0),
-                                  fontSize: 16)),
-                        ],
-                      ),
-                    ),
-                  ]),
-              const Icon(
-                Icons.arrow_forward_ios_sharp,
-                color: Color.fromRGBO(1, 55, 106, 1.0),
-              )
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _buildInfoWidgets(userRole),
+              ),
+              const Icon(Icons.arrow_forward_ios)
             ],
           ),
         ),
       ),
+    );
+  }
+
+  List<Widget> _buildInfoWidgets(String userRole) {
+    switch (userRole) {
+      case 'Transporteur':
+        return _buildTransporteurInfo();
+      case 'Demandeur':
+        return _buildDemandeurInfo();
+      case 'Magasinier':
+        return _buildMagasinierInfo();
+      default:
+        return []; // Handle unsupported role
+    }
+  }
+
+  List<Widget> _buildTransporteurInfo() {
+    return [
+      _buildInfoRow(
+        "Date et heure Demande:",
+        "${DateFormat.yMd('fr_FR').format(voyage.dateSortieBon)} ${DateFormat.Hms().format(voyage.dateSortieBon)}",
+      ),
+      _buildInfoRow("Magasinier:", voyage.magasinierMatriculeSopal),
+      _buildInfoRow("Demandeur:", voyage.demandeurMatriculeSopal),
+    ];
+  }
+
+  List<Widget> _buildDemandeurInfo() {
+    return [
+      _buildInfoRow(
+        "Date et heure Demande:",
+        "${DateFormat.yMd('fr_FR').format(voyage.dateSortieBon)} ${DateFormat.Hms().format(voyage.dateSortieBon)}",
+      ),
+      _buildInfoRow("Transporteur:", voyage.transporteursId),
+      _buildInfoRow("Magasinier:", voyage.magasinierMatriculeSopal),
+    ];
+  }
+
+  List<Widget> _buildMagasinierInfo() {
+    return [
+      _buildInfoRow(
+        "Date et heure Demande:",
+        "${DateFormat.yMd('fr_FR').format(voyage.dateSortieBon)} ${DateFormat.Hms().format(voyage.dateSortieBon)}",
+      ),
+      _buildInfoRow("Transporteur:", voyage.transporteursId),
+      _buildInfoRow("Demandeur:", voyage.demandeurMatriculeSopal),
+    ];
+  }
+
+  Widget _buildInfoRow(String title, String value) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            color: Color.fromRGBO(1, 55, 106, 1.0),
+            fontWeight: FontWeight.bold,
+            fontSize: 19,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Color.fromRGBO(1, 55, 106, 1.0),
+            fontSize: 16,
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+      ],
     );
   }
 }

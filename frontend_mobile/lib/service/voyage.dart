@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -23,10 +25,10 @@ Future<List<Voyage>> fetchVoyagesBasedOnRoleAndId(
 
 Future<List<Voyage>> fetchVoyagesForTransporteur(String? userId) async {
   try {
-    var token = getInfoFromToken("token");
+    var token = await getInfoFromToken("token");
     final response = await http.get(
       Uri.parse(
-          'http://192.168.1.217:5000/api/Voyage/GetVoyagesTransporteur/$userId'),
+          'http://10.255.1.222:5000/api/Voyage/GetVoyagesTransporteur/$userId'),
       headers: <String, String>{
         'accept': 'text/plain',
         'Authorization': 'Bearer $token',
@@ -42,7 +44,7 @@ Future<List<Voyage>> fetchVoyagesForTransporteur(String? userId) async {
     } else {
       // If the server did not return a 200 OK response,
       // throw an exception.
-      print(response.statusCode);
+      print(response);
       throw Exception('Failed to load voyages');
     }
   } catch (e) {
@@ -53,11 +55,28 @@ Future<List<Voyage>> fetchVoyagesForTransporteur(String? userId) async {
 
 Future<List<Voyage>> fetchVoyagesForDemandeur(String? userId) async {
   try {
-    // Implement your API call logic to fetch voyages for demandeur using the userId
-    // Example:
-    // final response = await http.get('http://localhost:5000/api/Voyage/GetVoyagesDemandeur/$userId');
-    // Parse the response and return a list of Voyage objects
-    return [];
+    var token = await getInfoFromToken("token");
+    final response = await http.get(
+      Uri.parse(
+          'http://10.255.1.222:5000/api/Voyage/GetVoyagesDemandeur/$userId'),
+      headers: <String, String>{
+        'accept': 'text/plain',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Decode the response body
+      final List<dynamic> data = json.decode(response.body);
+      List<Voyage> list =
+          data.map<Voyage>((json) => Voyage.fromJson(json)).toList();
+      return list;
+    } else {
+      // If the server did not return a 200 OK response,
+      // throw an exception.
+      print(response);
+      throw Exception('Failed to load voyages');
+    }
   } catch (e) {
     print('Error fetching voyages for demandeur: $e');
     throw Exception('Failed to fetch voyages for demandeur');
@@ -66,14 +85,32 @@ Future<List<Voyage>> fetchVoyagesForDemandeur(String? userId) async {
 
 Future<List<Voyage>> fetchVoyagesForMagasinier(String? userId) async {
   try {
-    // Implement your API call logic to fetch voyages for magasinier using the userId
-    // Example:
-    // final response = await http.get('http://localhost:5000/api/Voyage/GetVoyagesMagasinier/$userId');
-    // Parse the response and return a list of Voyage objects
-    return [];
+    var token = await getInfoFromToken("token");
+    String headerToken = 'Bearer $token';
+    print(headerToken);
+    final response = await http.get(
+      Uri.parse(
+          'http://10.255.1.222:5000/api/Voyage/GetVoyagesMagasinier/$userId'),
+      headers: <String, String>{
+        'accept': 'text/plain',
+        'Authorization': headerToken,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Decode the response body
+      final List<dynamic> data = json.decode(response.body);
+      List<Voyage> list =
+          data.map<Voyage>((json) => Voyage.fromJson(json)).toList();
+      return list;
+    } else {
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Erreur au niveau du serveur');
+    }
   } catch (e) {
-    print('Error fetching voyages for magasinier: $e');
-    throw Exception('Failed to fetch voyages for magasinier');
+    print('Error fetching voyages for magasinier: ${e}');
+    throw Exception('Failed to fetch voyages for magasinier: $e');
   }
 }
 
@@ -89,24 +126,28 @@ class Voyage {
   String transporteursId;
   double poids;
 
-  Voyage(
-      {required this.idVoyage,
-      required this.dateSortieBon,
-      required this.dateDepartVoyage,
-      required this.etat,
-      required this.demandeurMatriculeSopal,
-      required this.priorite,
-      required this.magasinierMatriculeSopal,
-      required this.typeVoyage,
-      required this.transporteursId,
-      required this.poids});
+  Voyage({
+    required this.idVoyage,
+    required this.dateSortieBon,
+    required this.dateDepartVoyage,
+    required this.etat,
+    required this.demandeurMatriculeSopal,
+    required this.priorite,
+    required this.magasinierMatriculeSopal,
+    required this.typeVoyage,
+    required this.transporteursId,
+    required this.poids,
+  });
   factory Voyage.fromJson(Map<String, dynamic> json) {
     return Voyage(
       idVoyage: json['idVoyage'] ?? '',
-      dateSortieBon: DateTime.parse(json['dateSortieBon'] ?? ''),
-      dateDepartVoyage: DateTime.parse(json['dateDepartVoyage'] ?? ''),
+      dateSortieBon:
+          DateTime.tryParse(json['dateSortieBon'] ?? '') ?? DateTime.now(),
+      dateDepartVoyage:
+          DateTime.tryParse(json['dateDepartVoyage'] ?? '') ?? DateTime(1),
       etat: json['etat'] ?? '',
-      demandeurMatriculeSopal: json['demandeurMatriculeSopal'] ?? '',
+      demandeurMatriculeSopal: json['demandeurMatriculeSopal'] ??
+          json['magasinierDemandeurMatriculeSopal'],
       priorite: json['priorite'] ?? 0,
       magasinierMatriculeSopal: json['magasinierMatriculeSopal'] ?? '',
       typeVoyage: json['typeVoyage'] ?? '',
@@ -131,7 +172,7 @@ class Voyage {
       });
       print(jsonBody);
       final response = await http.post(
-        Uri.parse('http://192.168.1.217:5000/api/voyage'),
+        Uri.parse('http://10.255.1.222:5000/api/voyage'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',

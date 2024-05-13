@@ -57,6 +57,7 @@ namespace backend.Controllers
         }
         [HttpGet("GetVoyagesMagasinier/{matricule}")]
         [Authorize(Roles = "Admin,Magasinier")]
+
         public async Task<ActionResult<List<VoyageDTO>>> GetAllVoyagesMagasinier([FromRoute] string matricule)
         {
             var voyages = await _voyageService.GetAllVoyages(null, matricule, null);

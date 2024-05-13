@@ -13,7 +13,7 @@ import 'package:frontend_mobile/service/utilisateur_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  
+
   runApp(const MainPage());
 }
 
@@ -31,9 +31,6 @@ class MainPage extends StatelessWidget {
           if (snapshot.hasData) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                  primarySwatch: Colors.blue //Color.fromRGBO(14, 61, 93, 1.0)
-                  ),
               routes: {
                 '/functions': (context) => FunctionalitiesPage(),
                 '/login': (context) => LoginPage(),

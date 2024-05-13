@@ -15,6 +15,7 @@ class FunctionalitiesPage extends StatefulWidget {
 
 class _FunctionalitiesPageState extends State<FunctionalitiesPage> {
   int _selectedIndex = 0;
+  String tr = "";
   void _navigationBottomBar(int index) {
     setState(() {
       _selectedIndex = index;
@@ -32,10 +33,12 @@ class _FunctionalitiesPageState extends State<FunctionalitiesPage> {
   }
 
   Future<void> initializeState() async {
-    var tr = await getInfoFromToken("role");
+    tr = await getInfoFromToken("role");
+    print(tr);
     if (tr == "Transporteur") {
       LocationUpdater.startLocationUpdates();
     }
+    setState(() {});
   }
 
   @override
@@ -43,7 +46,10 @@ class _FunctionalitiesPageState extends State<FunctionalitiesPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.highlight_off)),
+          if (tr == "Transporteur")
+            IconButton(onPressed: () {}, icon: const Icon(Icons.highlight_off))
+          else
+            const SizedBox.shrink(),
           IconButton(
               onPressed: () async {
                 const storage = FlutterSecureStorage();

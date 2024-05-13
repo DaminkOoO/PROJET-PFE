@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/components/voyage_info_card.dart';
+import 'package:frontend_mobile/service/utilisateur_service.dart';
 import 'package:frontend_mobile/service/voyage.dart';
 
 class ListVoyage extends StatefulWidget {
-  const ListVoyage({super.key});
+  const ListVoyage({Key? key});
 
   @override
   State<ListVoyage> createState() => _ListVoyageState();
@@ -11,19 +12,28 @@ class ListVoyage extends StatefulWidget {
 
 class _ListVoyageState extends State<ListVoyage> {
   late TextEditingController _searchController;
-  late Future<List<Voyage>> voyagesList;
+  late Future<List<Voyage>> voyagesList =
+      Future.value([]); // Initialize voyagesList
+  late String userRole; // Add user role here
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    voyagesList = Voyage.getAllVoyage();
+    _fetchVoyagesBasedOnUserRole(); // Fetch voyages based on user role
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchVoyagesBasedOnUserRole() async {
+    userRole = await getInfoFromToken('role');
+    setState(() {
+      voyagesList = Voyage.getAllVoyage();
+    });
   }
 
   @override
@@ -34,19 +44,8 @@ class _ListVoyageState extends State<ListVoyage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(1, 55, 106, 1.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -54,7 +53,7 @@ class _ListVoyageState extends State<ListVoyage> {
                   Text(
                     "Liste des voyages".toUpperCase(),
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Color.fromRGBO(1, 55, 106, 1.0),
                       fontWeight: FontWeight.bold,
                       fontSize: 21,
                     ),
@@ -70,25 +69,37 @@ class _ListVoyageState extends State<ListVoyage> {
                       width: double.infinity,
                       height: 40,
                       decoration: BoxDecoration(
-                          color: const Color.fromARGB(112, 255, 255, 255),
+                          color: const Color.fromRGBO(113, 143, 171, 1.0),
                           borderRadius: BorderRadius.circular(5)),
                       child: Center(
                         child: TextField(
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
                           controller: _searchController,
                           onChanged: (value) {
                             _searchController.text = value;
                           },
                           decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.search),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.white,
+                            ),
                             suffixIcon: _searchController.text != ""
                                 ? IconButton(
-                                    icon: const Icon(Icons.clear),
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: Colors.white,
+                                    ),
                                     onPressed: () {
                                       _searchController.clear();
                                     },
                                   )
                                 : null,
                             hintText: 'Rechercher...',
+                            hintStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300),
                             border: InputBorder.none,
                           ),
                         ),
@@ -110,21 +121,12 @@ class _ListVoyageState extends State<ListVoyage> {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return Column(
-                            children: [
-                              const SizedBox(
-                                height: 15,
-                                child: null,
-                              ),
-                              VoyageInfoCard(
-                                voyage: snapshot.data![index],
-                              ),
-                            ],
-                          );
-                        }
-                        return VoyageInfoCard(
-                          voyage: snapshot.data![index],
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: VoyageInfoCard(
+                            voyage: snapshot.data![index],
+                            userRole: userRole, // Pass user role here
+                          ),
                         );
                       },
                     );

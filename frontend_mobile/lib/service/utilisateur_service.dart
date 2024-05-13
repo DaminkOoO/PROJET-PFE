@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -44,14 +46,14 @@ Future<String> getInfoFromToken(String info) async {
     return token!;
   }
   Map<String, dynamic> decodedToken = Jwt.parseJwt(token!);
-
+  
   return decodedToken[info];
 }
 
 Future<http.Response?> login(String matricule, String motPasse) async {
   try {
     final response = await http.post(
-      Uri.parse('http://192.168.1.217:5000/api/user/login'),
+      Uri.parse('http://10.255.1.222:5000/api/user/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -80,7 +82,7 @@ Future<http.Response?> updateMessageToken(
   try {
     final response = await http.put(
       Uri.parse(
-          'http://192.168.1.217:5000/api/user/transporteur/token/$matricule'),
+          'http://10.255.1.222:5000/api/user/transporteur/token/$matricule'),
       headers: <String, String>{
         'accept': '*/*',
         'Content-Type': 'application/json-patch+json',

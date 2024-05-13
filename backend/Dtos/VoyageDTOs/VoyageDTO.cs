@@ -10,7 +10,7 @@ namespace backend.Dtos.VoyageDTOs
     {
         public string IdVoyage { get; set; } = string.Empty;
         public DateTime DateSortieBon { get; set; }
-        public DateTime DateDepartVoyage { get; set; }
+        public DateTime? DateDepartVoyage { get; set; }
         public string Etat { get; set; } = string.Empty;
         public string DemandeurMatriculeSopal { get; set; } = string.Empty;
         [Column(TypeName = "decimal(20, 17)")]

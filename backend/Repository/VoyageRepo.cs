@@ -67,7 +67,7 @@ namespace backend.Repository
 
             if (magasinierId != null)
             {
-                query = query.Where(voyage => voyage.MagasinierMatriculeSopal == magasinierId);
+                query = query.Where(voyage => voyage.MagasinierMatriculeSopal == magasinierId || voyage.MagasinierDemandeurMatriculeSopal == magasinierId);
             }
             if (demandeurId != null)
             {

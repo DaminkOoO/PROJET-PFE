@@ -307,6 +307,13 @@ namespace backend.Service
                     DateSortieBon = voyage.DateSortieBon,
                     Etat = voyage.Etat,
                     MagasinierDemandeurMatriculeSopal = voyage.MagasinierDemandeurMatriculeSopal,
+                    DemandeurMatriculeSopal = voyage.DemandeurMatriculeSopal,
+                    DateDepartVoyage = voyage.DateDepartVoyage ?? null,
+                    MagasinierMatriculeSopal = voyage.MagasinierDemandeurMatriculeSopal,
+                    NbrePalette = voyage.NbrePalette,
+                    Poids = voyage.Poids,
+                    Priorite = voyage.Priorite,
+                    TransporteursId = voyage.TransporteurId,
 
                     // Map other properties as needed
                 }).ToList();

@@ -36,11 +36,10 @@ class _QrScanState extends State<QrScan> {
                 // TODO: focus on this tomorrow
                 if (context.mounted) {
                   if (qrCodeResult.isEmpty) {
+                    Navigator.pop(context);
                     Navigator.pushNamed(context, "/functions");
                   } else {
-                    if(qrCodeResult.split(':')[0]=="MAG"){
-                      
-                    }
+                    if (qrCodeResult.split(':')[0] == "MAG") {}
                     var v = await Voyage.fromString(qrCodeResult);
                     print("Is v==null $v");
                     if (context.mounted) {
