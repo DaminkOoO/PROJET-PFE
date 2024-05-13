@@ -19,6 +19,7 @@ namespace backend.Interfaces
         Task<ServiceResponse<List<VehiculeDTO>?>> GetAllVehiculesLibre();
         Task<ServiceResponse<bool>> SwitchLibre(string matricule);
         
+        
 
     }
 }

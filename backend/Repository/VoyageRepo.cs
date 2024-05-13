@@ -87,9 +87,18 @@ namespace backend.Repository
             .Include(v => v.MagasinierDemandeur).FirstOrDefaultAsync(v => v.IdVoyage == id);
         }
 
-        public Voyage Update(Voyage voyage)
+        public async Task<Voyage> Update(Voyage voyage)
         {
-            throw new NotImplementedException();
+            var existingVoyage = await _context.Voyage.FindAsync(voyage.IdVoyage);
+
+            if (existingVoyage == null)
+            {
+                return null;
+            }
+            existingVoyage = voyage;
+            _context.Voyage.Update(existingVoyage);
+            await _context.SaveChangesAsync();
+            return existingVoyage;
         }
     }
 }

@@ -295,7 +295,8 @@ namespace backend.Service
                 // Check if the result is null or empty
                 if (voyages == null || voyages.Count == 0)
                 {
-                    serviceResponse.Success = false;
+                    serviceResponse.Success = true;
+                    serviceResponse.Data = [];
                     serviceResponse.Message = "No voyages found.";
                     return serviceResponse;
                 }
@@ -309,7 +310,7 @@ namespace backend.Service
                     MagasinierDemandeurMatriculeSopal = voyage.MagasinierDemandeurMatriculeSopal,
                     DemandeurMatriculeSopal = voyage.DemandeurMatriculeSopal,
                     DateDepartVoyage = voyage.DateDepartVoyage ?? null,
-                    MagasinierMatriculeSopal = voyage.MagasinierDemandeurMatriculeSopal,
+                    MagasinierMatriculeSopal = voyage.MagasinierMatriculeSopal,
                     NbrePalette = voyage.NbrePalette,
                     Poids = voyage.Poids,
                     Priorite = voyage.Priorite,
@@ -333,6 +334,78 @@ namespace backend.Service
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<Voyage>> UpdateVoyageState(VoyageDTO voyageDTO, string state)
+        {
+            ServiceResponse<Voyage> serviceResponse = new ServiceResponse<Voyage>();
+            try
+            {
+                var voyage = await _voyageRepo.GetVoyageById(voyageDTO.IdVoyage);
+                if (voyage == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Voyage non existant! Le magasinier n'a pas scanné ce voyage!";
+                    return serviceResponse;
+                }
+                voyage.Etat = state;
+                await _voyageRepo.Update(voyage);
+                serviceResponse.Success = true;
+                serviceResponse.Data = voyage;
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"An error occurred: {ex.Message}";
+                return serviceResponse;
+            }
+        }
+        public async Task<ServiceResponse<PositionVoyageDTO>> GetVoyagePosition(string voyageId)
+        {
+            ServiceResponse<PositionVoyageDTO> serviceResponse = new ServiceResponse<PositionVoyageDTO>();
+            try
+            {
+                var voyage = await _voyageRepo.GetVoyageById(voyageId);
+                if (voyage == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Voyage non existant! Le magasinier n'a pas scanné ce voyage!";
+                    return serviceResponse;
+                }
+                serviceResponse.Success = true;
+                var locFin = new Localisation();
+                if (voyage.Demandeur != null)
+                {
+                    locFin.Longitude = voyage.Demandeur.Longitude;
+                    locFin.Lattitude = voyage.Demandeur.Lattitude;
+                }
+                else
+                {
+                    if (voyage.MagasinierDemandeur != null)
+                    {
 
+                        locFin.Longitude = voyage.MagasinierDemandeur.Entrepot.Longitude;
+                        locFin.Lattitude = voyage.MagasinierDemandeur.Entrepot.Lattitude;
+                    }
+                }
+                serviceResponse.Data = new PositionVoyageDTO
+                {
+                    LocalisationDebut = new Localisation
+                    {
+                        Lattitude = voyage.Magasinier.Entrepot.Lattitude,
+                        Longitude = voyage.Magasinier.Entrepot.Longitude
+
+                    },
+                    LocalisationFin = locFin,
+
+                };
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"An error occurred: {ex.Message}";
+                return serviceResponse;
+            }
+        }
     }
 }

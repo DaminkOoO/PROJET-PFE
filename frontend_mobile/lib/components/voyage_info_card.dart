@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_mobile/components/Voyage_details.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:frontend_mobile/service/voyage.dart';
@@ -16,7 +17,42 @@ class VoyageInfoCard extends StatelessWidget {
     initializeDateFormatting('fr_FR');
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Scaffold(
+                appBar: AppBar(
+                  title: Text("numéreo voyage ${voyage.idVoyage}"),
+                  centerTitle: true,
+                ),
+                body: ListView(children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 30, left: 15, right: 15),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: const Color.fromRGBO(1, 55, 106, 1.0),
+                              width: 2,
+                              style: BorderStyle.solid),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(children: [
+                            VoyageDetails(voyage: voyage),
+                            
+                          ]),
+                        )),
+                  )
+                ]),
+              ),
+            ),
+          );
+        }
+      },
       child: Card(
         shape: RoundedRectangleBorder(
           side: const BorderSide(

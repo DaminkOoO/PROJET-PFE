@@ -11,7 +11,8 @@ namespace backend.Interfaces
         Task<Voyage> Create(Voyage voyage);
         Task<Voyage?> GetVoyageById(string id);
         Task<List<Voyage>> GetAll(string? transporteurId, string? magasinierId, string? magasinierName);
-        Voyage Update(Voyage voyage);
+        Task<Voyage> Update(Voyage voyage);
+
 
 
     }

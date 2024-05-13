@@ -28,16 +28,26 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Magasinier,Demandeur")]
+        [Authorize(Roles = "Admin,Magasinier,Demandeur,Transporteur")]
+
         public async Task<ActionResult<VoyageDTO>> CreateVoyage([FromBody] VoyageDTO voyageDTO)
         {
+            if (User.IsInRole("Transporteur"))
+            {
+                var voyageUpdate = await _voyageService.UpdateVoyageState(voyageDTO, "En cours de livraison");
+                return voyageUpdate.Success ? Ok("Opération effectué avec succés!") : BadRequest(voyageUpdate.Message);
+            }
+
+
             var voyage = await _voyageService.CreateVoyage(voyageDTO);
             return voyage.Success ? Ok(voyage.Data) : BadRequest(voyage.Message);
+
         }
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<VoyageDTO>>> GetAllVoyages()
         {
+
             var voyages = await _voyageService.GetAllVoyages(null, null, null);
             return voyages.Success ? Ok(voyages.Data) : BadRequest(voyages.Message);
         }

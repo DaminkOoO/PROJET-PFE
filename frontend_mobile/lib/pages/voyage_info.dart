@@ -131,6 +131,24 @@ class _VoyageInfoPageState extends State<VoyageInfoPage> {
                               );
                             } else {
                               if (connect.statusCode == 200) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                          'opération effectuée avec succès'),
+                                      content: Text(connect.body),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('OK'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               } else {
                                 // If the server returns an error, show an error message
                                 showDialog(

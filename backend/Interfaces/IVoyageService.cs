@@ -13,5 +13,7 @@ namespace backend.Interfaces
         Task<ServiceResponse<Voyage>> CreateVoyage(VoyageDTO voyageDTO);
 
         Task<ServiceResponse<List<VoyageDTO>>> GetAllVoyages(string? transporteurId, string? magasinierId, string? demandeurId);
+        Task<ServiceResponse<Voyage>> UpdateVoyageState(VoyageDTO voyageDTO, string state);
+        Task<ServiceResponse<PositionVoyageDTO>> GetVoyagePosition(string voyageId);
     }
 }

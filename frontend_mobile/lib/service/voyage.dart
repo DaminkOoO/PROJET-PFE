@@ -161,7 +161,8 @@ class Voyage {
       String? jwtToken = await storage.read(key: 'token');
       var jsonBody = jsonEncode(<String, dynamic>{
         "idVoyage": voyage.idVoyage,
-        "dateSortieBon": "2024-05-09T09:00:26.740Z",
+        "dateSortieBon": voyage.dateSortieBon.toIso8601String(),
+        "dateDepartVoyage": DateTime.now().toIso8601String(),
         "etat": "En attente du transporteur",
         "demandeurMatriculeSopal": "",
         "magasinierMatriculeSopal": voyage.magasinierMatriculeSopal,
