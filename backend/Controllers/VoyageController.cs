@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Dtos.EntrepotDTOs;
+
 using backend.Dtos.VoyageDTOs;
 using backend.Helpers;
 using backend.Interfaces;
@@ -44,7 +45,7 @@ namespace backend.Controllers
 
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Magasinier")]
         public async Task<ActionResult<List<VoyageDTO>>> GetAllVoyages()
         {
 
@@ -72,6 +73,13 @@ namespace backend.Controllers
         {
             var voyages = await _voyageService.GetAllVoyages(null, matricule, null);
             return voyages.Success ? Ok(voyages.Data) : BadRequest(voyages.Message);
+        }
+        [HttpGet("GetLocalisationVoyage/{voyageId}")]
+        [Authorize(Roles = "Admin,Magasinier,Transporteur")]
+        public async Task<ActionResult<PositionVoyageDTO>> GetLocalisationVoyage([FromRoute] string voyageId)
+        {
+            var details = await _voyageService.GetVoyagePosition(voyageId);
+            return details.Success ? Ok(details.Data) : BadRequest(details.Message);
         }
     }
 }

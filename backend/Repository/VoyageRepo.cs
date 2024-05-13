@@ -83,8 +83,8 @@ namespace backend.Repository
             //return await _context.Magasinier.Include(m => m.Utilisateur).Include(m => m.Entrepot).FirstOrDefaultAsync(i => i.MatriculeSopal == matricule);
             return await _context.Voyage.Include(v => v.TypeVoyage)
             .Include(v => v.Demandeur).Include(v => v.Transporteur)
-            .Include(v => v.Magasinier)
-            .Include(v => v.MagasinierDemandeur).FirstOrDefaultAsync(v => v.IdVoyage == id);
+            .Include(v => v.Magasinier).ThenInclude(m => m.Entrepot)
+            .Include(v => v.MagasinierDemandeur).ThenInclude(m => m.Entrepot).FirstOrDefaultAsync(v => v.IdVoyage == id);
         }
 
         public async Task<Voyage> Update(Voyage voyage)

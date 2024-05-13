@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Dtos.LocalisationDTOs;
 using backend.Dtos.VoyageDTOs;
 using backend.Helpers;
 using backend.Interfaces;
@@ -365,6 +366,7 @@ namespace backend.Service
             try
             {
                 var voyage = await _voyageRepo.GetVoyageById(voyageId);
+
                 if (voyage == null)
                 {
                     serviceResponse.Success = false;
@@ -372,10 +374,11 @@ namespace backend.Service
                     return serviceResponse;
                 }
                 serviceResponse.Success = true;
-                var locFin = new Localisation();
+                var locFin = new LocalisationDTO();
                 if (voyage.Demandeur != null)
                 {
                     locFin.Longitude = voyage.Demandeur.Longitude;
+
                     locFin.Lattitude = voyage.Demandeur.Lattitude;
                 }
                 else
@@ -387,9 +390,10 @@ namespace backend.Service
                         locFin.Lattitude = voyage.MagasinierDemandeur.Entrepot.Lattitude;
                     }
                 }
+                Console.WriteLine(locFin.Longitude);
                 serviceResponse.Data = new PositionVoyageDTO
                 {
-                    LocalisationDebut = new Localisation
+                    LocalisationDebut = new LocalisationDTO
                     {
                         Lattitude = voyage.Magasinier.Entrepot.Lattitude,
                         Longitude = voyage.Magasinier.Entrepot.Longitude

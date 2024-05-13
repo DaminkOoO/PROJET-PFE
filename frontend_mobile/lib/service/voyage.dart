@@ -249,4 +249,25 @@ class Voyage {
       'transporteursId': voyage.transporteursId,
     };
   }
+
+  static Future<Response?> getPositionVoyage(String voyage) async {
+    try {
+      const storage = FlutterSecureStorage();
+      String? jwtToken = await storage.read(key: 'token');
+
+      final response = await http.get(
+        Uri.parse(
+            'http://10.255.1.222:5000/api/voyage/GetLocalisationVoyage/$voyage'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $jwtToken',
+        },
+      );
+
+      return response;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }
