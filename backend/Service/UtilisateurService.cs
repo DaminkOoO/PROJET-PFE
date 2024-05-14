@@ -419,8 +419,7 @@ namespace backend.Service
                 serviceResponse.Success = true;
                 serviceResponse.Data = userModel;
                 userModel.TokenMessage = token;
-
-                var utilisateurUpdate = _utilisateurRepository.UpdateAsync(userModel);
+                var utilisateurUpdate = await _utilisateurRepository.UpdateAsync(userModel);
                 serviceResponse.Message = "Token mis à jour avec succès.";
                 return serviceResponse;
             }

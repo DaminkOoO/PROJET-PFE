@@ -269,7 +269,7 @@ namespace backend.Controllers
             return updated.Success ? Ok(updated.Data) : BadRequest(updated.Message);
         }
         [HttpPut]
-        [Route("transporteur/token/{matricule}")]
+        [Route("token/{matricule}")]
         [AllowAnonymous]
         public async Task<IActionResult> UpdateToken([FromRoute] string matricule, [FromBody] string token)
         {

@@ -46,7 +46,7 @@ Future<String> getInfoFromToken(String info) async {
     return token!;
   }
   Map<String, dynamic> decodedToken = Jwt.parseJwt(token!);
-  
+
   return decodedToken[info];
 }
 
@@ -81,13 +81,12 @@ Future<http.Response?> updateMessageToken(
     String matricule, String token) async {
   try {
     final response = await http.put(
-      Uri.parse(
-          'http://10.255.1.222:5000/api/user/token/$matricule'),
+      Uri.parse('http://10.255.1.222:5000/api/user/token/$matricule'),
       headers: <String, String>{
         'accept': '*/*',
         'Content-Type': 'application/json-patch+json',
       },
-      body: jsonEncode(token), // Assuming token is a string
+      body: jsonEncode(token),
     );
     print(response.body);
     return response;

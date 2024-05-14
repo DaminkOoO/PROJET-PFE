@@ -15,5 +15,7 @@ namespace backend.Interfaces
         Task<ServiceResponse<List<VoyageDTO>>> GetAllVoyages(string? transporteurId, string? magasinierId, string? demandeurId);
         Task<ServiceResponse<Voyage>> UpdateVoyageState(VoyageDTO voyageDTO, string state);
         Task<ServiceResponse<PositionVoyageDTO>> GetVoyagePosition(string voyageId);
+        decimal CalculateDistance(decimal lat1, decimal lon1, decimal lat2, decimal lon2);
+        Task<string> SendNotification(Utilisateur utilisateur, string title, string body);
     }
 }

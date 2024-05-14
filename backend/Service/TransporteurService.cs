@@ -19,13 +19,15 @@ namespace backend.Service
         private readonly IUtilisateurService _utilisateurService;
         private readonly ILocalisationRepo _localisationRepo;
         private readonly IVoyageService _voyageService;
+        private readonly IVoyageRepo _voyageRepo;
 
-        public TransporteurService(ITransporteurRepo transporteurRepository, IUtilisateurService utilisateurService, ILocalisationRepo localisationRepo,IVoyageService voyageService)
+        public TransporteurService(ITransporteurRepo transporteurRepository, IUtilisateurService utilisateurService, ILocalisationRepo localisationRepo, IVoyageService voyageService, IVoyageRepo voyageRepo)
         {
             _transporteurRepository = transporteurRepository;
             _utilisateurService = utilisateurService;
             _localisationRepo = localisationRepo;
             _voyageService = voyageService;
+            _voyageRepo = voyageRepo;
         }
         public async Task<ServiceResponse<TransporteurDTO>> CreateTransporteur(RegisterUserRequestDTO registerUserRequestDTO)
         {
@@ -148,11 +150,40 @@ namespace backend.Service
                     Lattitude = localisationDTO.Lattitude,
                     Longitude = localisationDTO.Longitude,
                     Date = DateTime.Now,
-                    
+
                 });
                 var positionUpdate = await _transporteurRepository.UpdatePostion(matricule, Localisation);
                 //En cours de livraison
+                var listVoyage = await _voyageRepo.GetAll(matricule, null, null);
+                if (listVoyage != null)
+                {
+                    var voyageActive = listVoyage.Where(v => v.Etat == "En cours de livraison").FirstOrDefault();
+                    decimal distance = 0;
+                    if (voyageActive != null)
+                    {
+                        //GeoLocator
+                        if (voyageActive.Demandeur != null)
+                        {
+                            distance = _voyageService.CalculateDistance(voyageActive.Demandeur.Lattitude, voyageActive.Demandeur.Longitude, localisationDTO.Lattitude, localisationDTO.Longitude);
+                            if (distance >= 5)
+                            {
+                                await _voyageService.SendNotification(voyageActive.Demandeur.Utilisateur, "Votre voyage", "Voyage");
+                            }
+                        }
+                        else
+                        {
+                            if (voyageActive.MagasinierDemandeur != null)
+                            {
+                                distance = _voyageService.CalculateDistance(voyageActive.MagasinierDemandeur.Entrepot.Lattitude, voyageActive.MagasinierDemandeur.Entrepot.Longitude, localisationDTO.Lattitude, localisationDTO.Longitude);
+                                if (distance >= 5)
+                                {
+                                    await _voyageService.SendNotification(voyageActive.MagasinierDemandeur.Utilisateur, "Votre voyage", "Voyage");
+                                }
+                            }
+                        }
 
+                    }
+                }
                 serviceResponse.Data = localisationDTO;
                 serviceResponse.Success = true;
                 serviceResponse.Message = $"Opération effectuer avec succèes!!";

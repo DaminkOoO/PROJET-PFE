@@ -92,6 +92,7 @@ namespace backend.Service
 
                 decimal distance = R * c;
                 return Math.Round(distance, 17);
+
             }
             catch (Exception ex)
             {
@@ -239,7 +240,7 @@ namespace backend.Service
                 return serviceResponse;
             }
         }
-        private async Task<string> SendNotification(Utilisateur utilisateur, string title, string body)
+        public async Task<string> SendNotification(Utilisateur utilisateur, string title, string body)
         {
             try
             {
