@@ -33,7 +33,7 @@ class LocationUpdater {
         var userId = JwtDecoder.decode(token!)['userId'];
         print(position);
         String apiUrl =
-            'http://10.255.1.222:5000/api/user/transporteur/$userId';
+            'http://10.255.1.105:5000/api/user/transporteur/$userId';
 
         // Construct the request body
         Map<String, dynamic> requestBody = {

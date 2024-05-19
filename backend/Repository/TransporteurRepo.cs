@@ -66,10 +66,10 @@ namespace backend.Repository
             return await _context.Transporteur.Include(t => t.Vehicule).Include(t => t.Localisation).Include(t => t.Utilisateur).FirstOrDefaultAsync(t => t.UserId == matricule);
         }
 
-        public Task<List<Transporteur>> GetTransporteursDisponible()
+        public Task<List<Transporteur>> GetTransporteursDisponible(double poid,double volume)
         {
             var transporteurs = _context.Transporteur.Include(t => t.Vehicule).
-            Include(t => t.Localisation).Include(t => t.Utilisateur).Where(t => t.Active);
+            Include(t => t.Localisation).Include(t=>t.Vehicule).Include(t => t.Utilisateur).Where(t => t.Active && t.Vehicule!=null &&t.Vehicule.Bloque==false && t.Vehicule.PoidsActuel<=poid && t.Vehicule.VolumeActuel<=volume);
             return transporteurs.ToListAsync();
         }
 

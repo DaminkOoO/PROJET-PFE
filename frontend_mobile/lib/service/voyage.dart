@@ -28,7 +28,7 @@ Future<List<Voyage>> fetchVoyagesForTransporteur(String? userId) async {
     var token = await getInfoFromToken("token");
     final response = await http.get(
       Uri.parse(
-          'http://10.255.1.222:5000/api/Voyage/GetVoyagesTransporteur/$userId'),
+          'http://10.255.1.105:5000/api/Voyage/GetVoyagesTransporteur/$userId'),
       headers: <String, String>{
         'accept': 'text/plain',
         'Authorization': 'Bearer $token',
@@ -58,7 +58,7 @@ Future<List<Voyage>> fetchVoyagesForDemandeur(String? userId) async {
     var token = await getInfoFromToken("token");
     final response = await http.get(
       Uri.parse(
-          'http://10.255.1.222:5000/api/Voyage/GetVoyagesDemandeur/$userId'),
+          'http://10.255.1.105:5000/api/Voyage/GetVoyagesDemandeur/$userId'),
       headers: <String, String>{
         'accept': 'text/plain',
         'Authorization': 'Bearer $token',
@@ -90,7 +90,7 @@ Future<List<Voyage>> fetchVoyagesForMagasinier(String? userId) async {
     print(headerToken);
     final response = await http.get(
       Uri.parse(
-          'http://10.255.1.222:5000/api/Voyage/GetVoyagesMagasinier/$userId'),
+          'http://10.255.1.105:5000/api/Voyage/GetVoyagesMagasinier/$userId'),
       headers: <String, String>{
         'accept': 'text/plain',
         'Authorization': headerToken,
@@ -173,7 +173,7 @@ class Voyage {
       });
       print(jsonBody);
       final response = await http.post(
-        Uri.parse('http://10.255.1.222:5000/api/voyage'),
+        Uri.parse('http://10.255.1.105:5000/api/voyage'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',
@@ -257,7 +257,7 @@ class Voyage {
 
       final response = await http.get(
         Uri.parse(
-            'http://10.255.1.222:5000/api/voyage/GetLocalisationVoyage/$voyage'),
+            'http://10.255.1.105:5000/api/voyage/GetLocalisationVoyage/$voyage'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',

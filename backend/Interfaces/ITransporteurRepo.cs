@@ -12,12 +12,12 @@ namespace backend.Interfaces
     public interface ITransporteurRepo
     {
         Task<List<Transporteur>> GetAllAsync(QueryObject QueryObject);
-        Task<List<Transporteur>> GetTransporteursDisponible();
+        Task<List<Transporteur>> GetTransporteursDisponible(double poid, double volume);
         Task<Transporteur?> GetByIdAsync(string matricule);
         Task<Transporteur> CreateAsync(Transporteur TransporteurModel);
         Task<Transporteur?> UpdateAsync(string matricule, UpdateUserRequestDTO TransporteurDto);
         Task<Transporteur?> DeleteAsync(string matricule);
         Task<Transporteur?> UpdatePostion(string matricule, Localisation localisation);
-        Task <Transporteur?> UpdateToken (string matricule, string token);
+        Task<Transporteur?> UpdateToken(string matricule, string token);
     }
 }

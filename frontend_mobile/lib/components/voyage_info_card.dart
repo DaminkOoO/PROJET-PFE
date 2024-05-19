@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_mobile/components/Voyage_details.dart';
+import 'package:frontend_mobile/components/maps.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:frontend_mobile/service/voyage.dart';
@@ -43,7 +44,7 @@ class VoyageInfoCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(children: [
                             VoyageDetails(voyage: voyage),
-                            
+                            VoyageMapWidget(voyageId: voyage.idVoyage)
                           ]),
                         )),
                   )

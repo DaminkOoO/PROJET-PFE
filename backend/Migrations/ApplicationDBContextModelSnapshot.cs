@@ -51,25 +51,25 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6873b8b4-792e-4540-b274-8c2db82edfac",
+                            Id = "592c4fc7-af4a-4502-b51e-9e77ae6efd9d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "be0d6657-ba29-48a1-8605-00b660754c46",
+                            Id = "49534573-fbf9-4351-bea5-887ed3551854",
                             Name = "Magasinier",
                             NormalizedName = "MAGASINIER"
                         },
                         new
                         {
-                            Id = "36364ad5-a1c0-4cee-b628-74409af3de77",
+                            Id = "fc520e41-e765-4205-9312-4dd7787d1ebc",
                             Name = "Demandeur",
                             NormalizedName = "DEMANDEUR"
                         },
                         new
                         {
-                            Id = "a23f7b22-5cb7-482a-ba08-4de89bd4c8fc",
+                            Id = "5304ce0f-79ab-49f6-8445-c1c65adc3977",
                             Name = "Transporteur",
                             NormalizedName = "TRANSPORTEUR"
                         });
@@ -404,7 +404,13 @@ namespace backend.Migrations
                     b.Property<double>("Poids")
                         .HasColumnType("float");
 
+                    b.Property<double>("PoidsActuel")
+                        .HasColumnType("float");
+
                     b.Property<double>("Volume")
+                        .HasColumnType("float");
+
+                    b.Property<double>("VolumeActuel")
                         .HasColumnType("float");
 
                     b.HasKey("Matricule");
@@ -485,7 +491,6 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TokenMessage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Utilisateur");

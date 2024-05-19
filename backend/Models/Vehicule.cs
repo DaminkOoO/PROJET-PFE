@@ -12,10 +12,12 @@ namespace backend.Models
         public string Matricule { get; set; } = string.Empty;
         public string Marque { get; set; } = string.Empty;
         public string Modele { get; set; } = string.Empty;
+        public double PoidsActuel { get; set; }
+        public double VolumeActuel { get; set; }
         public double Poids { get; set; }
         public double Volume { get; set; }
         public bool Bloque { get; set; }
-        public bool IsLibre { get; set; } =true;
+        public bool IsLibre { get; set; } = true;
         public Transporteur? Transporteur;
     }
 }

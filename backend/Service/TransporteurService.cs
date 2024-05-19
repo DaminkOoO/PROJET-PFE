@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using backend.Dtos.LocalisationDTOs;
 using backend.Dtos.TransporteurDTOs;
 using backend.Dtos.User;
+using backend.Dtos.VoyageDTOs;
 using backend.Helpers;
 using backend.Interfaces;
 using backend.Mappers;
 using backend.Models;
 using backend.Response;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace backend.Service
 {
@@ -165,9 +167,14 @@ namespace backend.Service
                         if (voyageActive.Demandeur != null)
                         {
                             distance = _voyageService.CalculateDistance(voyageActive.Demandeur.Lattitude, voyageActive.Demandeur.Longitude, localisationDTO.Lattitude, localisationDTO.Longitude);
-                            if (distance >= 5)
+                            Console.WriteLine("Distance" + distance);
+                            if (distance <= 5)
                             {
                                 await _voyageService.SendNotification(voyageActive.Demandeur.Utilisateur, "Votre voyage", "Voyage");
+                                await _voyageService.UpdateVoyageState(new VoyageDTO
+                                {
+                                    IdVoyage = voyageActive.IdVoyage,
+                                }, "Terminé");
                             }
                         }
                         else
@@ -175,9 +182,14 @@ namespace backend.Service
                             if (voyageActive.MagasinierDemandeur != null)
                             {
                                 distance = _voyageService.CalculateDistance(voyageActive.MagasinierDemandeur.Entrepot.Lattitude, voyageActive.MagasinierDemandeur.Entrepot.Longitude, localisationDTO.Lattitude, localisationDTO.Longitude);
-                                if (distance >= 5)
+                                Console.WriteLine("Distance" + distance);
+                                if (distance <= 0.2m)
                                 {
                                     await _voyageService.SendNotification(voyageActive.MagasinierDemandeur.Utilisateur, "Votre voyage", "Voyage");
+                                    await _voyageService.UpdateVoyageState(new VoyageDTO
+                                    {
+                                        IdVoyage = voyageActive.IdVoyage,
+                                    }, "Terminé");
                                 }
                             }
                         }

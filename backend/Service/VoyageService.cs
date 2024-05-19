@@ -26,15 +26,17 @@ namespace backend.Service
         private readonly ITransporteurRepo _transporteurRepo;
         private readonly IMagasinierRepo _magasinierRepo;
         private readonly IDemandeurRepo _demandeurRepo;
+        private readonly IVehiculeRepo _vehiculeRepo;
         private List<Voyage> voyages = new List<Voyage>();
 
-        public VoyageService(IVoyageRepo voyageRepo, ITypeVoyageRepo typeVoyageRepo, ITransporteurRepo transporteurRepo, IMagasinierRepo magasinierRepo, IDemandeurRepo demandeurRepo)
+        public VoyageService(IVoyageRepo voyageRepo, ITypeVoyageRepo typeVoyageRepo, ITransporteurRepo transporteurRepo, IMagasinierRepo magasinierRepo, IDemandeurRepo demandeurRepo, IVehiculeRepo vehiculeRepo)
         {
             _typeVoyageRepo = typeVoyageRepo;
             _voyageRepo = voyageRepo;
             _transporteurRepo = transporteurRepo;
             _magasinierRepo = magasinierRepo;
             _demandeurRepo = demandeurRepo;
+            _vehiculeRepo = vehiculeRepo;
         }
 
         public void Enqueue(Voyage voyage)
@@ -197,7 +199,7 @@ namespace backend.Service
                 }
 
                 // Get all Transporteurs
-                var transporteurs = await _transporteurRepo.GetTransporteursDisponible();
+                var transporteurs = await _transporteurRepo.GetTransporteursDisponible(voyageDTO.Poids, voyageDTO.NbrePalette);
                 if (transporteurs == null || transporteurs.Count == 0)
                 {
                     serviceResponse.Success = false;
@@ -213,7 +215,9 @@ namespace backend.Service
                     serviceResponse.Message = $"Pas de transporteur actif";
                     return serviceResponse;
                 }
+
                 voyage.TransporteurId = closestTransporteur.UserId;
+
                 await SendNotification(closestTransporteur.Utilisateur, "Nouveau voyage affecté!", "Vous avez un nouveau affecté! Merci de vérifier la liste des voyages");
                 // Calculate and assign Priorite
                 voyage.Priorite = CalculateDistance(lat1, lon1, closestTransporteur.Localisation!.Lattitude, closestTransporteur.Localisation.Longitude);
@@ -396,8 +400,8 @@ namespace backend.Service
                 {
                     LocalisationDebut = new LocalisationDTO
                     {
-                        Lattitude = voyage.Magasinier.Entrepot.Lattitude,
-                        Longitude = voyage.Magasinier.Entrepot.Longitude
+                        Lattitude = voyage.Transporteur.Localisation!.Lattitude,
+                        Longitude = voyage.Transporteur.Localisation!.Longitude
 
                     },
                     LocalisationFin = locFin,
