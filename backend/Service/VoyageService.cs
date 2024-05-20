@@ -127,7 +127,6 @@ namespace backend.Service
                     {
 
                         closest = transporteur;
-
                         closestDistance = distance;
 
                     }
