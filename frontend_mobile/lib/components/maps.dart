@@ -31,7 +31,7 @@ class _VoyageMapWidgetState extends State<VoyageMapWidget> {
       var token = await getInfoFromToken("token");
       final response = await http.get(
         Uri.parse(
-            'http://10.255.1.106:5000/api/voyage/GetLocalisationVoyage/${widget.voyageId}'),
+            'http://192.168.1.217:5000/api/voyage/GetLocalisationVoyage/${widget.voyageId}'),
         headers: <String, String>{
           'Authorization': 'Bearer $token',
         },

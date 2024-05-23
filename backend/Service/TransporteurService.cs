@@ -12,6 +12,7 @@ using backend.Mappers;
 using backend.Models;
 using backend.Response;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Service
 {
@@ -31,6 +32,7 @@ namespace backend.Service
             _voyageService = voyageService;
             _voyageRepo = voyageRepo;
         }
+
         public async Task<ServiceResponse<TransporteurDTO>> CreateTransporteur(RegisterUserRequestDTO registerUserRequestDTO)
         {
             var serviceResponse = new ServiceResponse<TransporteurDTO>();
@@ -147,6 +149,24 @@ namespace backend.Service
             try
             {
                 var transporteur = await _transporteurRepository.GetByIdAsync(matricule);
+                if (localisationDTO.Lattitude == transporteur!.Localisation!.Lattitude && localisationDTO.Longitude == transporteur.Localisation.Longitude)
+                {
+                    serviceResponse.Success = true;
+                    serviceResponse.Message = $"Opération effectuer avec succèes!!";
+                    return serviceResponse;
+                }
+                TransporteurLocalisation.TransporteurLocalisations.Add(
+                    new TransporteurLocalisation
+                    {
+                        TransporteurId = matricule,
+                        Localisation = new Localisation
+                        {
+                            Lattitude = transporteur!.Localisation!.Lattitude,
+                            Longitude = transporteur!.Localisation!.Longitude,
+                            Date = DateTime.Now,
+                        }
+                    }
+                );
                 var Localisation = await _localisationRepo.CreateAsync(new Localisation
                 {
                     Lattitude = localisationDTO.Lattitude,
@@ -154,21 +174,25 @@ namespace backend.Service
                     Date = DateTime.Now,
 
                 });
+
+
                 var positionUpdate = await _transporteurRepository.UpdatePostion(matricule, Localisation);
                 //En cours de livraison
                 var listVoyage = await _voyageRepo.GetAll(matricule, null, null);
                 if (listVoyage != null)
                 {
                     var voyageActive = listVoyage.Where(v => v.Etat == "En cours de livraison").FirstOrDefault();
+
                     decimal distance = 0;
                     if (voyageActive != null)
                     {
-                        //GeoLocator
+
                         if (voyageActive.Demandeur != null)
                         {
+                            Console.WriteLine("\n\n\n\n\ntest");
                             distance = _voyageService.CalculateDistance(voyageActive.Demandeur.Lattitude, voyageActive.Demandeur.Longitude, localisationDTO.Lattitude, localisationDTO.Longitude);
                             Console.WriteLine("Distance" + distance);
-                            if (distance <= 5)
+                            if (distance <= 0.2m)
                             {
                                 await _voyageService.SendNotification(voyageActive.Demandeur.Utilisateur, "Votre voyage", "Voyage");
                                 await _voyageService.UpdateVoyageState(new VoyageDTO
@@ -179,10 +203,12 @@ namespace backend.Service
                         }
                         else
                         {
+                            Console.WriteLine("\n\n\n\n\n\n" + voyageActive.MagasinierDemandeur.MatriculeSopal);
                             if (voyageActive.MagasinierDemandeur != null)
                             {
+
                                 distance = _voyageService.CalculateDistance(voyageActive.MagasinierDemandeur.Entrepot.Lattitude, voyageActive.MagasinierDemandeur.Entrepot.Longitude, localisationDTO.Lattitude, localisationDTO.Longitude);
-                                Console.WriteLine("Distance" + distance);
+                                Console.WriteLine("\n\n\n\n\nDistance:" + distance);
                                 if (distance <= 0.2m)
                                 {
                                     await _voyageService.SendNotification(voyageActive.MagasinierDemandeur.Utilisateur, "Votre voyage", "Voyage");
@@ -358,4 +384,10 @@ namespace backend.Service
             }
         }
     }
+}
+class TransporteurLocalisation
+{
+    public string TransporteurId { get; set; } = string.Empty;
+    public Localisation Localisation { get; set; } = new Localisation();
+    public static List<TransporteurLocalisation> TransporteurLocalisations { get; set; } = new List<TransporteurLocalisation>();
 }

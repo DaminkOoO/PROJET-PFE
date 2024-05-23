@@ -58,7 +58,10 @@ namespace backend.Repository
 
         public async Task<List<Voyage>> GetAll(string? transporteurId, string? magasinierId, string? demandeurId)
         {
-            IQueryable<Voyage> query = _context.Voyage.Include(voyage => voyage.Transporteur);
+            IQueryable<Voyage> query = _context.Voyage.Include(v => v.TypeVoyage)
+            .Include(v => v.Demandeur).Include(v => v.Transporteur).ThenInclude(t => t.Localisation)
+            .Include(v => v.Magasinier)
+            .Include(v => v.MagasinierDemandeur).ThenInclude(m => m!.Entrepot);
 
             if (transporteurId != null)
             {

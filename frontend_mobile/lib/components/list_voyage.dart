@@ -11,28 +11,37 @@ class ListVoyage extends StatefulWidget {
 }
 
 class _ListVoyageState extends State<ListVoyage> {
-  late TextEditingController _searchController;
+  late TextEditingController _dateController;
+  late TextEditingController _dateFinController;
   late Future<List<Voyage>> voyagesList =
       Future.value([]); // Initialize voyagesList
+  late Future<List<Voyage>> voyagesListFiltered =
+      Future.value([]); // Initialize voyagesList
   late String userRole; // Add user role here
+  bool isFiltered = false;
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController();
+    _dateController = TextEditingController();
+    _dateFinController = TextEditingController();
     _fetchVoyagesBasedOnUserRole(); // Fetch voyages based on user role
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _dateController.dispose();
+    _dateFinController.dispose();
     super.dispose();
   }
 
   Future<void> _fetchVoyagesBasedOnUserRole() async {
     userRole = await getInfoFromToken('role');
+    var voyages = await Voyage.getAllVoyage();
     setState(() {
-      voyagesList = Voyage.getAllVoyage();
+      if (voyages.isNotEmpty) {
+        voyagesList = Future.value(voyages);
+      }
     });
   }
 
@@ -65,50 +74,75 @@ class _ListVoyageState extends State<ListVoyage> {
                   Padding(
                     padding: const EdgeInsets.only(
                         right: 20.0, left: 20, bottom: 20),
-                    child: Container(
-                      width: double.infinity,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: const Color.fromRGBO(113, 143, 171, 1.0),
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Center(
-                        child: TextField(
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
-                          controller: _searchController,
-                          onChanged: (value) {
-                            _searchController.text = value;
-                          },
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.search,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 250,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(113, 143, 171, 1.0),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: TextField(
+                            style: const TextStyle(
                               color: Colors.white,
                             ),
-                            suffixIcon: _searchController.text != ""
-                                ? IconButton(
-                                    icon: const Icon(
-                                      Icons.clear,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                    },
-                                  )
-                                : null,
-                            hintText: 'Rechercher...',
-                            hintStyle: const TextStyle(
+                            controller: _dateController,
+                            onChanged: (value) {
+                              _dateController.text = value;
+                            },
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 3.0),
+                              prefixIcon: Icon(
+                                Icons.calendar_month,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w300),
-                            border: InputBorder.none,
+                              ),
+                              hintText: 'Date voyage',
+                              hintStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300),
+                              border: InputBorder.none,
+                            ),
+                            readOnly: true,
+                            onTap: () => _selectDate(_dateController),
                           ),
                         ),
-                      ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        SizedBox(
+                          width: 70,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              var voyages =
+                                  Voyage.getVoyageByDate(_dateController.text);
+                              setState(() {
+                                if (_dateController.text.isNotEmpty) {
+                                  isFiltered = true;
+                                  voyagesList = voyages;
+                                }
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              alignment: Alignment.center, // Add this line
+                            ),
+                            child: const Icon(Icons.search),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
+            if (isFiltered)
+              ElevatedButton(
+                  onPressed: () async {
+                    await _fetchVoyagesBasedOnUserRole();
+                    setState(() {
+                      isFiltered = false;
+                    });
+                  },
+                  child: const Text('Annuler le filtre')),
             Expanded(
               child: FutureBuilder<List<Voyage>>(
                 future: voyagesList,
@@ -142,5 +176,19 @@ class _ListVoyageState extends State<ListVoyage> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectDate(TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text = picked.toString().split(" ")[0];
+      });
+    }
   }
 }

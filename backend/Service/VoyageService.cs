@@ -104,42 +104,60 @@ namespace backend.Service
 
 
         }
+        public bool HasTransporteurLeftWarehouse(Localisation warehousePos, Localisation previousPos, Localisation currentPos)
+        {
+            var distancePreviousToWarehouse = CalculateDistance(warehousePos.Lattitude, warehousePos.Longitude, previousPos.Lattitude, previousPos.Longitude);
+            var distanceCurrentToWarehouse = CalculateDistance(warehousePos.Lattitude, warehousePos.Longitude, currentPos.Lattitude, currentPos.Longitude);
 
+            // Define a threshold distance to consider the transporteur has left the warehouse
+            // This could be a small distance, e.g., 0.1 km (100 meters)
+            const decimal thresholdDistance = 0.1m;
+
+            return distanceCurrentToWarehouse > distancePreviousToWarehouse + thresholdDistance;
+        }
         private Transporteur GetClosestTransporteur(List<Transporteur> transporteurs, decimal lat, decimal lon)
         {
             try
             {
-                Transporteur closest = new();
-                Console.WriteLine("GetClosestTransporteur 1");
+                Transporteur? closest = null;
+                Transporteur? closestActive = null;
                 decimal closestDistance = Decimal.MaxValue;
-                Console.WriteLine("GetClosestTransporteur 2");
+                decimal closestActiveDistance = Decimal.MaxValue;
 
                 foreach (Transporteur transporteur in transporteurs)
                 {
-
                     if (transporteur.Localisation == null)
                     {
                         throw new Exception("Localisation null");
                     }
                     decimal distance = CalculateDistance(lat, lon, transporteur.Localisation!.Lattitude, transporteur.Localisation.Longitude);
+                    var oldTransporteurLocalisation = TransporteurLocalisation.TransporteurLocalisations
+                        .Find(tl => tl.TransporteurId == transporteur.UserId)?.Localisation;
 
                     if (distance < closestDistance && transporteur.Active)
                     {
+                        closestActive = transporteur;
+                        closestActiveDistance = distance;
+                    }
 
+                    if (distance < closestDistance && transporteur.Active && !HasTransporteurLeftWarehouse(
+                        new Localisation { Lattitude = lat, Longitude = lon },
+                        new Localisation { Lattitude = transporteur.Localisation.Lattitude, Longitude = transporteur.Localisation.Longitude },
+                        oldTransporteurLocalisation))
+                    {
                         closest = transporteur;
                         closestDistance = distance;
-
                     }
                 }
 
-                return closest;
+                // Si aucun transporteur ne satisfait toutes les conditions, retourner le transporteur actif le plus proche
+                return closest ?? closestActive!;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return null!;
             }
-
         }
 
         public async Task<ServiceResponse<Voyage>> CreateVoyage(VoyageDTO voyageDTO)

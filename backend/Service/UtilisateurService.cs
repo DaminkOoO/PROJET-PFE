@@ -56,7 +56,6 @@ namespace backend.Service
                     return serviceResponse;
                 }
                 var user = registerUserRequestDTO.ToUtilisateur();
-                Console.WriteLine(user);
                 user.PasswordHash = _passwordHasher.HashPassword(user, registerUserRequestDTO.Password!);
                 var createdUser = await _utilisateurRepository.CreateAsync(user);
                 if (createdUser.Succeeded)

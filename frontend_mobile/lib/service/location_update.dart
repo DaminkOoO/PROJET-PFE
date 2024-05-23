@@ -11,7 +11,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocationUpdater {
-  static const updateInterval = Duration(minutes: 3);
+  static const updateInterval = Duration(seconds: 10);
 
   static void startLocationUpdates() {
     // Start periodic location updates
@@ -33,7 +33,7 @@ class LocationUpdater {
         var userId = JwtDecoder.decode(token!)['userId'];
         print(position);
         String apiUrl =
-            'http://10.255.1.105:5000/api/user/transporteur/$userId';
+            'http://192.168.1.217:5000/api/user/transporteur/$userId';
 
         // Construct the request body
         Map<String, dynamic> requestBody = {
