@@ -31,7 +31,7 @@ class _VoyageMapWidgetState extends State<VoyageMapWidget> {
       var token = await getInfoFromToken("token");
       final response = await http.get(
         Uri.parse(
-            'http://192.168.1.217:5000/api/voyage/GetLocalisationVoyage/${widget.voyageId}'),
+            'http://20.56.21.171:5000/api/voyage/GetLocalisationVoyage/${widget.voyageId}'),
         headers: <String, String>{
           'Authorization': 'Bearer $token',
         },
@@ -118,7 +118,7 @@ class _VoyageMapWidgetState extends State<VoyageMapWidget> {
               options: MapOptions(
                 initialCenter:
                     startLocation!, // Replace with your desired initial center
-                initialZoom: 10,
+                initialZoom: 13,
               ),
               children: [
                 TileLayer(
@@ -141,7 +141,7 @@ class _VoyageMapWidgetState extends State<VoyageMapWidget> {
                     height: 80.0,
                     point: startLocation!,
                     child: const Icon(
-                      Icons.location_on,
+                      Icons.man,
                       color: Colors.green,
                       size: 40,
                     ),
@@ -152,7 +152,7 @@ class _VoyageMapWidgetState extends State<VoyageMapWidget> {
                     point: endLocation!,
                     child: Container(
                       child: Icon(
-                        Icons.location_on,
+                        Icons.warehouse,
                         color: Colors.red,
                         size: 40,
                       ),

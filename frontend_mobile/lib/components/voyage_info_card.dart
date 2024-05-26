@@ -44,7 +44,9 @@ class VoyageInfoCard extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(children: [
                             VoyageDetails(voyage: voyage),
-                            VoyageMapWidget(voyageId: voyage.idVoyage)
+                            voyage.etat == "Terminé"
+                                ? VoyageMapWidget(voyageId: voyage.idVoyage)
+                                : Container()
                           ]),
                         )),
                   )

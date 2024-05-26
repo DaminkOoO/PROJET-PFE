@@ -53,7 +53,7 @@ Future<String> getInfoFromToken(String info) async {
 Future<http.Response?> login(String matricule, String motPasse) async {
   try {
     final response = await http.post(
-      Uri.parse('http://10.255.1.105:5000/api/user/login'),
+      Uri.parse('http://20.56.21.171:5000/api/user/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -81,7 +81,7 @@ Future<http.Response?> updateMessageToken(
     String matricule, String token) async {
   try {
     final response = await http.put(
-      Uri.parse('http://10.255.1.105:5000/api/user/token/$matricule'),
+      Uri.parse('http://20.56.21.171:5000/api/user/token/$matricule'),
       headers: <String, String>{
         'accept': '*/*',
         'Content-Type': 'application/json-patch+json',

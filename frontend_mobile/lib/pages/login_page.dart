@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -51,101 +52,68 @@ class _LoginPageState extends State<LoginPage> {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 36, vertical: 30),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Input(
-                          inputController: _nomUtilisateurController,
-                          isPassword: false,
-                          labelText: "Nom d'utilisateur",
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Merci de fournir votre nom d'utilisateur";
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 24,
-                        ),
-                        Input(
-                          inputController: _motDePasseController,
-                          isPassword: true,
-                          labelText: "Mot de passe",
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Merci de fournir votre nom de passe";
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 24,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0.0,
-                            shadowColor: Colors.transparent,
-                            backgroundColor: Color.fromRGBO(14, 61, 93, 1.0),
-                            padding: const EdgeInsets.all(10),
-                            side: BorderSide(color: Colors.white),
-                            textStyle: const TextStyle(fontSize: 18),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                            ),
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Input(
+                            inputController: _nomUtilisateurController,
+                            isPassword: false,
+                            labelText: "Nom d'utilisateur",
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Merci de fournir votre nom d'utilisateur";
+                              }
+                              return null;
+                            },
                           ),
-                          onPressed: () async {
-                            var connect = await login(
-                              _nomUtilisateurController.text,
-                              _motDePasseController.text,
-                            );
+                          SizedBox(
+                            height: 24,
+                          ),
+                          Input(
+                            inputController: _motDePasseController,
+                            isPassword: true,
+                            labelText: "Mot de passe",
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Merci de fournir votre nom de passe";
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 24,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0.0,
+                              shadowColor: Colors.transparent,
+                              backgroundColor: Color.fromRGBO(14, 61, 93, 1.0),
+                              padding: const EdgeInsets.all(10),
+                              side: BorderSide(color: Colors.white),
+                              textStyle: const TextStyle(fontSize: 18),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                              ),
+                            ),
+                            onPressed: () async {
+                              var connect = await login(
+                                _nomUtilisateurController.text,
+                                _motDePasseController.text,
+                              );
 
-                            if (context.mounted) {
-                              if (connect == null) {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text('Erreur'),
-                                      content: Text(
-                                          'Probléme au niveau du serveur!'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: Text('OK'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                if (connect.statusCode == 200) {
-                                  await FirebaseApi().initNotifications(
-                                      _nomUtilisateurController.text);
-                                  if (await getInfoFromToken("role") ==
-                                      "Transporteur") {
-                                    LocationUpdater.startLocationUpdates();
-                                  }
-                                  // Navigate to the next screen (e.g., home screen)
-                                  if (context.mounted) {
-                                    Navigator.pushReplacementNamed(
-                                        context, '/functions');
-                                  }
-                                } else {
-                                  // If the server returns an error, show an error message
+                              if (context.mounted) {
+                                if (connect == null) {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title:
-                                            Text('Impossible de se connecter'),
+                                        title: Text('Erreur'),
                                         content: Text(
-                                            'Nom d\'utilisateur ou mot de passe incorrect'),
+                                            'Probléme au niveau du serveur!'),
                                         actions: <Widget>[
                                           TextButton(
                                             child: Text('OK'),
@@ -157,29 +125,64 @@ class _LoginPageState extends State<LoginPage> {
                                       );
                                     },
                                   );
+                                } else {
+                                  if (connect.statusCode == 200) {
+                                    await FirebaseApi().initNotifications(
+                                        _nomUtilisateurController.text);
+                                    if (await getInfoFromToken("role") ==
+                                        "Transporteur") {
+                                      LocationUpdater.startLocationUpdates();
+                                    }
+                                    // Navigate to the next screen (e.g., home screen)
+                                    if (context.mounted) {
+                                      Navigator.pushReplacementNamed(
+                                          context, '/functions');
+                                    }
+                                  } else {
+                                    // If the server returns an error, show an error message
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                              'Impossible de se connecter'),
+                                          content: Text(
+                                              'Nom d\'utilisateur ou mot de passe incorrect'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 }
                               }
-                            }
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.login,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Se connecter",
-                                style: TextStyle(color: Colors.white),
-                              )
-                            ],
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.login,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Se connecter",
+                                  style: TextStyle(color: Colors.white),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

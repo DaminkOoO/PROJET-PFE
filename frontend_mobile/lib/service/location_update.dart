@@ -33,7 +33,7 @@ class LocationUpdater {
         var userId = JwtDecoder.decode(token!)['userId'];
         print(position);
         String apiUrl =
-            'http://192.168.1.217:5000/api/user/transporteur/$userId';
+            'http://20.56.21.171:5000/api/user/transporteur/$userId';
 
         // Construct the request body
         Map<String, dynamic> requestBody = {
@@ -55,10 +55,10 @@ class LocationUpdater {
           body: requestBodyJson,
         );
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 200 || response.statusCode == 204) {
           print('Location update sent successfully');
         } else {
-          print('Error sending location update: ${response.body} ');
+          print('Error sending location update: ${response.statusCode} ');
         }
       } catch (e) {
         print('Error sending location update: $e');
