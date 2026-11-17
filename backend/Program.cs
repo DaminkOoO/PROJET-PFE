@@ -66,6 +66,16 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 builder.Services.AddIdentity<Utilisateur, IdentityRole>().AddEntityFrameworkStores<ApplicationDBContext>();
 
 
+// La clé de signature JWT est un secret : elle ne vient jamais d'un fichier versionné.
+// En local : dotnet user-secrets set "JWT:SigningKey" "<clé>" ; ailleurs : variable JWT__SigningKey.
+var jwtSigningKey = builder.Configuration["JWT:SigningKey"];
+if (string.IsNullOrWhiteSpace(jwtSigningKey) || jwtSigningKey.Length < 64)
+{
+    throw new InvalidOperationException(
+        "JWT:SigningKey manquante ou trop courte (64 caractères minimum). " +
+        "Définissez-la avec dotnet user-secrets ou la variable d'environnement JWT__SigningKey.");
+}
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme =
@@ -85,7 +95,7 @@ JwtBearerDefaults.AuthenticationScheme;
             ValidateAudience = true,
             ValidAudience = builder.Configuration["JWT:Audience"],
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]!))
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSigningKey))
         };
     }
 );

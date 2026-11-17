@@ -91,10 +91,15 @@ frontend_mobile/         Application Flutter
    ```
    Server=(localdb)\\MSSQLLocalDB;Database=sopal2;Trusted_Connection=True;TrustServerCertificate=True
    ```
-2. Renseignez `JWT:SigningKey` avec une clé d'au moins 64 caractères, générée par vous.
-3. Créez la base et lancez l'API :
+2. Définissez la clé de signature JWT, un secret d'au moins 64 caractères (HMAC-SHA512).
+   Elle n'est pas versionnée : l'API refuse de démarrer sans elle.
    ```bash
    cd backend
+   dotnet user-secrets set "JWT:SigningKey" "$(openssl rand -base64 64)"
+   ```
+   Hors développement, utilisez la variable d'environnement `JWT__SigningKey`.
+3. Créez la base et lancez l'API :
+   ```bash
    dotnet tool restore
    dotnet ef database update
    dotnet run
